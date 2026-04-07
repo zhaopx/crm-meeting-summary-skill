@@ -1,0 +1,10 @@
+{
+  "customer_id": "CUST-001",
+  "customer_name": "华东零售集团",
+  "industry": "general-b2b",
+  "lifecycle_stage": "active_customer",
+  "account_tier": "A",
+  "current_products": ["智能客服基础版"],
+  "recent_health_status": "medium_risk",
+  "known_risks": ["效果不稳定影响续费与扩容意愿"]
+}

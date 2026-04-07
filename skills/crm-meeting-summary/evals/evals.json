@@ -1,0 +1,19 @@
+{
+  "skill_name": "crm-meeting-summary",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "根据提供的 CRM 会议记录、CRM mock 数据、memory 和 knowhow，生成会议总结并输出 review-ready 的机器结构。",
+      "expected_output": "能识别需求澄清场景，指出预算优先级和短期效果证明风险，给出最小必要补拉字段建议。",
+      "files": [
+        "examples/mock-data/meeting-records/meeting-001.json",
+        "examples/mock-data/crm/customer/CUST-001.json",
+        "examples/mock-data/crm/opportunity/OPP-9001.json",
+        "examples/mock-data/crm/initiator/USR-101.json",
+        "examples/mock-data/memory/customer/CUST-001.json",
+        "examples/mock-data/memory/opportunity/OPP-9001.json",
+        "examples/mock-data/memory/initiator/USR-101.json"
+      ]
+    }
+  ]
+}

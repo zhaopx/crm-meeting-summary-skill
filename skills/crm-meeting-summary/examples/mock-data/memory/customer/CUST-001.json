@@ -1,0 +1,8 @@
+{
+  "scope": "customer",
+  "lookup_key": "customer_id:CUST-001",
+  "memory": [
+    "客户过去两次续费前都要求先看到量化效果改善。",
+    "运营负责人对夜间服务质量异常敏感。"
+  ]
+}
