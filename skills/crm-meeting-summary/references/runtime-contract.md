@@ -1,4 +1,4 @@
-# Runtime Contract
+# 运行时契约
 
 版本: `v1`
 
@@ -11,7 +11,7 @@
 - 防止 SKILL.md、examples、evals 与 schema 漂移。
 - 让业务语义保持显式，而不是被藏进 prose。
 
-## Object model
+## 对象模型
 
 支持四类 CRM 关联 object scopes：
 - `person`（initiator、internal owner、stakeholders）
@@ -24,7 +24,7 @@
 - 一条 sales record 可以同时关联多个 objects
 - meeting initiator 始终是 `person`
 
-## Semantic interpretation layer
+## 语义解释层
 
 runtime 在生成最终措辞前，应先把原始 meeting 与 CRM inputs 归一为紧凑的业务语义层。
 这不是 free-form prose。
@@ -42,9 +42,9 @@ runtime 在生成最终措辞前，应先把原始 meeting 与 CRM inputs 归一
 
 `semantic_summary` 是必需顶层结构；`summary_fields` 中的同名字段是冗余访问层，不可替代它。
 
-## Input contract
+## 输入契约
 
-### Required input
+### 必需输入
 
 runtime 至少必须提供：
 - meeting record text
@@ -52,14 +52,14 @@ runtime 至少必须提供：
 - initiator，类型为 `person`
 - account 或 opportunity association
 
-### Optional input
+### 可选输入
 
 - meeting title
 - participants list
 - 已可用的 CRM fields
 - 预取的 memory snippets
 
-### Input shape（示例）
+### 输入示例
 
 ```json
 {
@@ -90,16 +90,16 @@ runtime 至少必须提供：
 }
 ```
 
-### Key rules
+### 关键规则
 
 - 有 ID 时优先使用基于 ID 的 key，没有 ID 时回退到 name。
 - 禁止编造缺失的 CRM fields。
 - 把缺失数据视为常态，并写入 `missing_information`。
 - runtime package 要足够小，保证每个主要输出 claim 仍可审计。
 
-## Output contract
+## 输出契约
 
-### Human-readable output
+### 人类可读输出
 
 必需部分：
 1. Meeting snapshot
@@ -108,7 +108,7 @@ runtime 至少必须提供：
 4. Recommended next actions
 5. Risks and open questions
 
-### Machine-readable output
+### 机器可读输出
 
 使用 `references/output-schema.md` 中的 schema。
 顶层 `status` 允许值：
@@ -116,7 +116,7 @@ runtime 至少必须提供：
 - `manual_review_required`
 - `insufficient_context`
 
-### Output shape（示例）
+### 输出示例
 
 ```json
 {
@@ -145,7 +145,14 @@ runtime 至少必须提供：
     "patches": ["references/knowhow/patches/needs-clarification__general-b2b.md"],
     "best_cases": []
   },
-  "crm_data_requests": [],
+  "crm_data_requests": [
+    {
+      "reason": "risk_validation_gap",
+      "fields": ["recent_interactions", "last_commitments", "implementation_status"],
+      "why": "需要验证效果问题是否持续存在，以及历史承诺是否影响当前信任。",
+      "sources": ["knowhow:data_requirements"]
+    }
+  ],
   "memory_sources": [],
   "memory_conflicts": [],
   "summary_fields": {
@@ -197,7 +204,7 @@ runtime 至少必须提供：
 }
 ```
 
-## Retrieval trace contract
+## 检索 Trace 契约
 
 每次运行都必须输出 `retrieval_trace`：
 - `mapping_version`
@@ -209,21 +216,30 @@ runtime 至少必须提供：
 以 `references/scenario-retrieval-mapping.md` 作为 policy baseline。
 如果请求了 policy 外字段，必须附带精确 evidence 与理由。
 
-## Memory contract usage
+`crm_data_requests` 的形成顺序是：
+1. 先由 scenario retrieval mapping 给出 `allowed_request_groups`
+2. 再读取已加载 scenario / patch knowhow 中的 `data_requirements`
+3. 只有 meeting evidence 与当前 CRM 缺失共同支持时，才允许把对应字段并入请求
+4. 如果 knowhow 声明超出 `allowed_request_groups`，只能进入 `out_of_policy_requests`
+
+`data_requirements` 只能细化允许组内的字段，不能直接扩大默认 retrieval scope。
+当 `scenario_mode = uncertain` 时，不执行 scenario / patch knowhow 的 `data_requirements`，仍按 low-confidence fallback 只保留一个消歧 request bundle。
+
+## 记忆契约使用
 
 - 对该 skill 而言，memory 是只读的。
 - scopes: person/account/opportunity/contact。
 - 如果 memory 与当前 evidence 冲突，优先当前 evidence，并记录到 `memory_conflicts`。
 - 使用 mixed keys：优先 `*_id`，回退到 `*_name`。
 
-## Best-case usage contract
+## Best-case 使用规范
 
 - best-cases 是可选 reference，不是强制 retrieval。
 - 只有在它们能提升已识别场景或行业的判断质量时才加载。
 - 如果加载，需在 `loaded_knowhow.best_cases` 中记录标识。
 - best-cases 绝不能覆盖当前 meeting evidence。
 
-## Review handoff contract
+## 评审交接契约
 
 调用 review skill 时，只传精简包：
 - generated human summary
@@ -242,13 +258,13 @@ review output 必须使用：
 
 review output 与 summary output status 不是同一个概念。
 
-## Failure and retry contract
+## 失败与重试契约
 
 - 状态迁移使用 `references/retry-state-machine.md`。
 - 最多 2 次 targeted retries。
 - 超过后返回 `status: manual_review_required`，并附最后一次 failure reasons。
 
-## References
+## 参考文件
 
 - `references/output-schema.md`
 - `references/retry-state-machine.md`

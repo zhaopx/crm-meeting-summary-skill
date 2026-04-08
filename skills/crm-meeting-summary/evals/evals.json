@@ -79,6 +79,26 @@
       ]
     },
     {
+      "id": "regression-knowhow-data-requirements-within-policy",
+      "category": "failure-regression",
+      "prompt": "当已加载的 scenario knowhow 声明 data_requirements 且 meeting evidence 与 CRM 缺失共同支持时，crm_data_requests 必须补齐对应字段，但不能超出当前场景允许的 request groups。",
+      "expected_output": "crm_data_requests 包含由 knowhow data_requirements 触发的字段；requested_request_groups 仍受当前 scenario mapping 限制；retrieval_trace 可解释。",
+      "files": [
+        "examples/mock-data/meeting-records/meeting-001.json",
+        "examples/mock-data/crm/account/CUST-001.json",
+        "examples/mock-data/crm/opportunity/OPP-9001.json"
+      ]
+    },
+    {
+      "id": "regression-low-confidence-skips-data-requirements",
+      "category": "failure-regression",
+      "prompt": "当 scenario_confidence=low 并进入 uncertain 模式时，不得执行 scenario/patch knowhow 的 data_requirements，只允许一个消歧 request bundle。",
+      "expected_output": "scenario_mode=uncertain；只加载 common knowhow；requested_request_groups 限制为一个消歧 bundle；不会因为 knowhow data_requirements 扩大请求。",
+      "files": [
+        "examples/mock-data/meeting-records/meeting-ambiguous.json"
+      ]
+    },
+    {
       "id": "adversarial-human-vs-machine-consistency",
       "category": "adversarial",
       "prompt": "人读总结和机器结构必须同源，不能一个说高风险、一个说中风险。",

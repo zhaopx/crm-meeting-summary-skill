@@ -1,8 +1,8 @@
-# CRM Data Dictionary
+# CRM 数据字典
 
 使用这份字典，只请求真正能提升 summary 质量的 CRM data。
 
-## Account fields
+## 账户字段
 - account_id
 - account_name
 - industry
@@ -12,7 +12,7 @@
 - recent_health_status
 - known_risks
 
-## Opportunity fields
+## 商机字段
 - opportunity_id
 - opportunity_name
 - stage
@@ -22,27 +22,27 @@
 - next_milestone
 - blocker_summary
 
-## Interaction fields
+## 互动字段
 - recent_interactions
 - last_commitments
 - open_followups
 - prior_escalations
 
-## Stakeholder fields
+## 干系人字段
 - person_role
 - account_owner
 - decision_makers
 - procurement_owner
 - implementation_owner
 
-## Delivery / compliance fields
+## 交付 / 合规字段
 - implementation_status
 - support_tickets
 - contract_status
 - procurement_status
 - compliance_constraints
 
-## Request rationale examples
+## 请求理由示例
 
 ### account_profile_gap
 当会议提到了 account context，但 account baseline 缺失时使用。
@@ -59,7 +59,7 @@
 ### risk_validation_gap
 当出现潜在不满、升级、交付或合规问题，且需要验证时使用。
 
-## Request output suggestion
+## 请求输出示例
 
 ```json
 [

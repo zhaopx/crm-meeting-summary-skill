@@ -1,8 +1,8 @@
-# Case Execution Example
+# 案例执行示例
 
 本文展示 `crm-meeting-summary` 基于 `examples/mock-data/` 的一次完整运行示例。
 
-## Case
+## 案例
 - meeting input: `examples/mock-data/meeting-records/meeting-001.json`
 - account CRM: `examples/mock-data/crm/account/CUST-001.json`
 - opportunity CRM: `examples/mock-data/crm/opportunity/OPP-9001.json`
@@ -10,7 +10,7 @@
 - account memory: `examples/mock-data/memory/account/CUST-001.json`
 - opportunity memory: `examples/mock-data/memory/opportunity/OPP-9001.json`
 
-## Step 1: Base context
+## 第 1 步：基础上下文
 
 归一化后的基础上下文：
 
@@ -24,7 +24,7 @@
 }
 ```
 
-## Step 2: Scenario identification
+## 第 2 步：场景识别
 
 判断结果：
 - primary_scenario: `需求澄清`
@@ -38,7 +38,7 @@
 - 没有被价格或 procurement 讨论主导
 - 6 月前存在明确的不行动后果
 
-## Step 3: Knowhow loading
+## 第 3 步：加载参考知识
 
 加载的 knowhow：
 - `references/knowhow/common/general.md`
@@ -51,7 +51,7 @@
 - 当前会议是 general-b2b 下高置信 needs-clarification case
 - best-case 可以帮助收紧 false-progress 判断与 next-step discipline
 
-## Step 4: CRM retrieval decision
+## 第 4 步：CRM 检索决策
 
 mapping 允许的 request groups：
 - `account_profile_gap`
@@ -62,6 +62,7 @@ mapping 允许的 request groups：
 - 不需要额外拉 account，因为 account profile 已存在
 - 不需要额外拉 stakeholder，因为核心会议角色已出现
 - `risk_validation_gap` 值得请求，因为 trust 与 continuity 会影响判断
+- 该请求由 needs-clarification knowhow 的 `data_requirements` 触发，并且仍在允许的 request groups 内
 
 最终使用的 CRM/memory context：
 - account profile: 存量客户，中等风险，当前产品已部署
@@ -69,7 +70,7 @@ mapping 允许的 request groups：
 - account memory: 过去续费前需要量化效果证明
 - opportunity memory: 存在明确预算竞争
 
-## Step 5: Semantic interpretation
+## 第 5 步：语义解释
 
 ```json
 {
@@ -85,19 +86,19 @@ mapping 允许的 request groups：
 - opportunity 还没有进入后段商业推进
 - 客户有兴趣，但推进依赖证据，不依赖友好态度
 
-## Step 6: Human-readable summary
+## 第 6 步：人类可读总结
 
-### Meeting snapshot
+### 会议快照
 - 会议时间：2026-04-06 15:00 +08:00
 - 发起人：王敏
 - 客户：华东零售集团
 - 商机：智能客服升级项目
 - 主场景：需求澄清
 
-### Core summary and judgment
+### 核心总结与判断
 本次会议核心不是确认采购，而是验证客户当前客服效果问题的根因，并判断是否值得进入下一阶段试点。客户已经明确把“效果改善能否被证明”与后续预算优先级绑定，说明当前机会仍处于资格验证而非实质推进阶段。会议中出现了明确推进信号：客户愿意等待我方提交问题诊断和优化路径建议，再决定是否进入试点；同时也出现了明显风险信号：6 月前客户内部将进行服务质量考核，若效果无改善，预算优先级会下降。
 
-### Knowhow focus items
+### 参考知识关注项
 1. 真实需求与紧迫性
    - 已覆盖：客户指出夜间转人工率偏高，并将效果改善与 6 月前考核结果关联，存在真实业务压力。
 2. 成功标准是否清晰
@@ -105,17 +106,17 @@ mapping 允许的 request groups：
 3. 约束与阻塞因素
    - 已覆盖：IT 资源有限，需要尽量少改现有系统；预算优先级会受短期效果影响。
 
-### Recommended next actions
+### 建议的下一步动作
 1. 一周内提交问题诊断与优化路径建议，并显式说明低改造成本方案。
 2. 在下轮沟通前补齐客户当前知识库更新机制、历史异常波动和服务质量考核标准。
 3. 确认客户内部试点决策人和预算判断节点。
 
-### Risks and open questions
+### 风险与待确认事项
 - 风险：若短期内无法证明效果改善，客户可能不进入试点。
 - 风险：接口改造资源有限，方案复杂度过高会直接压缩推进空间。
 - 待确认：客户对“效果改善”的量化口径、试点评估负责人、预算审批链条。
 
-## Step 7: Machine-readable output
+## 第 7 步：机器可读输出
 
 ```json
 {
@@ -151,7 +152,8 @@ mapping 允许的 request groups：
     {
       "reason": "risk_validation_gap",
       "fields": ["recent_interactions", "last_commitments", "implementation_status"],
-      "why": "需要验证效果问题是否持续存在，以及历史承诺是否影响当前信任。"
+      "why": "需要验证效果问题是否持续存在，以及历史承诺是否影响当前信任。",
+      "sources": ["knowhow:data_requirements"]
     }
   ],
   "memory_sources": [
@@ -245,7 +247,7 @@ mapping 允许的 request groups：
 }
 ```
 
-## Step 8: Review result
+## 第 8 步：评审结果
 
 期望的 review judgment：
 - pass: `true`

@@ -1,13 +1,13 @@
-# Retry State Machine
+# 再生成状态机
 
 本文定义 `crm-meeting-summary` skill 的再生成循环。
 
-## Design goal
+## 设计目标
 
 当 review 只在某个窄维度失败时，skill 必须保住强 summary 的主体。
 retry 的目标是修复定向缺陷，不是让模型从头重写全部内容。
 
-## State diagram
+## 状态图
 
 ```text
 input_ready
@@ -58,55 +58,55 @@ review_evaluated
 manual_review_required
 ```
 
-## State definitions
+## 状态定义
 
 ### 1. `input_ready`
 
-**Purpose**
+**目的**
 - meeting package 已可用
 - 基础 CRM context 已可用，或部分缺失
 - 尚未生成任何 summary
 
-**Required inputs**
+**必需输入**
 - raw meeting record
 - meeting time，如有
 - 已关联的 `person` / `account` / `opportunity` / `contact` objects，如可用
 
-**Exit conditions**
+**退出条件**
 - 基础归一化后进入 `scenario_gate`
 
 ### 2. `scenario_gate`
 
-**Purpose**
+**目的**
 - 将会议归类为一个 primary scenario
 - 赋值 `scenario_confidence`
 - 判断是否可以安全使用场景特定 retrieval
 
-**Rules**
+**规则**
 - `high` / `medium`: 进入正常 retrieval 流程
 - `low`: 不能假装高置信分类已经成立
 
-**Low-confidence fallback**
+**低置信回退**
 - 除非某个 scenario 在弱证据下仍明显占优，否则将 `primary_scenario` 设为 `其他/不确定`
 - 默认只加载 `common` knowhow
 - 只允许最小的消歧 CRM request set
 - 标记 `scenario_mode: uncertain`
 - 降低下游判断置信度
 
-**Exit conditions**
+**退出条件**
 - 进入 `draft_generated(revision=0)`
 
 ### 3. `draft_generated`
 
-**Purpose**
+**目的**
 - 产出一份同步 summary package
 
-**Required outputs**
+**必需输出**
 - human-readable summary
 - machine-readable structure
 - trace bundle
 
-**Hard constraints**
+**硬性约束**
 1. human-readable 与 machine-readable outputs 必须来自同一事实底座。
 2. machine structure 是以下字段的 source of truth：
    - `meeting_goal`
@@ -125,15 +125,15 @@ manual_review_required
 - memory conflicts
 - 传递给 review 的 evidence excerpts
 
-**Exit conditions**
+**退出条件**
 - 进入 `review_evaluated`
 
 ### 4. `review_evaluated`
 
-**Purpose**
+**目的**
 - 使用 review skill 对 draft 进行评估
 
-**Review input package**
+**Review 输入包**
 使用精简 review package，不要重新发送整份原始上下文。
 
 只包含：
@@ -148,13 +148,13 @@ manual_review_required
 - 当窄摘录已足以证明时，不要放完整 CRM dumps
 - 当只涉及一个 memory item 时，不要放完整 memory payloads
 
-**Review result shape**
+**Review 结果结构**
 - `pass: true|false`
 - `failure_reasons`
 - `targeted_regeneration_instructions`
 - `check_results`
 
-**Exit conditions**
+**退出条件**
 - `pass=true` -> `passed`
 - `pass=false && revision=0` -> `review_failed_retry_1`
 - `pass=false && revision=1` -> `review_failed_retry_2`
@@ -162,21 +162,21 @@ manual_review_required
 
 ### 5. `review_failed_retry_1`
 
-**Purpose**
+**目的**
 - 执行第一次定向修复
 
-**Input additions**
+**输入补充**
 - prior draft
 - review failure reasons
 - targeted regeneration instructions
 
-**Rules**
+**规则**
 - 只改失败维度
 - 保留通过维度
 - 除非 failure reason 明确指出原事实无支撑，否则保留原 facts
 - 保持相同 trace categories，只更新发生变化的部分
 
-**Exit conditions**
+**退出条件**
 - 进入 `draft_generated(revision=1)`
 
 ### 6. `review_failed_retry_2`
@@ -187,15 +187,15 @@ manual_review_required
 - 不允许大范围风格性重写
 - 如果第二次修复需要改 scenario、knowhow set 或 CRM request scope，必须在 trace 中明确记录
 
-**Exit conditions**
+**退出条件**
 - 进入 `draft_generated(revision=2)`
 
 ### 7. `passed`
 
-**Purpose**
+**目的**
 - 最终交付物可安全返回
 
-**Required outputs**
+**必需输出**
 - final human-readable summary
 - final machine-readable structure
 - `status: passed`
@@ -203,10 +203,10 @@ manual_review_required
 
 ### 8. `manual_review_required`
 
-**Purpose**
+**目的**
 - 两次修复失败后停止自动化
 
-**Required outputs**
+**必需输出**
 - 当前最佳 human-readable summary
 - 当前最佳 machine-readable structure
 - `status: manual_review_required`
@@ -214,7 +214,7 @@ manual_review_required
 - 上一次 targeted regeneration instructions
 - 带 retry history 的 trace bundle
 
-## Retry history contract
+## 重试历史契约
 
 发生任何 retry 时，在 machine output 中加入 retry history block。
 
@@ -239,7 +239,7 @@ manual_review_required
 }
 ```
 
-## Non-goals
+## 非目标
 
 retry 不允许：
 - 引入 evidence 中不存在的新事实

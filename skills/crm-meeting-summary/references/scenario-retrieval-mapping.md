@@ -1,18 +1,19 @@
-# Scenario Retrieval Mapping
+# 场景检索映射
 
 版本: `v1`
 
 这份 mapping 让 scenario-driven retrieval 可审计。
 它不会取消模型判断，只是限制模型默认允许拉取什么。
 
-## Retrieval policy
+## 检索策略
 
 1. 先识别 `primary_scenario` 与 `scenario_confidence`。
 2. 在加载场景特定 retrieval 前，先应用 low-confidence fallback。
 3. 只加载表中允许的最小 knowhow 和 CRM fields。
 4. 如果模型请求表外字段，必须在 trace 中解释例外原因。
+5. scenario / patch knowhow 可以通过 `data_requirements` 细化允许组内的字段，但不能新增默认 request groups。
 
-## Mapping table
+## 映射表
 
 | Scenario | Must-load knowhow | Optional knowhow | Default CRM request groups | Prohibited default pulls |
 |---|---|---|---|---|
@@ -27,7 +28,7 @@
 | 内部协同 / 复盘 | common, scenario | industry | stakeholder_gap, history_gap, opportunity_progress_gap | full memory sweep across unrelated objects |
 | 其他 / 不确定 | common only | industry only if independently evidenced | stakeholder_gap or one ambiguity-resolution request only | scenario patch, broad CRM pull, broad memory pull |
 
-## Low-confidence fallback rules
+## 低置信回退规则
 
 如果 `scenario_confidence = low`：
 - 只加载 `common` knowhow
@@ -37,7 +38,7 @@
 - memory 限制为一个 object scope，除非当前事实要求更多
 - 输出 `scenario_mode: uncertain`
 
-## Trace requirements
+## Trace 要求
 
 每次运行都必须输出：
 
@@ -53,7 +54,7 @@
 }
 ```
 
-## Exception policy
+## 例外策略
 
 如果 skill 请求了表外 retrieval，trace 必须包含：
 - requested group

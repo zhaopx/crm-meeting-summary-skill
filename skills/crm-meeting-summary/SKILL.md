@@ -3,7 +3,7 @@ name: crm-meeting-summary
 description: 当用户要求总结 CRM 会议纪要、基于客户或商机记录生成会议回顾、结合 CRM 上下文分析销售/客户会议，或使用行业/场景 knowhow、memory 与 review 校验来产出结构化会议总结时，应使用此 skill。
 ---
 
-# CRM Meeting Summary
+# CRM 会议总结
 
 基于会议纪要和 CRM 上下文生成高质量 CRM 会议总结。保留模型推理空间，但严格约束证据边界与输出契约。
 
@@ -43,7 +43,7 @@ description: 当用户要求总结 CRM 会议纪要、基于客户或商机记�
 
 ## 工作流
 
-### Step 1: Normalize the base context
+### 第 1 步：归一化基础上下文
 
 提取或整理最小基础上下文：
 - meeting title，如果有
@@ -56,7 +56,7 @@ description: 当用户要求总结 CRM 会议纪要、基于客户或商机记�
 
 如果存在 object ID，优先使用 ID。没有 ID 时回退到名称。
 
-### Step 2: Identify meeting scenario
+### 第 2 步：识别会议场景
 
 将会议归类为一个主场景，并可附带若干次级标签。
 
@@ -87,7 +87,7 @@ Conservative mode 规则：
 
 状态迁移与回退行为见 `references/retry-state-machine.md`。
 
-### Step 3: Load knowhow
+### 第 3 步：加载参考知识
 
 按以下顺序加载 knowhow：
 1. `references/knowhow/common/`
@@ -106,13 +106,23 @@ Conservative mode 规则：
 - 场景特定风险或政策边界
 - 可能的下一步预期
 
-### Step 4: Decide what additional CRM data is needed
+### 第 4 步：决定需要哪些额外 CRM 字段
 
 不要默认拉取全部数据。只决定为了生成更好总结所需的最小缺失 CRM data。
 
 使用 `references/crm-data-dictionary.md` 中的字段字典。
 使用 `references/scenario-retrieval-mapping.md` 限制默认允许的 CRM request groups。
 如果 skill 请求了 mapping 之外的字段，要在 `retrieval_trace` 中记录例外及其证据。
+
+具体决策顺序：
+1. 先根据 scenario retrieval mapping 计算 `allowed_request_groups`
+2. 再读取已加载的 scenario / patch knowhow 中声明的 `data_requirements`
+3. 只有当 meeting evidence 与当前 CRM 缺失共同支持时，才把这些字段加入候选请求
+4. 对同一 `request_group` 做去重合并，形成最终 `crm_data_requests`
+5. 如果 knowhow 声明超出 `allowed_request_groups`，只能写入 `retrieval_trace.out_of_policy_requests`，不能默认拉取
+
+`data_requirements` 只能细化 mapping 允许范围内的字段，不能绕过 policy 扩大默认 retrieval scope。
+在 `scenario_mode = uncertain` 时，不执行 scenario / patch knowhow 的 `data_requirements`，仍按 mapping 的单个消歧 request bundle 降级。
 
 返回一个按理由分组的 machine-readable CRM field 请求列表，例如：
 - account_profile_gap
@@ -122,7 +132,7 @@ Conservative mode 规则：
 
 如果 runtime 只有 mock data，就把请求字段映射到 `examples/mock-data/` 下的 mock sources。
 
-### Step 5: Assemble memory context
+### 第 5 步：组装记忆上下文
 
 从可用的 CRM 关联 scope 加载 memory：
 - `person`
@@ -143,7 +153,7 @@ memory 只用于补充上下文。如果 memory 与当前 meeting evidence 或 C
 
 查找与优先级规则见 `references/memory-contract.md`。
 
-### Step 6: Generate the summary
+### 第 6 步：生成总结
 
 基于同一份事实底座同时生成两类输出。
 
@@ -176,7 +186,7 @@ memory 只用于补充上下文。如果 memory 与当前 meeting evidence 或 C
 
 人类可读文本必须来自 machine output 中同一份 `summary_fields`、`key_judgments` 和 `knowhow_focus_items`。措辞可以展开，但不能与 machine output 矛盾。
 
-### Step 7: Call review skill
+### 第 7 步：调用评审流程
 
 生成总结后，调用 `review/SKILL.md` 中的 review skill。
 
@@ -199,9 +209,9 @@ Maximum regeneration count: 2。
 - review failure reasons
 - `status: manual_review_required`
 
-## Output Contract
+## 输出契约
 
-### Required standard fields
+### 必需标准字段
 
 machine output 必须始终提供以下字段：
 - `base_context.meeting_time`
@@ -224,7 +234,7 @@ machine output 必须始终提供以下字段：
 - `summary_fields.missing_information`
 - `status`
 
-### Human summary expectations
+### 人类总结要求
 
 人类总结必须：
 - 清楚给出主要业务结论
@@ -234,7 +244,7 @@ machine output 必须始终提供以下字段：
 - 给出由证据支撑的下一步建议
 - 明确覆盖最相关的 knowhow focus items
 
-## Failure Handling
+## 失败处理
 
 如果 meeting record 过于稀疏，无法支撑可靠总结：
 1. 仍然尽量做场景分类
@@ -243,7 +253,7 @@ machine output 必须始终提供以下字段：
 4. 请求最小可用的额外 CRM data 集
 5. 不要假装知道客户意图
 
-## Reference Files
+## 参考文件
 
 按需读取这些文件：
 - `references/runtime-contract.md` - 输入、输出、trace 与 review handoff 的规范接口
@@ -262,7 +272,7 @@ machine output 必须始终提供以下字段：
 - `references/knowhow/patches/`
 - `references/knowhow/best-cases/`（有案例时作为参考）
 
-## Examples
+## 示例
 
 `examples/` 中包含：
 - mock meeting input

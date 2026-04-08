@@ -1,10 +1,10 @@
-# CRM Meeting Scenario Taxonomy
+# CRM 会议场景分类
 
 版本: `v1`
 
 使用这份 taxonomy 来识别 CRM meeting 的 primary scenario。
 
-## Primary scenarios
+## 主场景
 
 每个 scenario 都有一个用于 `references/knowhow/by-scenario/` 文件查找的 `slug`。
 
@@ -76,7 +76,7 @@
 - Definition: 当证据不足以强支撑任一主场景时使用。
 - Focus: 解释歧义，并列出完成可靠分类所缺的信号。
 
-## Secondary tag dimensions
+## 次级标签维度
 
 在证据支持时，可使用零个或多个 tags：
 - industry
@@ -86,7 +86,7 @@
 - compliance
 - competitor
 
-## Classification rules
+## 分类规则
 
 1. 只能选一个 primary scenario。
 2. 业务意图优先于字面会议标题。

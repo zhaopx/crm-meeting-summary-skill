@@ -1,4 +1,4 @@
-# Meeting Methodology
+# 会议方法论
 
 版本: `v1`
 
@@ -130,7 +130,7 @@ knowhow 会随时间变化：
 
 不要把稳定流程与变化的知识层混为一谈。
 
-## Meeting-type reference 设计规则
+## 会议类型 reference 设计规则
 
 系统应演进为很多短小的 meeting-type references。
 例子：
@@ -157,7 +157,7 @@ best-cases 是对照锚点，不是输出模板。
 best-case 不能变成复制目标。
 它是为了提升判断质量，不是为了统一措辞。
 
-## Summary 质量规则
+## 总结质量规则
 
 好的 CRM meeting summary 必须做到：
 1. 忠实总结发生了什么
@@ -179,7 +179,7 @@ best-case 不能变成复制目标。
 - machine output 捕捉到可复用业务语义，不是零散 prose
 - 用户能一眼看出这是 CRM 总结，不是通用会议工具
 
-## Anti-patterns
+## 反模式
 
 避免以下错误：
 - 固定模板把所有会议压成同一个形状

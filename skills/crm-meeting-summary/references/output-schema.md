@@ -1,4 +1,4 @@
-# Output Schema
+# 输出 Schema
 
 使用这份 schema 作为 machine-consumable output 的结构定义。
 字段语义以 `runtime-contract.md` 为准。
@@ -30,7 +30,14 @@
     "patches": [],
     "best_cases": []
   },
-  "crm_data_requests": [],
+  "crm_data_requests": [
+    {
+      "reason": "string",
+      "fields": [],
+      "why": "string",
+      "sources": []
+    }
+  ],
   "memory_sources": [],
   "memory_conflicts": [],
   "summary_fields": {
@@ -82,8 +89,9 @@
 }
 ```
 
-## Notes
+## 说明
 
+- `crm_data_requests[*].sources` 用于标明请求来源，例如 `knowhow:data_requirements`。
 - 能用空数组时，优先输出空数组，不要省略字段。
 - 未知值使用 `null`，不要编造。
 - 人类可读总结与该结构分开输出。

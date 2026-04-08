@@ -3,16 +3,16 @@ name: crm-meeting-summary-review
 description: 当需要校验 crm-meeting-summary skill 的输出，判断一份 CRM 会议总结是否事实有据、风险充分、符合 knowhow 覆盖要求，并且可以安全交付时，应使用此 skill；凡是生成的 CRM meeting summary 需要 pass/fail 审核与定向再生成反馈，都应调用它。
 ---
 
-# CRM Meeting Summary Review
+# CRM 会议总结评审
 
 按严格优先级顺序审查 CRM meeting summary：
-1. fact accuracy
-2. risk coverage
-3. business value
+1. 事实准确性
+2. 风险覆盖
+3. 业务价值
 
 除非用户明确要求，不要重写 summary。只输出 pass/fail 判断和聚焦的修复指导。
 
-## Review Inputs
+## 评审输入
 
 期望输入至少包含：
 - generated human-readable summary
@@ -24,9 +24,9 @@ description: 当需要校验 crm-meeting-summary skill 的输出，判断一份 
 
 review handoff 边界和状态分离见 `../references/runtime-contract.md`。
 
-## Review Rules
+## 评审规则
 
-### Priority 1: Fact Accuracy
+### 优先级 1：事实准确性
 
 出现以下任一情况立即 fail：
 - claim 无法被 meeting notes、CRM data 或 memory 支撑
@@ -36,7 +36,7 @@ review handoff 边界和状态分离见 `../references/runtime-contract.md`。
 - machine-readable fields 与 human-readable summary 不一致
 - `semantic_summary` labels 无证据支撑
 
-### Priority 2: Risk Coverage
+### 优先级 2：风险覆盖
 
 检查 summary 是否遗漏或弱化了 knowhow 或 source evidence 已支持的重要风险信号，包括：
 - deal progression risk
@@ -48,7 +48,7 @@ review handoff 边界和状态分离见 `../references/runtime-contract.md`。
 
 高显著性风险被遗漏、模糊化或错误标注时必须 fail。
 
-### Priority 3: Business Value
+### 优先级 3：业务价值
 
 检查输出是否真正可用于行动：
 - 主结论是否清楚
@@ -59,7 +59,7 @@ review handoff 边界和状态分离见 `../references/runtime-contract.md`。
 
 如果输出技术上准确，但业务上空洞，也必须 fail。
 
-## Required Checks
+## 必需检查项
 
 至少返回以下检查项：
 - scenario_self_consistency
@@ -73,7 +73,7 @@ review handoff 边界和状态分离见 `../references/runtime-contract.md`。
 
 summary machine output 中的 `review_ready_checks` 必须保持 boolean，并与 `references/output-schema.md` 一致。
 
-## Output Format
+## 输出格式
 
 返回以下结构化结果：
 
@@ -104,7 +104,7 @@ review 失败时：
 - 只针对失败维度提供 targeted regeneration instructions
 - 除非整份输出都不可用，否则不要要求 full rewrite
 
-## Review Method
+## 评审方法
 
 1. 将每个 major claim 与 evidence excerpts 和 machine fields 对照。
 2. 验证 scenario classification 是否有依据，必要时是否使用了 low-confidence fallback。
@@ -116,6 +116,6 @@ review 失败时：
 8. 验证 human-readable summary 与 machine-readable output 在决策层表达的是同一件事。
 9. 验证 contract 要求时，`retrieval_trace` 和 `retry_state` 是否存在。
 
-## Escalation Rule
+## 升级规则
 
 如果证据太弱，无法判断 summary 是否正确，应 fail，并明确请求所缺的具体上下文，而不是放过一份模糊输出。
