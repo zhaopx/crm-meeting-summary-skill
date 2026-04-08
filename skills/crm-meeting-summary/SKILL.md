@@ -1,129 +1,155 @@
 ---
 name: crm-meeting-summary
-description: This skill should be used when the user asks to summarize CRM meeting notes, generate a meeting recap from customer or opportunity records, analyze a sales/customer meeting with CRM context, or produce a structured meeting summary using industry/scenario knowhow, memories, and review validation.
+description: 当用户要求总结 CRM 会议纪要、基于客户或商机记录生成会议回顾、结合 CRM 上下文分析销售/客户会议，或使用行业/场景 knowhow、memory 与 review 校验来产出结构化会议总结时，应使用此 skill。
 ---
 
 # CRM Meeting Summary
 
-Create a high-quality CRM meeting summary from meeting notes plus CRM context. Preserve model reasoning space, but constrain evidence boundaries and output contract.
+基于会议纪要和 CRM 上下文生成高质量 CRM 会议总结。保留模型推理空间，但严格约束证据边界与输出契约。
 
-## Purpose
+## 目的
 
-Produce two synchronized outputs from a CRM meeting record:
-1. A human-readable meeting summary for sales, CS, delivery, or management consumption.
-2. A machine-consumable intermediate structure for downstream workflow use.
+从一条 CRM 会议记录中产出两份同步结果：
+1. 面向销售、CS、交付或管理角色的人类可读会议总结。
+2. 供下游流程使用的机器可消费中间结构。
 
-Keep the workflow evidence-grounded. Use knowhow and memory as guidance and context, not as a license to invent facts.
+整个流程必须 evidence-grounded。knowhow 和 memory 只能作为指导与上下文，不能成为编造事实的依据。
 
-## Inputs
+## 输入
 
-Expect the input package to contain at least:
+输入包至少应包含：
 - meeting record text
 - initiator information
-- customer or opportunity association
+- account or opportunity association
 - meeting time
 - any directly provided CRM fields
 
-Treat missing data as normal. Identify what is absent instead of forcing conclusions.
+缺失数据是常态。要明确指出缺失项，而不是强行下结论。
 
-## Working Principles
+## 工作原则
 
-1. Distinguish strictly between:
-   - explicit facts from meeting notes or CRM data
-   - high-confidence judgments inferred from evidence
-   - unresolved items that require confirmation
-2. Prefer current meeting notes and current CRM context over memory.
-3. Use memory only to strengthen background understanding such as prior commitments, stakeholder preferences, historical tension, or relationship continuity.
-4. Use knowhow as an evaluation frame:
-   - what matters in this kind of meeting
-   - what risk signals matter
-   - what progress signals matter
-   - what boundaries must not be crossed
-5. Never fabricate CRM data, policies, actions, or customer intent.
+1. 严格区分以下三类内容：
+   - 来自 meeting notes 或 CRM data 的显式事实
+   - 基于证据的高置信判断
+   - 仍需确认的未决事项
+2. 当前 meeting notes 和当前 CRM context 优先于 memory。
+3. memory 只用于补强背景理解，例如历史承诺、关键人偏好、长期张力或关系连续性。
+4. 把 knowhow 当作评估框架：
+   - 这类会议真正重要的点是什么
+   - 哪些风险信号重要
+   - 哪些推进信号重要
+   - 哪些边界不能跨
+5. 禁止编造 CRM data、政策、行动项或客户意图。
 
-## Workflow
+## 工作流
 
 ### Step 1: Normalize the base context
 
-Extract or organize the minimum base context:
-- meeting title if present
+提取或整理最小基础上下文：
+- meeting title，如果有
 - meeting time
-- initiator
-- linked customer
+- initiator，表示为 `person` object
+- account
 - linked opportunity
-- participants if present
-- raw meeting record
+- participants，如果有
+- raw meeting record，仅作为输入
 
-If object IDs exist, prefer IDs. If IDs do not exist, fall back to names.
+如果存在 object ID，优先使用 ID。没有 ID 时回退到名称。
 
 ### Step 2: Identify meeting scenario
 
-Classify the meeting into one primary scenario and optional secondary tags.
+将会议归类为一个主场景，并可附带若干次级标签。
 
-Use scenario taxonomy from `references/taxonomy.md`.
+使用 `references/taxonomy.md` 中的场景体系。
 
-Primary scenario should be chosen from business intent, not from literal wording alone. When evidence is weak, return `其他/不确定` and explain why.
+主场景应依据业务意图判定，不能只看字面措辞。证据弱时，返回 `其他/不确定`，并解释原因。
 
-Secondary tags may include:
+次级标签可包括：
 - industry
-- customer stage
-- decision-chain role
+- customer_stage
+- decision_chain_role
 - risk
 - compliance
 - competitor
 
+在 retrieval 前先做置信度闸门：
+- `high` / `medium`：按正常场景驱动 retrieval 继续
+- `low`：切换到 conservative mode
+
+Conservative mode 规则：
+- 除非某个场景仍然明显占优，否则优先使用 `其他/不确定`
+- 默认只加载 `references/knowhow/common/`
+- 只有行业有独立证据时才加载 industry knowhow
+- 只请求能消除歧义的 CRM fields
+- 除非当前事实强制要求第二个 scope，否则 memory 限制在单一 object scope
+- 降低后续判断置信度
+- 在 machine output 中标记 `scenario_mode: uncertain`
+
+状态迁移与回退行为见 `references/retry-state-machine.md`。
+
 ### Step 3: Load knowhow
 
-Load knowhow in this order:
+按以下顺序加载 knowhow：
 1. `references/knowhow/common/`
-2. `references/knowhow/by-scenario/<scenario>.md`
-3. `references/knowhow/by-industry/<industry>.md` when industry is identifiable
-4. `references/knowhow/patches/<scenario>__<industry>.md` when both scenario and industry are identifiable and the patch exists
+2. `references/knowhow/by-scenario/<scenario_slug>.md`
+3. 行业可识别时加载 `references/knowhow/by-industry/<industry>.md`
+4. 场景和行业都可识别且补丁存在时，加载 `references/knowhow/patches/<scenario_slug>__<industry>.md`
 
-Use knowhow to determine:
-- key signals to focus on
-- required coverage points in the summary
-- scenario-specific success criteria
-- scenario-specific risk or policy boundaries
-- possible next-step expectations
+使用 `references/taxonomy.md` 将 primary scenario 映射为文件查找所需的 `scenario_slug`。
+
+`references/scenario-retrieval-mapping.md` 是默认 retrieval policy。
+
+用 knowhow 来决定：
+- 需要重点关注的信号
+- 总结必须覆盖的点
+- 场景特定成功标准
+- 场景特定风险或政策边界
+- 可能的下一步预期
 
 ### Step 4: Decide what additional CRM data is needed
 
-Do not pull all data by default. Determine only the minimum missing CRM data needed to make a better summary.
+不要默认拉取全部数据。只决定为了生成更好总结所需的最小缺失 CRM data。
 
-Use the field dictionary in `references/crm-data-dictionary.md`.
+使用 `references/crm-data-dictionary.md` 中的字段字典。
+使用 `references/scenario-retrieval-mapping.md` 限制默认允许的 CRM request groups。
+如果 skill 请求了 mapping 之外的字段，要在 `retrieval_trace` 中记录例外及其证据。
 
-Return a machine-readable list of requested CRM fields grouped by rationale, for example:
-- customer profile gap
-- opportunity stage gap
-- risk validation gap
-- historical interaction gap
+返回一个按理由分组的 machine-readable CRM field 请求列表，例如：
+- account_profile_gap
+- opportunity_progress_gap
+- risk_validation_gap
+- history_gap
 
-If the runtime has only mock data, map the requested fields to mock sources under `examples/mock-data/`.
+如果 runtime 只有 mock data，就把请求字段映射到 `examples/mock-data/` 下的 mock sources。
 
 ### Step 5: Assemble memory context
 
-Load memory from three possible scopes:
-- initiator memory
-- customer memory
-- opportunity memory
+从可用的 CRM 关联 scope 加载 memory：
+- `person`
+- `account`
+- `opportunity`
+- `contact`
 
-Use the following lookup rule:
-1. use object ID when available
-2. otherwise use name
-3. if multiple candidates exist, mark ambiguity instead of guessing
+只有当 contact 在会议或 CRM context 中被明确提及时，才加载 contact memory。
 
-Use memory only to add context. If memory conflicts with current meeting evidence or CRM context, trust current evidence and flag the conflict for review.
+使用以下查找规则：
+1. 有 object ID 时用 object ID
+2. 否则用名称
+3. 如果命中多个候选，标记歧义，不要猜
 
-See `references/memory-contract.md` for lookup and priority rules.
+memory 只用于补充上下文。如果 memory 与当前 meeting evidence 或 CRM context 冲突，优先信任当前证据，并为 review 标记冲突。
+
+只读取当前场景所需的最小相关子集，并记录每个 memory scope 的使用原因。
+
+查找与优先级规则见 `references/memory-contract.md`。
 
 ### Step 6: Generate the summary
 
-Generate both outputs together.
+基于同一份事实底座同时生成两类输出。
 
 #### Human-readable output
 
-Produce these sections:
+输出这些部分：
 1. Meeting snapshot
 2. Core summary and judgment
 3. Knowhow focus items
@@ -132,35 +158,43 @@ Produce these sections:
 
 #### Machine-consumable output
 
-Return a structured block that includes at minimum:
+返回至少包含以下字段的结构化块：
 - base_context
 - scenario_result
 - loaded_knowhow
 - crm_data_requests
 - memory_sources
+- memory_conflicts
 - summary_fields
 - key_judgments
 - knowhow_focus_items
+- retrieval_trace
+- retry_state
 - review_ready_checks
 
-Use JSON when possible. If the environment does not support raw JSON cleanly, use a fenced JSON block.
+优先使用 JSON。如果环境对原生 JSON 支持不好，就使用 fenced JSON block。
+
+人类可读文本必须来自 machine output 中同一份 `summary_fields`、`key_judgments` 和 `knowhow_focus_items`。措辞可以展开，但不能与 machine output 矛盾。
 
 ### Step 7: Call review skill
 
-Invoke the review skill in `review/SKILL.md` after generating the summary.
+生成总结后，调用 `review/SKILL.md` 中的 review skill。
 
-Pass to review:
-- original input
-- assembled context
-- loaded knowhow identifiers
+传给 review 的包要尽量精简，只包含：
 - generated human-readable summary
 - generated machine-readable output
+- retrieval trace and retry state
+- loaded knowhow identifiers
+- 用于验证 claim 的最小支持证据摘录
 
-If review fails, regenerate using only the failure reasons. Do not drift by rewriting unrelated sections.
+除非某个争议检查项确实需要，不要重新发送完整原始上下文。
 
-Maximum regeneration count: 2.
+如果 review 失败，只根据 failure reasons 进行再生成。不要因为重写而漂移到无关部分。
 
-If review still fails after the retry limit, return:
+Maximum regeneration count: 2。
+使用 `references/retry-state-machine.md` 中的状态迁移。
+
+如果超过重试上限后 review 仍失败，返回：
 - current best summary
 - review failure reasons
 - `status: manual_review_required`
@@ -169,59 +203,68 @@ If review still fails after the retry limit, return:
 
 ### Required standard fields
 
-Always provide these fields in the machine output:
-- meeting_time
-- initiator
-- customer
-- opportunity
-- primary_scenario
-- scenario_confidence
-- industry
-- meeting_goal
-- key_participants
-- current_stage_judgment
-- next_actions
-- risk_level
-- missing_information
-- status
+machine output 必须始终提供以下字段：
+- `base_context.meeting_time`
+- `base_context.initiator`
+- `base_context.account`
+- `base_context.opportunity`
+- `scenario_result.primary_scenario`
+- `scenario_result.scenario_slug`
+- `scenario_result.scenario_confidence`
+- `scenario_result.industry`
+- `summary_fields.meeting_goal`
+- `summary_fields.relationship_state`
+- `summary_fields.decision_pressure`
+- `summary_fields.trust_state`
+- `summary_fields.momentum_state`
+- `summary_fields.key_participants`
+- `summary_fields.current_stage_judgment`
+- `summary_fields.next_actions`
+- `summary_fields.risk_level`
+- `summary_fields.missing_information`
+- `status`
 
 ### Human summary expectations
 
-The human summary must:
-- state the main business conclusion clearly
-- separate facts from inference
-- identify the most important risk signals
-- identify the most important opportunity or progress signals
-- recommend next actions that follow from evidence
-- explicitly cover the most relevant knowhow focus items
+人类总结必须：
+- 清楚给出主要业务结论
+- 区分事实与推断
+- 标出最重要的风险信号
+- 标出最重要的机会或推进信号
+- 给出由证据支撑的下一步建议
+- 明确覆盖最相关的 knowhow focus items
 
 ## Failure Handling
 
-If the meeting record is too sparse to support a reliable summary:
-1. still classify scenario if possible
-2. reduce confidence appropriately
-3. output missing information explicitly
-4. request the smallest useful additional CRM data set
-5. avoid pretending to know customer intent
+如果 meeting record 过于稀疏，无法支撑可靠总结：
+1. 仍然尽量做场景分类
+2. 相应降低置信度
+3. 明确输出 missing information
+4. 请求最小可用的额外 CRM data 集
+5. 不要假装知道客户意图
 
 ## Reference Files
 
-Read these files as needed:
-- `references/taxonomy.md` - scenario taxonomy and tagging rules
-- `references/crm-data-dictionary.md` - CRM field dictionary and request rationale examples
-- `references/memory-contract.md` - memory lookup and conflict handling rules
+按需读取这些文件：
+- `references/runtime-contract.md` - 输入、输出、trace 与 review handoff 的规范接口
+- `references/taxonomy.md` - 场景分类体系与 tagging 规则
+- `references/crm-data-dictionary.md` - CRM 字段字典与请求理由示例
+- `references/memory-contract.md` - memory 查找与冲突处理规则
 - `references/output-schema.md` - machine-readable output contract
-- `references/review-rubric.md` - review priorities and scoring dimensions
+- `references/review-rubric.md` - review 优先级与评分维度
+- `references/retry-state-machine.md` - 再生成状态迁移与保守回退策略
+- `references/scenario-retrieval-mapping.md` - 可审计的 scenario-to-retrieval policy
 
-Read knowhow files selectively:
+选择性读取 knowhow 文件：
 - `references/knowhow/common/`
 - `references/knowhow/by-scenario/`
 - `references/knowhow/by-industry/`
 - `references/knowhow/patches/`
+- `references/knowhow/best-cases/`（有案例时作为参考）
 
 ## Examples
 
-See `examples/` for:
+`examples/` 中包含：
 - mock meeting input
 - mock CRM objects
 - mock memory records

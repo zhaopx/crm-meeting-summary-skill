@@ -1,41 +1,44 @@
 ---
 name: crm-meeting-summary-review
-description: This skill should be used when validating output from the crm-meeting-summary skill, checking whether a CRM meeting summary is factually grounded, risk-aware, complete against knowhow, and safe to deliver; use it whenever a generated CRM meeting summary needs pass/fail review and targeted regeneration feedback.
+description: 当需要校验 crm-meeting-summary skill 的输出，判断一份 CRM 会议总结是否事实有据、风险充分、符合 knowhow 覆盖要求，并且可以安全交付时，应使用此 skill；凡是生成的 CRM meeting summary 需要 pass/fail 审核与定向再生成反馈，都应调用它。
 ---
 
 # CRM Meeting Summary Review
 
-Review a CRM meeting summary with strict priority order:
+按严格优先级顺序审查 CRM meeting summary：
 1. fact accuracy
 2. risk coverage
 3. business value
 
-Do not rewrite the summary unless explicitly asked. Produce pass/fail judgment and focused repair guidance.
+除非用户明确要求，不要重写 summary。只输出 pass/fail 判断和聚焦的修复指导。
 
 ## Review Inputs
 
-Expect these inputs:
-- original meeting record
-- CRM context used by generation
-- memory context used by generation
-- loaded knowhow identifiers or content summary
-- human-readable summary
-- machine-readable output
+期望输入至少包含：
+- generated human-readable summary
+- generated machine-readable output
+- loaded knowhow identifiers
+- retrieval trace
+- retry state
+- 用于验证 claim 的最小支持证据摘录
+
+review handoff 边界和状态分离见 `../references/runtime-contract.md`。
 
 ## Review Rules
 
 ### Priority 1: Fact Accuracy
 
-Fail immediately if any of the following occurs:
-- claims unsupported by meeting notes, CRM data, or memory
-- fabricated customer state, opportunity state, participant role, or next step
-- confusion between fact and inference
-- stale memory overriding current evidence
-- machine-readable fields inconsistent with human-readable summary
+出现以下任一情况立即 fail：
+- claim 无法被 meeting notes、CRM data 或 memory 支撑
+- fabricated account state、opportunity state、participant role 或 next step
+- 混淆事实与推断
+- 用 stale memory 覆盖当前 evidence
+- machine-readable fields 与 human-readable summary 不一致
+- `semantic_summary` labels 无证据支撑
 
 ### Priority 2: Risk Coverage
 
-Check whether the summary missed or weakened important risk signals that knowhow or source evidence supports, including:
+检查 summary 是否遗漏或弱化了 knowhow 或 source evidence 已支持的重要风险信号，包括：
 - deal progression risk
 - stakeholder risk
 - commitment risk
@@ -43,38 +46,41 @@ Check whether the summary missed or weakened important risk signals that knowhow
 - compliance or policy boundary risk
 - escalation, dissatisfaction, or churn risk
 
-Fail when high-salience risks are omitted, blurred, or mislabeled.
+高显著性风险被遗漏、模糊化或错误标注时必须 fail。
 
 ### Priority 3: Business Value
 
-Check whether the output is useful for action:
-- main conclusion is clear
-- next actions are evidence-based
-- knowhow focus items are covered
-- open questions are explicit
-- recommendations are concrete enough to use
+检查输出是否真正可用于行动：
+- 主结论是否清楚
+- next actions 是否 evidence-based
+- knowhow focus items 是否被覆盖
+- open questions 是否明确
+- recommendations 是否足够具体、可以直接使用
 
-Fail when the output is technically accurate but operationally empty.
+如果输出技术上准确，但业务上空洞，也必须 fail。
 
 ## Required Checks
 
-Return checks for at least:
+至少返回以下检查项：
 - scenario_self_consistency
 - knowhow_coverage
 - evidence_grounding
 - memory_conflict_handling
 - missing_information_handling
 - policy_boundary_handling
+- semantic_summary_consistency
 - machine_output_completeness
+
+summary machine output 中的 `review_ready_checks` 必须保持 boolean，并与 `references/output-schema.md` 一致。
 
 ## Output Format
 
-Return a structured result:
+返回以下结构化结果：
 
 ```json
 {
   "pass": true,
-  "status": "pass",
+  "review_status": "pass",
   "failure_reasons": [],
   "targeted_regeneration_instructions": [],
   "check_results": {
@@ -84,28 +90,32 @@ Return a structured result:
     "memory_conflict_handling": "pass",
     "missing_information_handling": "pass",
     "policy_boundary_handling": "pass",
+    "semantic_summary_consistency": "pass",
     "machine_output_completeness": "pass"
   },
   "notes": []
 }
 ```
 
-When review fails:
-- set `pass` to `false`
-- set `status` to `fail`
-- list concrete failure reasons
-- provide targeted regeneration instructions only for failed dimensions
-- do not ask for a full rewrite unless the whole output is unusable
+review 失败时：
+- 将 `pass` 设为 `false`
+- 将 `review_status` 设为 `fail`
+- 列出具体 failure reasons
+- 只针对失败维度提供 targeted regeneration instructions
+- 除非整份输出都不可用，否则不要要求 full rewrite
 
 ## Review Method
 
-1. Compare every major claim against evidence.
-2. Verify the scenario classification is supported.
-3. Verify knowhow-derived focus items appear in the output.
-4. Verify missing information is surfaced instead of hidden.
-5. Verify risks are not downgraded without evidence.
-6. Verify the machine output can be consumed by downstream steps.
+1. 将每个 major claim 与 evidence excerpts 和 machine fields 对照。
+2. 验证 scenario classification 是否有依据，必要时是否使用了 low-confidence fallback。
+3. 验证 knowhow-derived focus items 是否进入最终输出。
+4. 验证 missing information 是否被显式暴露，而不是被隐藏。
+5. 验证风险没有在缺乏证据时被降级。
+6. 验证 `semantic_summary` 与 `summary_fields` 中的语义字段是否对齐且有证据支撑。
+7. 验证 machine output 是否可被下游步骤消费。
+8. 验证 human-readable summary 与 machine-readable output 在决策层表达的是同一件事。
+9. 验证 contract 要求时，`retrieval_trace` 和 `retry_state` 是否存在。
 
 ## Escalation Rule
 
-If evidence is too weak to judge whether the summary is correct, fail with a request for specific missing context rather than passing a vague output.
+如果证据太弱，无法判断 summary 是否正确，应 fail，并明确请求所缺的具体上下文，而不是放过一份模糊输出。

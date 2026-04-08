@@ -1,25 +1,25 @@
 # Mock Data Layout
 
-Use mock data to simulate runtime retrieval before real CRM integration.
+在接入真实 CRM 之前，用 mock data 模拟 runtime retrieval。
 
 ## Directory layout
 
-- `meeting-records/` - raw meeting input packages
-- `crm/customer/` - customer CRM objects
+- `meeting-records/` - 原始 meeting input packages
+- `crm/account/` - account CRM objects
 - `crm/opportunity/` - opportunity CRM objects
-- `crm/initiator/` - initiator/stakeholder CRM objects
-- `memory/initiator/` - initiator memory
-- `memory/customer/` - customer memory
+- `crm/person/` - initiator/owner/stakeholder CRM objects
+- `memory/person/` - person memory
+- `memory/account/` - account memory
 - `memory/opportunity/` - opportunity memory
 
 ## Key rule
-- prefer ID-based files when IDs exist
-- fall back to name-based files when IDs are absent
-- do not create duplicate truth sources for the same object without documenting precedence
+- 有 ID 时优先使用基于 ID 的文件
+- 没有 ID 时回退到基于 name 的文件
+- 同一 object 不要在没有记录优先级的情况下制造重复 truth sources
 
 ## Suggested extension
-When a name-based fallback is needed, use a normalized filename such as:
+当需要 name-based fallback 时，使用规范化文件名，例如：
 - `华东零售集团.json`
-- `李总.json`
+- `王敏.json`
 
-Keep the same object content shape regardless of key style.
+无论 key style 如何变化，object content shape 都保持一致。

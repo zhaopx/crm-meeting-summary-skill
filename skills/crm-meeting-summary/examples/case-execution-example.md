@@ -1,6 +1,91 @@
-# Example Output
+# Case Execution Example
 
-## Human-readable summary example
+本文展示 `crm-meeting-summary` 基于 `examples/mock-data/` 的一次完整运行示例。
+
+## Case
+- meeting input: `examples/mock-data/meeting-records/meeting-001.json`
+- account CRM: `examples/mock-data/crm/account/CUST-001.json`
+- opportunity CRM: `examples/mock-data/crm/opportunity/OPP-9001.json`
+- person CRM: `examples/mock-data/crm/person/USR-101.json`
+- account memory: `examples/mock-data/memory/account/CUST-001.json`
+- opportunity memory: `examples/mock-data/memory/opportunity/OPP-9001.json`
+
+## Step 1: Base context
+
+归一化后的基础上下文：
+
+```json
+{
+  "meeting_time": "2026-04-06T15:00:00+08:00",
+  "initiator": {"id": "USR-101", "name": "王敏"},
+  "account": {"id": "CUST-001", "name": "华东零售集团"},
+  "opportunity": {"id": "OPP-9001", "name": "智能客服升级项目"},
+  "participants": ["王敏", "李总", "陈经理"]
+}
+```
+
+## Step 2: Scenario identification
+
+判断结果：
+- primary_scenario: `需求澄清`
+- scenario_slug: `needs-clarification`
+- scenario_confidence: `high`
+- industry: `general-b2b`
+- scenario_mode: `normal`
+
+原因：
+- 会议核心是确认问题根因，以及是否继续推进
+- 没有被价格或 procurement 讨论主导
+- 6 月前存在明确的不行动后果
+
+## Step 3: Knowhow loading
+
+加载的 knowhow：
+- `references/knowhow/common/general.md`
+- `references/knowhow/by-scenario/needs-clarification.md`
+- `references/knowhow/by-industry/general-b2b.md`
+- `references/knowhow/patches/needs-clarification__general-b2b.md`
+- `references/knowhow/best-cases/needs-clarification__general-b2b__v1.md`
+
+加载 best-case 的原因：
+- 当前会议是 general-b2b 下高置信 needs-clarification case
+- best-case 可以帮助收紧 false-progress 判断与 next-step discipline
+
+## Step 4: CRM retrieval decision
+
+mapping 允许的 request groups：
+- `account_profile_gap`
+- `stakeholder_gap`
+- `risk_validation_gap`
+
+实际请求决策：
+- 不需要额外拉 account，因为 account profile 已存在
+- 不需要额外拉 stakeholder，因为核心会议角色已出现
+- `risk_validation_gap` 值得请求，因为 trust 与 continuity 会影响判断
+
+最终使用的 CRM/memory context：
+- account profile: 存量客户，中等风险，当前产品已部署
+- opportunity stage: qualification
+- account memory: 过去续费前需要量化效果证明
+- opportunity memory: 存在明确预算竞争
+
+## Step 5: Semantic interpretation
+
+```json
+{
+  "relationship_state": "active-account, qualification-in-progress",
+  "decision_pressure": "budget priority depends on short-term proof before June review",
+  "trust_state": "neutral-to-cautious because prior proof expectations still apply",
+  "momentum_state": "curious but not yet committed"
+}
+```
+
+解释说明：
+- 这是存量关系，不是新客户初次接触
+- opportunity 还没有进入后段商业推进
+- 客户有兴趣，但推进依赖证据，不依赖友好态度
+
+## Step 6: Human-readable summary
 
 ### Meeting snapshot
 - 会议时间：2026-04-06 15:00 +08:00
@@ -30,7 +115,7 @@
 - 风险：接口改造资源有限，方案复杂度过高会直接压缩推进空间。
 - 待确认：客户对“效果改善”的量化口径、试点评估负责人、预算审批链条。
 
-## Machine-readable example
+## Step 7: Machine-readable output
 
 ```json
 {
@@ -60,7 +145,7 @@
     "scenario": ["references/knowhow/by-scenario/needs-clarification.md"],
     "industry": ["references/knowhow/by-industry/general-b2b.md"],
     "patches": ["references/knowhow/patches/needs-clarification__general-b2b.md"],
-    "best_cases": []
+    "best_cases": ["references/knowhow/best-cases/needs-clarification__general-b2b__v1.md"]
   },
   "crm_data_requests": [
     {
@@ -87,8 +172,8 @@
   "summary_fields": {
     "meeting_goal": "确认客服效果问题根因并判断是否值得进入试点",
     "relationship_state": "active-account, qualification-in-progress",
-    "decision_pressure": "budget priority depends on short-term proof",
-    "trust_state": "neutral-to-cautious",
+    "decision_pressure": "budget priority depends on short-term proof before June review",
+    "trust_state": "neutral-to-cautious because prior proof expectations still apply",
     "momentum_state": "curious but not yet committed",
     "key_participants": ["李总", "陈经理"],
     "current_stage_judgment": "qualification",
@@ -100,13 +185,13 @@
     "missing_information": [
       "效果改善量化标准",
       "预算审批链条",
-      "试点决策人"
+      "试点评估负责人"
     ]
   },
   "semantic_summary": {
     "relationship_state": "active-account, qualification-in-progress",
-    "decision_pressure": "budget priority depends on short-term proof",
-    "trust_state": "neutral-to-cautious",
+    "decision_pressure": "budget priority depends on short-term proof before June review",
+    "trust_state": "neutral-to-cautious because prior proof expectations still apply",
     "momentum_state": "curious but not yet committed"
   },
   "key_judgments": {
@@ -159,3 +244,16 @@
   }
 }
 ```
+
+## Step 8: Review result
+
+期望的 review judgment：
+- pass: `true`
+- review_status: `pass`
+
+通过原因：
+- facts、inferences 与 open questions 已分开
+- `semantic_summary` 与 evidence 一致
+- knowhow focus items 被显式覆盖
+- next actions 有证据支撑
+- 没有把 best-case 内容复制成无依据事实

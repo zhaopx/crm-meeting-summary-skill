@@ -1,6 +1,6 @@
 {
-  "customer_id": "CUST-001",
-  "customer_name": "华东零售集团",
+  "account_id": "CUST-001",
+  "account_name": "华东零售集团",
   "industry": "general-b2b",
   "lifecycle_stage": "active_customer",
   "account_tier": "A",

@@ -1,0 +1,7 @@
+{
+  "scope": "account",
+  "lookup_key": "account_id:CUST-001",
+  "memory": [
+    "客户当前最核心目标是本季度续费，不会优先讨论服务质量异常。"
+  ]
+}

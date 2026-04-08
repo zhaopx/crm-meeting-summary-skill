@@ -1,6 +1,6 @@
 {
-  "scope": "initiator",
-  "lookup_key": "initiator_id:USR-101",
+  "scope": "person",
+  "lookup_key": "person_id:USR-101",
   "memory": [
     "王敏过去在该客户沟通中偏向先稳定关系，再推进商业动作。",
     "客户对承诺时点较敏感，延迟反馈会放大不信任。"

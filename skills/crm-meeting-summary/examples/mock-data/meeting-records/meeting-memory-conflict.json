@@ -1,0 +1,23 @@
+{
+  "meeting": {
+    "id": "MEET-CONFLICT-001",
+    "title": "效果复盘会",
+    "meeting_time": "2026-04-08T11:00:00+08:00",
+    "initiator": {
+      "id": "USR-101",
+      "name": "王敏"
+    },
+    "account": {
+      "id": "CUST-001",
+      "name": "华东零售集团"
+    },
+    "opportunity": {
+      "id": "OPP-9001",
+      "name": "智能客服升级项目"
+    },
+    "participants": [
+      {"name": "李总", "role": "客户运营负责人"}
+    ],
+    "record_text": "客户在会上明确表示，本季度不会以续费作为决策背景，当前讨论重点是先解决夜间服务质量异常，再看是否值得继续试点。"
+  }
+}
