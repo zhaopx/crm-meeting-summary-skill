@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM Object Memory Design</title>
+  <style>
+    :root {
+      --color-near-black: #141413;
+      --color-terracotta: #c96442;
+      --color-coral: #d97757;
+      --color-parchment: #f5f4ed;
+      --color-ivory: #faf9f5;
+      --color-white: #ffffff;
+      --color-warm-sand: #e8e6dc;
+      --color-charcoal-warm: #4d4c48;
+      --color-olive-gray: #5e5d59;
+      --color-stone-gray: #87867f;
+      --color-border-cream: #f0eee6;
+      --color-ring-warm: #d1cfc5;
+      --font-serif: Georgia, "Times New Roman", Times, serif;
+      --font-sans: Arial, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      --shadow-whisper: rgba(0, 0, 0, 0.05) 0px 4px 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--color-parchment);
+      color: var(--color-near-black);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px 28px;
+      background: rgba(245, 244, 237, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border-cream);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .nav-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--color-terracotta);
+      color: var(--color-ivory);
+      font-size: 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      color: var(--color-olive-gray);
+      font-size: 14px;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 96px;
+    }
+
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 96px 0 72px;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 680px;
+      height: 680px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(201, 100, 66, 0.08) 0%, rgba(217, 119, 87, 0.04) 38%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin-bottom: 14px;
+      color: var(--color-terracotta);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4 { margin: 0; }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 60px;
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: normal;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 0 auto 28px;
+      color: var(--color-olive-gray);
+      font-size: 20px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--color-warm-sand);
+      color: var(--color-charcoal-warm);
+      box-shadow: 0 0 0 1px var(--color-ring-warm);
+      font-size: 13px;
+    }
+
+    .section {
+      padding: 32px 0 0;
+    }
+
+    .section-head {
+      margin-bottom: 28px;
+    }
+
+    .section-label {
+      margin-bottom: 10px;
+      color: var(--color-terracotta);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .section-head h2 {
+      font-family: var(--font-serif);
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .section-head p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--color-olive-gray);
+      font-size: 17px;
+    }
+
+    .divider {
+      border: 0;
+      border-top: 1px solid var(--color-border-cream);
+      margin: 0;
+    }
+
+    .card,
+    .mono,
+    .hero-note {
+      background: var(--color-ivory);
+      border: 1px solid var(--color-border-cream);
+      border-radius: 16px;
+      box-shadow: var(--shadow-whisper);
+    }
+
+    .hero-note {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 18px 22px;
+      text-align: left;
+      color: var(--color-olive-gray);
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      padding: 24px;
+    }
+
+    .card h3 {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .card p,
+    .sub p,
+    li {
+      color: var(--color-olive-gray);
+    }
+
+    .subgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .sub {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--color-white);
+      box-shadow: 0 0 0 1px var(--color-border-cream);
+    }
+
+    .sub strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--color-charcoal-warm);
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .mono {
+      padding: 18px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-charcoal-warm);
+    }
+
+    .list-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .list-card li + li {
+      margin-top: 8px;
+    }
+
+    .danger {
+      color: #b53333;
+    }
+
+    .muted {
+      color: var(--color-stone-gray);
+    }
+
+    @media (max-width: 1100px) {
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 820px) {
+      .nav {
+        padding: 14px 18px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .page { padding: 0 18px 72px; }
+      .hero { padding: 72px 0 56px; }
+      h1 { font-size: 42px; }
+      .hero p { font-size: 18px; }
+      .section-head h2 { font-size: 32px; }
+      .grid-2, .grid-4, .subgrid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <div class="nav-brand">
+      <span class="nav-mark">C</span>
+      <span>CRM Memory Design</span>
+    </div>
+    <div class="nav-links">
+      <a href="#map">总图</a>
+      <a href="#objects">对象层</a>
+      <a href="#examples">实例</a>
+      <a href="#rules">写入规则</a>
+    </div>
+  </div>
+
+  <main class="page">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">Object-first memory system</div>
+        <h1>CRM Object Memory Design</h1>
+        <p>这套设计先服务 CRM 对象本身，再服务 summary、判断、检索和后续动作。重点不是给 summary 补上下文，而是给每个对象建立自己的记忆层。</p>
+        <div class="tag-row">
+          <span class="tag">object-first</span>
+          <span class="tag">today + long_term</span>
+          <span class="tag">profile-first</span>
+          <span class="tag">summary 只是消费方之一</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="hero-note">当前页面只展示 memory 设计本体：对象是谁、今天记录什么、长期沉淀什么、CRM 事实何时进入 memory。消费规则放在后面，不反过来定义 memory。</div>
+
+    <section class="section" id="map">
+      <div class="section-head">
+        <div class="section-label">Core map</div>
+        <h2>核心总图</h2>
+        <p>先定义对象，再定义每个对象的两层 memory，最后再决定哪些内容可被消费。</p>
+      </div>
+      <div class="mono">CRM Objects
+  -> account
+  -> opportunity
+  -> contact
+  -> person
+
+Each Object
+  -> today
+  -> long_term
+
+Each Layer
+  -> object-specific fields</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Time horizon</div>
+        <h2>时间层</h2>
+        <p>`today` 服务当前判断，`long_term` 服务长期解释。两层足够，不再拆 `short / mid / long`。</p>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>today</h3>
+          <p>记录当前这次 interaction 后，对象今天的状态、信号、变化和风险。</p>
+        </div>
+        <div class="card">
+          <h3>long_term</h3>
+          <p>记录跨多次互动后稳定下来的特性、偏好、模式和结构性背景。</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="section" id="objects">
+      <div class="section-head">
+        <div class="section-label">Object scope</div>
+        <h2>四类对象</h2>
+        <p>每个对象都独立持有 today 和 long_term，两层字段由对象本身决定，不由 summary 反推。</p>
+      </div>
+      <div class="grid grid-4">
+        <article class="card">
+          <h3>account</h3>
+          <p>客户作为组织，长期怎么决策、怎么合作、怎么卡住，今天又关注什么。</p>
+          <div class="subgrid">
+            <div class="sub">
+              <strong>today</strong>
+              <div class="mono">focus
+current_signal
+today_risks
+today_relationship_shift</div>
+            </div>
+            <div class="sub">
+              <strong>long_term</strong>
+              <div class="mono">relationship_baseline
+decision_style
+organization_pattern
+risk_sensitivities
+collaboration_preferences
+recurring_blockers</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>opportunity</h3>
+          <p>这笔机会长期怎么推进、通常卡在哪、今天有没有实质进展。</p>
+          <div class="subgrid">
+            <div class="sub">
+              <strong>today</strong>
+              <div class="mono">today_stage_signal
+today_blockers
+today_progress
+today_checkpoint</div>
+            </div>
+            <div class="sub">
+              <strong>long_term</strong>
+              <div class="mono">stage_pattern
+blocker_pattern
+budget_pattern
+approval_path
+competitive_pressure
+progression_style</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>contact</h3>
+          <p>这个人通常怎么影响事情，今天态度和角色有没有变化。</p>
+          <div class="subgrid">
+            <div class="sub">
+              <strong>today</strong>
+              <div class="mono">today_stance
+today_role_signal
+today_preference_signal
+today_objection_signal</div>
+            </div>
+            <div class="sub">
+              <strong>long_term</strong>
+              <div class="mono">role_in_motion
+influence_style
+communication_preference
+objection_pattern
+trust_signal</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>person</h3>
+          <p>内部角色长期怎么推进客户，今天又做了什么关键动作。</p>
+          <div class="subgrid">
+            <div class="sub">
+              <strong>today</strong>
+              <div class="mono">today_action_signal
+today_commitment
+today_followup_gap
+today_handoff_risk</div>
+            </div>
+            <div class="sub">
+              <strong>long_term</strong>
+              <div class="mono">owner_style
+commitment_reliability
+followup_pattern
+handoff_risk
+coordination_strength</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Profile schema</div>
+        <h2>对象 profile 示例</h2>
+        <p>profile 是面向消费的对象 memory 视图，不是 raw notes，也不是零散事实拼接。</p>
+      </div>
+      <div class="mono">{
+  "scope": "account",
+  "lookup_key": "account_id:CUST-001",
+  "today": {
+    "focus": ["服务质量异常"],
+    "current_signal": ["当前优先解决夜间稳定性，不先谈续费"],
+    "today_risks": ["预算优先级下降"],
+    "today_relationship_shift": "谨慎，但未关闭后续合作"
+  },
+  "long_term": {
+    "relationship_baseline": "愿意试点，但对扩量谨慎",
+    "decision_style": "先业务 owner 认可，再走采购",
+    "organization_pattern": ["运营主导问题确认", "采购后置"],
+    "risk_sensitivities": ["稳定性", "服务质量考核"],
+    "collaboration_preferences": ["先看到问题归因，再看扩展方案"],
+    "recurring_blockers": ["效果验证不足会影响预算优先级"]
+  },
+  "evidence_ref": ["meeting:MEET-20260408", "meeting:MEET-20260320"],
+  "observed_at": "2026-03-20T10:00:00+08:00",
+  "last_confirmed_at": "2026-04-08T11:00:00+08:00",
+  "status": "active"
+}</div>
+    </section>
+
+    <section class="section" id="examples">
+      <div class="section-head">
+        <div class="section-label">Concrete examples</div>
+        <h2>具体实例</h2>
+        <p>实例不是为了堆字段，而是为了看清什么属于对象当天状态，什么属于跨时间稳定模式。</p>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>opportunity / today</h3>
+          <div class="mono">{
+  "today_stage_signal": ["从意向确认推进到方案评估"],
+  "today_blockers": ["客户要求补充 ROI 测算"],
+  "today_progress": ["确认了下一轮技术评审时间"],
+  "today_checkpoint": "等待客户内部财务 review"
+}</div>
+        </div>
+        <div class="card">
+          <h3>contact / long_term</h3>
+          <div class="mono">{
+  "role_in_motion": "持续扮演业务推动人",
+  "influence_style": "偏向用内部案例说服其他团队",
+  "communication_preference": ["先书面，再开会"],
+  "objection_pattern": ["每次都会先确认实施成本"],
+  "trust_signal": "对数据口径一致性要求高，满足后配合度提升"
+}</div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="section" id="rules">
+      <div class="section-head">
+        <div class="section-label">Write rules</div>
+        <h2>CRM 事实是否写入 memory</h2>
+        <p>CRM 正常运营中的事实，不自动等于 memory。先判断这条事实是否改变对象状态，是否具有复用解释价值。</p>
+      </div>
+      <div class="mono">客户创建订单                  -> 只写 CRM
+商机阶段前进一次              -> CRM + today（如果改变当前推进状态）
+新建一条销售记录              -> 只写 CRM
+客户今天明确说先解决稳定性再谈续费 -> CRM + today
+联系人多次要求先书面后开会      -> CRM + today，重复确认后可进 long_term
+销售连续多次按时跟进承诺        -> CRM + today，稳定后可进 long_term</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Promotion path</div>
+        <h2>升级路径</h2>
+        <p>所有信息先作为 CRM fact 存在。只有改变对象今天状态，或跨时间重复成立，才进入对象 memory。</p>
+      </div>
+      <div class="mono">CRM fact
+  -> 不改变对象状态                只保留在 CRM
+  -> 改变对象今天状态              写入 today
+  -> 多次重复并稳定成立            升级为 long_term</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Consumption boundary</div>
+        <h2>使用边界</h2>
+        <p>下面这些是消费规则，不是 memory 体系定义本身。memory 不覆盖当前证据，只补对象解释层。</p>
+      </div>
+      <div class="mono">1. 当前 meeting evidence 优先
+2. 当前 CRM facts 次之
+3. memory 不覆盖当前证据
+4. 冲突时输出 memory_conflicts
+5. today 服务当前状态判断
+6. long_term 服务长期解释与模式补强</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Red lines</div>
+        <h2>红线</h2>
+      </div>
+      <div class="grid grid-2">
+        <div class="card list-card">
+          <h3>不能做什么</h3>
+          <ul>
+            <li>memory 不是会议纪要全文仓库</li>
+            <li>long_term 不能写单次即时状态</li>
+            <li>today 不是 raw notes 复制</li>
+            <li>未确认的当前结论不能直接写死到 long_term</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>设计原则</h3>
+          <p><span class="danger">重点：</span>先定义对象记忆，再定义谁来消费它。</p>
+          <p class="muted">页面视觉已切到浅色、暖色、中等阴影、serif 标题层级，按 <code>design-md/claude/DESIGN.md</code> 的 light 风格重构。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

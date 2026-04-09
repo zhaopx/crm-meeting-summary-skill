@@ -1,0 +1,2485 @@
+{
+  "case_id": "baseline-low-confidence-fallback",
+  "raw_response": [
+    {
+      "type": "system",
+      "subtype": "init",
+      "cwd": "/Users/zhaopx/Documents/实验田/summay-skill",
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "tools": [
+        "Task",
+        "AskUserQuestion",
+        "Bash",
+        "CronCreate",
+        "CronDelete",
+        "CronList",
+        "Edit",
+        "EnterPlanMode",
+        "EnterWorktree",
+        "ExitPlanMode",
+        "ExitWorktree",
+        "Glob",
+        "Grep",
+        "ListMcpResourcesTool",
+        "NotebookEdit",
+        "Read",
+        "ReadMcpResourceTool",
+        "Skill",
+        "TaskOutput",
+        "TaskStop",
+        "TodoWrite",
+        "WebFetch",
+        "WebSearch",
+        "Write",
+        "mcp__context7__query-docs",
+        "mcp__context7__resolve-library-id",
+        "mcp__github__add_comment_to_pending_review",
+        "mcp__github__add_issue_comment",
+        "mcp__github__add_reply_to_pull_request_comment",
+        "mcp__github__assign_copilot_to_issue",
+        "mcp__github__create_branch",
+        "mcp__github__create_or_update_file",
+        "mcp__github__create_pull_request",
+        "mcp__github__create_pull_request_with_copilot",
+        "mcp__github__create_repository",
+        "mcp__github__delete_file",
+        "mcp__github__fork_repository",
+        "mcp__github__get_commit",
+        "mcp__github__get_copilot_job_status",
+        "mcp__github__get_file_contents",
+        "mcp__github__get_label",
+        "mcp__github__get_latest_release",
+        "mcp__github__get_me",
+        "mcp__github__get_release_by_tag",
+        "mcp__github__get_tag",
+        "mcp__github__get_team_members",
+        "mcp__github__get_teams",
+        "mcp__github__issue_read",
+        "mcp__github__issue_write",
+        "mcp__github__list_branches",
+        "mcp__github__list_commits",
+        "mcp__github__list_issue_types",
+        "mcp__github__list_issues",
+        "mcp__github__list_pull_requests",
+        "mcp__github__list_releases",
+        "mcp__github__list_tags",
+        "mcp__github__merge_pull_request",
+        "mcp__github__pull_request_read",
+        "mcp__github__pull_request_review_write",
+        "mcp__github__push_files",
+        "mcp__github__request_copilot_review",
+        "mcp__github__run_secret_scanning",
+        "mcp__github__search_code",
+        "mcp__github__search_issues",
+        "mcp__github__search_pull_requests",
+        "mcp__github__search_repositories",
+        "mcp__github__search_users",
+        "mcp__github__sub_issue_write",
+        "mcp__github__update_pull_request",
+        "mcp__github__update_pull_request_branch",
+        "mcp__magic__21st_magic_component_builder",
+        "mcp__magic__21st_magic_component_inspiration",
+        "mcp__magic__21st_magic_component_refiner",
+        "mcp__magic__logo_search",
+        "mcp__memory__add_observations",
+        "mcp__memory__create_entities",
+        "mcp__memory__create_relations",
+        "mcp__memory__delete_entities",
+        "mcp__memory__delete_observations",
+        "mcp__memory__delete_relations",
+        "mcp__memory__open_nodes",
+        "mcp__memory__read_graph",
+        "mcp__memory__search_nodes",
+        "mcp__playwright__browser_click",
+        "mcp__playwright__browser_close",
+        "mcp__playwright__browser_console_messages",
+        "mcp__playwright__browser_drag",
+        "mcp__playwright__browser_evaluate",
+        "mcp__playwright__browser_file_upload",
+        "mcp__playwright__browser_fill_form",
+        "mcp__playwright__browser_handle_dialog",
+        "mcp__playwright__browser_hover",
+        "mcp__playwright__browser_navigate",
+        "mcp__playwright__browser_navigate_back",
+        "mcp__playwright__browser_network_requests",
+        "mcp__playwright__browser_press_key",
+        "mcp__playwright__browser_resize",
+        "mcp__playwright__browser_run_code",
+        "mcp__playwright__browser_select_option",
+        "mcp__playwright__browser_snapshot",
+        "mcp__playwright__browser_tabs",
+        "mcp__playwright__browser_take_screenshot",
+        "mcp__playwright__browser_type",
+        "mcp__playwright__browser_wait_for",
+        "mcp__sequential-thinking__sequentialthinking"
+      ],
+      "mcp_servers": [
+        {
+          "name": "context7",
+          "status": "connected"
+        },
+        {
+          "name": "github",
+          "status": "connected"
+        },
+        {
+          "name": "magic",
+          "status": "connected"
+        },
+        {
+          "name": "mcp-chrome",
+          "status": "failed"
+        },
+        {
+          "name": "memory",
+          "status": "connected"
+        },
+        {
+          "name": "morphllm-fast-apply",
+          "status": "connected"
+        },
+        {
+          "name": "playwright",
+          "status": "connected"
+        },
+        {
+          "name": "sequential-thinking",
+          "status": "connected"
+        },
+        {
+          "name": "tavily",
+          "status": "failed"
+        }
+      ],
+      "model": "gpt-5.4",
+      "permissionMode": "dontAsk",
+      "slash_commands": [
+        "update-config",
+        "debug",
+        "simplify",
+        "batch",
+        "loop",
+        "claude-api",
+        "adapt",
+        "animate",
+        "arrange",
+        "audit",
+        "autoplan",
+        "backend-patterns",
+        "benchmark",
+        "bolder",
+        "browse",
+        "canary",
+        "careful",
+        "checkpoint",
+        "clarify",
+        "clickhouse-io",
+        "codebase-to-course",
+        "codex",
+        "coding-standards",
+        "colorize",
+        "configure-ecc",
+        "connect-chrome",
+        "continuous-learning",
+        "continuous-learning-v2",
+        "critique",
+        "crm-meeting-summary",
+        "crm-meeting-summary-review",
+        "cso",
+        "delight",
+        "design-consultation",
+        "design-html",
+        "design-review",
+        "design-shotgun",
+        "devex-review",
+        "distill",
+        "django-patterns",
+        "django-security",
+        "django-tdd",
+        "django-verification",
+        "document-release",
+        "docx",
+        "eval-harness",
+        "extract",
+        "find-skills",
+        "freeze",
+        "frontend-design",
+        "frontend-patterns",
+        "gstack",
+        "gstack-upgrade",
+        "guard",
+        "harden",
+        "health",
+        "investigate",
+        "iterative-retrieval",
+        "java-coding-standards",
+        "jpa-patterns",
+        "land-and-deploy",
+        "learn",
+        "metadata-table-specification",
+        "normalize",
+        "notebooklm",
+        "nutrient-document-processing",
+        "office-hours",
+        "onboard",
+        "optimize",
+        "overdrive",
+        "pair-agent",
+        "pdf",
+        "plan-ceo-review",
+        "plan-design-review",
+        "plan-devex-review",
+        "plan-eng-review",
+        "polish",
+        "postgres-patterns",
+        "pptx",
+        "proactive-self-improving-agent",
+        "python-patterns",
+        "python-testing",
+        "qa",
+        "qa-only",
+        "query-clickhouse",
+        "query-config-content",
+        "query-tapd",
+        "query-wiki",
+        "quieter",
+        "ralph-loop",
+        "retro",
+        "review",
+        "security-review",
+        "security-scan",
+        "setup-browser-cookies",
+        "setup-deploy",
+        "ship",
+        "springboot-patterns",
+        "springboot-security",
+        "springboot-tdd",
+        "springboot-verification",
+        "strategic-compact",
+        "tapestry",
+        "tdd-workflow",
+        "teach-impeccable",
+        "typeset",
+        "unfreeze",
+        "verification-loop",
+        "web-content-fetcher",
+        "xlsx",
+        "skill-create",
+        "python-review",
+        "update-codemaps",
+        "pm2",
+        "multi-plan",
+        "go-test",
+        "multi-backend",
+        "orchestrate",
+        "go-build",
+        "multi-workflow",
+        "plan",
+        "sessions",
+        "evolve",
+        "code-review",
+        "multi-execute",
+        "go-review",
+        "instinct-status",
+        "tdd",
+        "refactor-clean",
+        "update-docs",
+        "setup-pm",
+        "instinct-import",
+        "build-fix",
+        "multi-frontend",
+        "test-coverage",
+        "verify",
+        "eval",
+        "e2e",
+        "instinct-export",
+        "zcf:git-rollback",
+        "zcf:git-cleanBranches",
+        "zcf:git-commit",
+        "zcf:git-worktree",
+        "compact",
+        "context",
+        "cost",
+        "heapdump",
+        "init",
+        "pr-comments",
+        "release-notes",
+        "insights",
+        "mcp__github__AssignCodingAgent",
+        "mcp__github__issue_to_fix_workflow"
+      ],
+      "apiKeySource": "none",
+      "claude_code_version": "2.1.87",
+      "output_style": "default",
+      "agents": [
+        "general-purpose",
+        "statusline-setup",
+        "Explore",
+        "Plan",
+        "claude-code-guide",
+        "database-reviewer",
+        "build-error-resolver",
+        "planner",
+        "tdd-guide",
+        "go-reviewer",
+        "e2e-runner",
+        "doc-updater",
+        "go-build-resolver",
+        "refactor-cleaner",
+        "architect",
+        "security-reviewer",
+        "code-reviewer",
+        "python-reviewer"
+      ],
+      "skills": [
+        "update-config",
+        "debug",
+        "simplify",
+        "batch",
+        "loop",
+        "claude-api",
+        "adapt",
+        "animate",
+        "arrange",
+        "audit",
+        "autoplan",
+        "backend-patterns",
+        "benchmark",
+        "bolder",
+        "browse",
+        "canary",
+        "careful",
+        "checkpoint",
+        "clarify",
+        "clickhouse-io",
+        "codebase-to-course",
+        "codex",
+        "coding-standards",
+        "colorize",
+        "configure-ecc",
+        "connect-chrome",
+        "continuous-learning",
+        "continuous-learning-v2",
+        "critique",
+        "crm-meeting-summary",
+        "crm-meeting-summary-review",
+        "cso",
+        "delight",
+        "design-consultation",
+        "design-html",
+        "design-review",
+        "design-shotgun",
+        "devex-review",
+        "distill",
+        "django-patterns",
+        "django-security",
+        "django-tdd",
+        "django-verification",
+        "document-release",
+        "docx",
+        "eval-harness",
+        "extract",
+        "find-skills",
+        "freeze",
+        "frontend-design",
+        "frontend-patterns",
+        "gstack",
+        "gstack-upgrade",
+        "guard",
+        "harden",
+        "health",
+        "investigate",
+        "iterative-retrieval",
+        "java-coding-standards",
+        "jpa-patterns",
+        "land-and-deploy",
+        "learn",
+        "metadata-table-specification",
+        "normalize",
+        "notebooklm",
+        "nutrient-document-processing",
+        "office-hours",
+        "onboard",
+        "optimize",
+        "overdrive",
+        "pair-agent",
+        "pdf",
+        "plan-ceo-review",
+        "plan-design-review",
+        "plan-devex-review",
+        "plan-eng-review",
+        "polish",
+        "postgres-patterns",
+        "pptx",
+        "proactive-self-improving-agent",
+        "python-patterns",
+        "python-testing",
+        "qa",
+        "qa-only",
+        "query-clickhouse",
+        "query-config-content",
+        "query-tapd",
+        "query-wiki",
+        "quieter",
+        "ralph-loop",
+        "retro",
+        "review",
+        "security-review",
+        "security-scan",
+        "setup-browser-cookies",
+        "setup-deploy",
+        "ship",
+        "springboot-patterns",
+        "springboot-security",
+        "springboot-tdd",
+        "springboot-verification",
+        "strategic-compact",
+        "tapestry",
+        "tdd-workflow",
+        "teach-impeccable",
+        "typeset",
+        "unfreeze",
+        "verification-loop",
+        "web-content-fetcher",
+        "xlsx",
+        "setup-pm"
+      ],
+      "plugins": [],
+      "uuid": "50fb3b10-3281-4817-9231-65ce191f1396",
+      "fast_mode_state": "off"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 17226,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_033ae4ab5c781cd00169d6391f961c819182d72553081610da",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "**Following skill routing**\n\nI need to obey the skill routing since the user has explicitly asked to use the /crm-meeting-summary skill. So, my first action here is to invoke the skill with the correct parameters. It seems like this skill will load instructions within the conversation, which is great because I want to follow the user's request accurately. Do I also need to read a JSON file afterwards? I'll keep that in mind as I proceed!\n\n",
+            "signature": ""
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "ffcffdbd-4ffe-4910-94b1-78e0f3148d94"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 17226,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_033ae4ab5c781cd00169d6391f961c819182d72553081610da",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_uefo6hHzZMoYVU0XEJSgsaut",
+            "name": "Skill",
+            "input": {
+              "args": "",
+              "skill": "crm-meeting-summary"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "caf21b4c-8eef-420d-bd17-a55cf50d2b3b"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_uefo6hHzZMoYVU0XEJSgsaut",
+            "content": "Launching skill: crm-meeting-summary"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "f1a0d103-7135-495a-b788-6cf421531eaa",
+      "timestamp": "2026-04-08T11:16:52.781Z",
+      "tool_use_result": {
+        "success": true,
+        "commandName": "crm-meeting-summary"
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "Base directory for this skill: /Users/zhaopx/.claude/skills/crm-meeting-summary\n\n# CRM 会议总结\n\n把这份 skill 当成**真实运行时入口**，不是说明文档，也不是 Python 模拟器包装。\n\n你的任务是在 Claude runtime 内直接完成：\n1. 读取输入包\n2. 识别场景并决定最小 retrieval\n3. 生成同源的 human summary 和 machine JSON\n4. 调用 `review/SKILL.md` 做评审\n5. 在最多 2 次 retry 内完成定向修复\n6. 返回最终可交付结果\n\n禁止把 `mock_runner.py` 当成真实运行路径。\n如果需要参考 mock data、examples 或 evals，只把它们当作开发辅助，不当作运行时依赖。\n\n## 调用输入\n\n真实调用时，输入应尽量归一为以下包。用户可以直接给自然语言内容，你要先归一到这个结构再继续：\n\n```json\n{\n  \"meeting\": {\n    \"title\": \"string | null\",\n    \"meeting_time\": \"string | null\",\n    \"initiator\": {\"id\": \"string | null\", \"name\": \"string | null\"},\n    \"account\": {\"id\": \"string | null\", \"name\": \"string | null\"},\n    \"opportunity\": {\"id\": \"string | null\", \"name\": \"string | null\"},\n    \"participants\": [],\n    \"record_text\": \"string\"\n  },\n  \"crm_context\": {\n    \"account\": {},\n    \"opportunity\": {},\n    \"person\": {},\n    \"contact\": {}\n  },\n  \"memory_snippets\": [],\n  \"constraints\": {\n    \"language\": \"zh-CN\",\n    \"output_mode\": \"human_and_json\"\n  }\n}\n```\n\n### 最小必需输入\n\n至少要有：\n- meeting record text\n- meeting time，如有\n- initiator，类型为 `person`\n- account 或 opportunity association\n\n如果用户只给自然语言纪要，而没有显式 JSON：\n- 先在内部整理出 `meeting` / `crm_context` / `constraints`\n- 再继续执行后续步骤\n\n如果关键输入缺失：\n- 不要编造\n- 在 `summary_fields.missing_information` 中明确写出\n- 在必要时返回 `status: insufficient_context`\n\n## 工作原则\n\n1. 严格区分三类内容：\n   - 来自 meeting notes 或 CRM data 的显式事实\n   - 基于证据的高置信判断\n   - 仍需确认的未决事项\n2. 当前 meeting notes 和当前 CRM context 优先于 memory。\n3. memory 只用于补强背景理解，例如历史承诺、关键人偏好、长期张力或关系连续性。\n4. knowhow 只是评估框架，不是事实来源。\n5. 禁止编造 CRM data、政策、行动项或客户意图。\n6. human-readable summary 和 machine-readable JSON 必须来自同一份事实底座。\n7. 真正交付给用户之前，必须经过 review skill。\n\n## 运行时工作流\n\n### 第 1 步：归一化基础上下文\n\n先整理最小基础上下文，生成 `base_context`：\n- meeting title，如果有\n- meeting time\n- initiator，表示为 `person` object\n- account\n- linked opportunity\n- participants，如果有\n- raw meeting record，仅作为输入来源，不直接放进最终输出\n\n规则：\n- 有 object ID 时优先使用 ID\n- 没有 ID 时回退到名称\n- 未知值写 `null`，不要补写\n\n### 第 2 步：识别会议场景\n\n使用 `references/taxonomy.md` 判定：\n- `primary_scenario`\n- `scenario_slug`\n- `scenario_confidence`\n- `secondary_tags`\n- `industry`\n\n先做置信度闸门：\n- `high` / `medium`：继续正常 retrieval\n- `low`：进入 conservative mode\n\nConservative mode 规则：\n- 除非某个场景明显占优，否则优先返回 `其他/不确定`\n- 默认只加载 `references/knowhow/common/`\n- 只有行业有独立证据时才加载 industry knowhow\n- 只请求能消除歧义的 CRM fields\n- 除非当前事实强制要求第二个 scope，否则 memory 限制在单一 object scope\n- 降低后续判断置信度\n- 在 machine output 中标记 `scenario_mode: uncertain`\n\n状态迁移与回退行为见 `references/retry-state-machine.md`。\n\n### 第 3 步：加载参考知识\n\n按以下顺序加载 knowhow：\n1. `references/knowhow/common/`\n2. `references/knowhow/by-scenario/<scenario_slug>.md`\n3. 行业可识别时加载 `references/knowhow/by-industry/<industry>.md`\n4. 场景和行业都可识别且补丁存在时，加载 `references/knowhow/patches/<scenario_slug>__<industry>.md`\n5. best-case 仅在确有帮助时才加载，并记录到 `loaded_knowhow.best_cases`\n\n使用 knowhow 来决定：\n- 需要重点关注的信号\n- 总结必须覆盖的点\n- 场景特定成功标准\n- 场景特定风险或政策边界\n- 可能的下一步预期\n\n### 第 4 步：决定需要哪些额外 CRM 字段\n\n不要默认拉取全部数据。只决定为了生成更好总结所需的最小缺失 CRM data。\n\n必须同时遵守：\n- `references/crm-data-dictionary.md`\n- `references/scenario-retrieval-mapping.md`\n\n决策顺序：\n1. 先根据 scenario retrieval mapping 计算 `allowed_request_groups`\n2. 再读取已加载 scenario / patch knowhow 中声明的 `data_requirements`\n3. 只有当 meeting evidence 与当前 CRM 缺失共同支持时，才把这些字段加入候选请求\n4. 对同一 `request_group` 去重合并，形成最终 `crm_data_requests`\n5. 如果 knowhow 声明超出 `allowed_request_groups`，只能写入 `retrieval_trace.out_of_policy_requests`\n\n硬性要求：\n- `data_requirements` 只能细化 mapping 允许范围内的字段\n- 不能绕过 policy 扩大 retrieval scope\n- 在 `scenario_mode = uncertain` 时，不执行 scenario / patch knowhow 的 `data_requirements`\n\n### 第 5 步：组装记忆上下文\n\n从可用的 CRM 关联 scope 加载最小 memory 子集：\n- `person`\n- `account`\n- `opportunity`\n- `contact`\n\n规则：\n- 只有 contact 在会议或 CRM context 中被明确提及时，才加载 contact memory\n- 有 object ID 时优先用 object ID\n- 否则用名称\n- 命中多个候选时，标记歧义，不要猜\n- memory 与当前 meeting/CRM 事实冲突时，优先信任当前证据，并记录到 `memory_conflicts`\n\n查找与优先级规则见 `references/memory-contract.md`。\n\n### 第 6 步：生成总结\n\n基于同一份事实底座同时生成两类输出。\n\n#### Human-readable output\n\n必须输出以下 5 段：\n1. Meeting snapshot\n2. Core summary and judgment\n3. Knowhow focus items\n4. Recommended next actions\n5. Risks and open questions\n\n#### Machine-consumable output\n\n返回至少包含以下字段：\n- `status`\n- `base_context`\n- `scenario_result`\n- `loaded_knowhow`\n- `crm_data_requests`\n- `memory_sources`\n- `memory_conflicts`\n- `summary_fields`\n- `semantic_summary`\n- `key_judgments`\n- `knowhow_focus_items`\n- `retrieval_trace`\n- `retry_state`\n- `review_ready_checks`\n\n优先使用原生 JSON；如果环境不适合，就用 fenced JSON block。\n\n人类可读文本必须来自 machine output 中同一份：\n- `summary_fields`\n- `semantic_summary`\n- `key_judgments`\n- `knowhow_focus_items`\n\n可以扩展措辞，不能与 machine output 矛盾。\n\n### 第 7 步：调用评审流程\n\n生成 draft 后，必须调用 `review/SKILL.md`。\n\n传给 review 的包只包含：\n- generated human-readable summary\n- generated machine-readable output\n- retrieval trace and retry state\n- loaded knowhow identifiers\n- 用于验证 claim 的最小支持证据摘录\n\n不要重新发送完整原始上下文，除非争议检查项确实需要。\n\n#### Review loop 规则\n\n- revision 0 draft 失败后，只根据 `failure_reasons` 和 `targeted_regeneration_instructions` 定向修复\n- revision 1 失败后，再做一次更严格的定向修复\n- maximum regeneration count: 2\n- revision 2 仍失败时，返回：\n  - current best summary\n  - review failure reasons\n  - `status: manual_review_required`\n\n禁止：\n- 为了风格整份重写\n- 因为 retry 而扩大无关 retrieval scope\n- 引入 evidence 中不存在的新事实\n\n## 输出契约\n\n必须遵守：\n- `references/runtime-contract.md`\n- `references/output-schema.md`\n- `references/retry-state-machine.md`\n\n### 必需标准字段\n\nmachine output 必须始终提供以下字段：\n- `base_context.meeting_time`\n- `base_context.initiator`\n- `base_context.account`\n- `base_context.opportunity`\n- `scenario_result.primary_scenario`\n- `scenario_result.scenario_slug`\n- `scenario_result.scenario_confidence`\n- `scenario_result.industry`\n- `summary_fields.meeting_goal`\n- `summary_fields.relationship_state`\n- `summary_fields.decision_pressure`\n- `summary_fields.trust_state`\n- `summary_fields.momentum_state`\n- `summary_fields.key_participants`\n- `summary_fields.current_stage_judgment`\n- `summary_fields.next_actions`\n- `summary_fields.risk_level`\n- `summary_fields.missing_information`\n- `status`\n\n### 人类总结要求\n\n人类总结必须：\n- 清楚给出主要业务结论\n- 区分事实与推断\n- 标出最重要的风险信号\n- 标出最重要的机会或推进信号\n- 给出由证据支撑的下一步建议\n- 明确覆盖最相关的 knowhow focus items\n\n## 真实调用示例\n\n### 示例 1：直接给自然语言会议纪要\n\n```text\n请使用 crm-meeting-summary skill。\n\nmeeting time: 2026-04-06T15:00:00+08:00\ninitiator: 王敏（USR-101）\naccount: 华东零售集团（CUST-001）\nopportunity: 智能客服升级项目（OPP-9001）\nparticipants:\n- 王敏 / 客户成功经理\n- 李总 / 客户运营负责人\n- 陈经理 / IT 负责人\n\nmeeting record:\n客户反馈当前客服机器人命中率不稳定，夜间转人工率偏高。李总表示，希望先确认问题是不是知识库更新机制导致，再决定是否进入新一轮采购。客户提到 6 月前内部会做一次服务质量考核，如果效果没有改善，预算优先级会下降。陈经理提到接口改造资源有限，需要尽量少改现有系统。\n```\n\n### 示例 2：显式输入包\n\n```json\n{\n  \"meeting\": {\n    \"meeting_time\": \"2026-04-06T15:00:00+08:00\",\n    \"initiator\": {\"id\": \"USR-101\", \"name\": \"王敏\"},\n    \"account\": {\"id\": \"CUST-001\", \"name\": \"华东零售集团\"},\n    \"opportunity\": {\"id\": \"OPP-9001\", \"name\": \"智能客服升级项目\"},\n    \"participants\": [\n      {\"name\": \"王敏\", \"role\": \"客户成功经理\"},\n      {\"name\": \"李总\", \"role\": \"客户运营负责人\"},\n      {\"name\": \"陈经理\", \"role\": \"IT 负责人\"}\n    ],\n    \"record_text\": \"客户反馈当前客服机器人命中率不稳定，夜间转人工率偏高……\"\n  },\n  \"crm_context\": {\n    \"account\": {\"account_id\": \"CUST-001\", \"account_name\": \"华东零售集团\"},\n    \"opportunity\": {\"opportunity_id\": \"OPP-9001\", \"opportunity_name\": \"智能客服升级项目\"},\n    \"person\": {\"person_id\": \"USR-101\", \"person_name\": \"王敏\"}\n  },\n  \"constraints\": {\n    \"language\": \"zh-CN\",\n    \"output_mode\": \"human_and_json\"\n  }\n}\n```\n\n## 开发辅助文件说明\n\n以下内容只用于开发验证，不代表真实 skill 运行方式：\n- `mock_runner.py`\n- `examples/mock-data/`\n- `examples/` 中基于 Python CLI 的片段\n- `evals/evals.json` 中引用 mock data 的 case\n\n如果引用这些文件，必须明确说明它们是 dev harness，而不是生产运行路径。\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "61072f74-4c37-450b-9fca-627a8cde4a49",
+      "timestamp": "2026-04-08T11:16:52.780Z",
+      "isSynthetic": true
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20687,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_0954ea28164547700169d63926071c8191a6a0e5cd85fcf1a9",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "**Considering project CLAUDE's guidelines**\n\nI see that project CLAUDE suggests invoking the Skill tool whenever a request matches an available skill. Since I’ve already invoked the crm-meeting-summary skill, it makes sense to consider using the crm-meeting-summary-review skill for the review step as well. I’m thinking it’d likely be a good idea. Now, I should take a moment to inspect the relevant files to ensure everything is on track.\n\n",
+            "signature": ""
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "dd6be82a-dc74-476c-89e1-e33ffa752516"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20687,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_0954ea28164547700169d63926071c8191a6a0e5cd85fcf1a9",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_SCDOpMoBSVoZ8HPMiz4jC5LD",
+            "name": "TodoWrite",
+            "input": {
+              "todos": [
+                {
+                  "activeForm": "读取输入包与契约文件",
+                  "content": "读取输入包与契约文件",
+                  "status": "in_progress"
+                },
+                {
+                  "activeForm": "生成草稿总结与 machine JSON",
+                  "content": "生成草稿总结与 machine JSON",
+                  "status": "pending"
+                },
+                {
+                  "activeForm": "执行评审并定向修复",
+                  "content": "执行评审并定向修复",
+                  "status": "pending"
+                },
+                {
+                  "activeForm": "返回最终结果",
+                  "content": "返回最终结果",
+                  "status": "pending"
+                }
+              ]
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "f32da712-7b19-4a6f-91af-695615892800"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_SCDOpMoBSVoZ8HPMiz4jC5LD",
+            "type": "tool_result",
+            "content": "Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "6961832f-c411-488d-b06c-4307785d4071",
+      "timestamp": "2026-04-08T11:17:03.376Z",
+      "tool_use_result": {
+        "oldTodos": [],
+        "newTodos": [
+          {
+            "content": "读取输入包与契约文件",
+            "status": "in_progress",
+            "activeForm": "读取输入包与契约文件"
+          },
+          {
+            "content": "生成草稿总结与 machine JSON",
+            "status": "pending",
+            "activeForm": "生成草稿总结与 machine JSON"
+          },
+          {
+            "content": "执行评审并定向修复",
+            "status": "pending",
+            "activeForm": "执行评审并定向修复"
+          },
+          {
+            "content": "返回最终结果",
+            "status": "pending",
+            "activeForm": "返回最终结果"
+          }
+        ],
+        "verificationNudgeNeeded": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_06f867454b2954ff0169d6393090bc81969b5d430eec0daa0d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_Y9BwcNonyxKGJ3R1Q36S9vA8",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/Documents/实验田/summay-skill/tmpe3q3lsf9.json",
+              "limit": 4000,
+              "offset": 1,
+              "pages": ""
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "32333e4b-1004-48db-aad2-81c054d21856"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_06f867454b2954ff0169d6393090bc81969b5d430eec0daa0d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_5Hf1ONtxodCgVhX1kxOfoJr7",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/runtime-contract.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": ""
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "675515fc-bcdd-43e0-9dec-f9e7a70933ce"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_06f867454b2954ff0169d6393090bc81969b5d430eec0daa0d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_bjnBtU7f4fQqGbs4oRZkrZhs",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/output-schema.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": ""
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "bab89b42-1d89-47a1-a327-b335e87d5356"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_06f867454b2954ff0169d6393090bc81969b5d430eec0daa0d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_oBulDPKdH3yYUbBQN1hCE3UM",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/retry-state-machine.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": ""
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "a179e388-5803-40ca-b19e-756da6952ead"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_06f867454b2954ff0169d6393090bc81969b5d430eec0daa0d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_8ii9gemQ66C9OBC6ktMGulZR",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/taxonomy.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": ""
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "18596bc4-7753-4095-9601-b5ef8722b049"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_06f867454b2954ff0169d6393090bc81969b5d430eec0daa0d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_7h6DhQWY3N5r2Qp8lieh2qYz",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/crm-data-dictionary.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": ""
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "02c612a1-d143-41b5-b872-c632ab555140"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_06f867454b2954ff0169d6393090bc81969b5d430eec0daa0d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_k8jyJiMcE3jsYAwEjsaPUSir",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/scenario-retrieval-mapping.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": ""
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "11094984-7388-4bf2-a601-73f8ffd09225"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_06f867454b2954ff0169d6393090bc81969b5d430eec0daa0d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_VIsts8rFu3kmebY27E0r2xqI",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/memory-contract.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": ""
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "350afd5e-5c8d-43f1-bf40-13cbf77e1e4c"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 20835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_06f867454b2954ff0169d6393090bc81969b5d430eec0daa0d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_09H4bxGhjLUpmSLhqi1VlsEG",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/review/SKILL.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": ""
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "d991025a-d5d9-40cc-8fec-1b3edbb5b3cc"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "<tool_use_error>Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed.</tool_use_error>",
+            "is_error": true,
+            "tool_use_id": "call_Y9BwcNonyxKGJ3R1Q36S9vA8"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "266e253d-ccd1-4824-8efb-2fb3ebebcfc3",
+      "timestamp": "2026-04-08T11:17:18.976Z",
+      "tool_use_result": "Error: Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed."
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "<tool_use_error>Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed.</tool_use_error>",
+            "is_error": true,
+            "tool_use_id": "call_5Hf1ONtxodCgVhX1kxOfoJr7"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "6bc14e7d-208e-48a7-ae65-fa6aa744aa0b",
+      "timestamp": "2026-04-08T11:17:18.976Z",
+      "tool_use_result": "Error: Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed."
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "<tool_use_error>Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed.</tool_use_error>",
+            "is_error": true,
+            "tool_use_id": "call_bjnBtU7f4fQqGbs4oRZkrZhs"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "091d71ec-09d1-4dbe-b634-b197c006aa39",
+      "timestamp": "2026-04-08T11:17:18.976Z",
+      "tool_use_result": "Error: Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed."
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "<tool_use_error>Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed.</tool_use_error>",
+            "is_error": true,
+            "tool_use_id": "call_oBulDPKdH3yYUbBQN1hCE3UM"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "3975bea5-4b9b-48f1-8abf-4261a3fb6369",
+      "timestamp": "2026-04-08T11:17:18.976Z",
+      "tool_use_result": "Error: Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed."
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "<tool_use_error>Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed.</tool_use_error>",
+            "is_error": true,
+            "tool_use_id": "call_8ii9gemQ66C9OBC6ktMGulZR"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "bd9460f8-e978-45af-b71c-97a167d86847",
+      "timestamp": "2026-04-08T11:17:18.976Z",
+      "tool_use_result": "Error: Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed."
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "<tool_use_error>Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed.</tool_use_error>",
+            "is_error": true,
+            "tool_use_id": "call_7h6DhQWY3N5r2Qp8lieh2qYz"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "2a129d4a-a09c-489d-ac61-db2982d1eeaf",
+      "timestamp": "2026-04-08T11:17:18.976Z",
+      "tool_use_result": "Error: Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed."
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "<tool_use_error>Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed.</tool_use_error>",
+            "is_error": true,
+            "tool_use_id": "call_k8jyJiMcE3jsYAwEjsaPUSir"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "1d3ac855-3cc5-401d-8ee0-c02703abb3e9",
+      "timestamp": "2026-04-08T11:17:18.976Z",
+      "tool_use_result": "Error: Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed."
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "<tool_use_error>Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed.</tool_use_error>",
+            "is_error": true,
+            "tool_use_id": "call_VIsts8rFu3kmebY27E0r2xqI"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "09923d30-c83b-443f-8eb6-e979a8b97817",
+      "timestamp": "2026-04-08T11:17:18.976Z",
+      "tool_use_result": "Error: Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed."
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "<tool_use_error>Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed.</tool_use_error>",
+            "is_error": true,
+            "tool_use_id": "call_09H4bxGhjLUpmSLhqi1VlsEG"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "b9d97c42-ef5c-4b2a-a9ed-4a96f32d039e",
+      "timestamp": "2026-04-08T11:17:18.976Z",
+      "tool_use_result": "Error: Invalid pages parameter: \"\". Use formats like \"1-5\", \"3\", or \"10-20\". Pages are 1-indexed."
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "text",
+            "text": "读取失败原因已确认：非 PDF 不能传 pages。现在按契约重读。"
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "de380069-df3b-46fd-9943-290da294c114"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_Hr106JmfQtbigNjEiOw7wMJ5",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/Documents/实验田/summay-skill/tmpe3q3lsf9.json",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "0225326a-a9f6-4e7e-9ac1-4ad2f7966261"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_sZT1UWNcJbea0wi9neAvRbTJ",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/runtime-contract.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "02cb9541-8e19-4cc3-8d04-54040d432f04"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_3L0CwCRVC8xUvmln0fKUfWQS",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/output-schema.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "d4788f7c-c932-45b4-82af-8389ad371bbc"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_tMZxIIQ9mlHvNfMagEbWEDbR",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/retry-state-machine.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "9b85a8c1-b22b-47f7-ba59-67febd587f4a"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_WOOrvU2OAQ2D8gHO0mJQnCzr",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/taxonomy.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "61552c44-19fe-42d1-9b6e-623d82507513"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_rsBzj8eTNvK0R0l8gRYf9yfj",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/crm-data-dictionary.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "c8becc29-8bbd-49ed-bfa0-77b839eff38d"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_SEvL1BJAwVPcPd2pz5PbFm3L",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/scenario-retrieval-mapping.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "55ea7ad4-9418-4ad0-be01-f5bc6e74142b"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_FpcQXVJ1ehiQd8ubVABwgWVs",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/memory-contract.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "8944f62d-6bf4-48ae-8f2b-d673fb0db802"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 21678,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_025aa119c26f1aeb0169d6394034148191aab402528006cd52",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_W0cHrBgH4E1wHoASKtxQunvS",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/review/SKILL.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "2cce5fd4-79cb-4f85-9760-57ef67f6c050"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_Hr106JmfQtbigNjEiOw7wMJ5",
+            "type": "tool_result",
+            "content": "1\t{\n2\t  \"meeting\": {\n3\t    \"id\": \"MEET-AMB-001\",\n4\t    \"title\": \"项目沟通\",\n5\t    \"meeting_time\": \"2026-04-05T10:00:00+08:00\",\n6\t    \"initiator\": {\n7\t      \"name\": \"王敏\"\n8\t    },\n9\t    \"account\": {\n10\t      \"name\": \"华东零售集团\"\n11\t    },\n12\t    \"participants\": [\n13\t      {\n14\t        \"name\": \"王敏\",\n15\t        \"role\": \"客户成功经理\"\n16\t      },\n17\t      {\n18\t        \"name\": \"李总\",\n19\t        \"role\": \"业务负责人\"\n20\t      }\n21\t    ],\n22\t    \"record_text\": \"双方简单沟通了最近合作感受，也提到后面可能会继续看看有没有优化空间。客户表示内部还要再看看，没有明确说是预算、采购、试点还是交付问题。\"\n23\t  },\n24\t  \"crm_context\": {},\n25\t  \"memory_snippets\": [],\n26\t  \"constraints\": {\n27\t    \"language\": \"zh-CN\",\n28\t    \"output_mode\": \"human_and_json\"\n29\t  }\n30\t}\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "c4c2e78c-2f6f-4ee3-b824-09d845a4086b",
+      "timestamp": "2026-04-08T11:17:33.789Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/Documents/实验田/summay-skill/tmpe3q3lsf9.json",
+          "content": "{\n  \"meeting\": {\n    \"id\": \"MEET-AMB-001\",\n    \"title\": \"项目沟通\",\n    \"meeting_time\": \"2026-04-05T10:00:00+08:00\",\n    \"initiator\": {\n      \"name\": \"王敏\"\n    },\n    \"account\": {\n      \"name\": \"华东零售集团\"\n    },\n    \"participants\": [\n      {\n        \"name\": \"王敏\",\n        \"role\": \"客户成功经理\"\n      },\n      {\n        \"name\": \"李总\",\n        \"role\": \"业务负责人\"\n      }\n    ],\n    \"record_text\": \"双方简单沟通了最近合作感受，也提到后面可能会继续看看有没有优化空间。客户表示内部还要再看看，没有明确说是预算、采购、试点还是交付问题。\"\n  },\n  \"crm_context\": {},\n  \"memory_snippets\": [],\n  \"constraints\": {\n    \"language\": \"zh-CN\",\n    \"output_mode\": \"human_and_json\"\n  }\n}",
+          "numLines": 30,
+          "startLine": 1,
+          "totalLines": 30
+        }
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_sZT1UWNcJbea0wi9neAvRbTJ",
+            "type": "tool_result",
+            "content": "1\t# 运行时契约\n2\t\n3\t版本: `v1`\n4\t\n5\t本文是 `crm-meeting-summary` runtime interface 的单一事实来源。\n6\t它定义 inputs、outputs、trace fields 和 review handoff。\n7\t\n8\t## 目的\n9\t\n10\t- 为调用方提供稳定、可审计的接口。\n11\t- 防止 SKILL.md、examples、evals 与 schema 漂移。\n12\t- 让业务语义保持显式，而不是被藏进 prose。\n13\t\n14\t## 对象模型\n15\t\n16\t支持四类 CRM 关联 object scopes：\n17\t- `person`（initiator、internal owner、stakeholders）\n18\t- `account`（customer）\n19\t- `opportunity`\n20\t- `contact`\n21\t\n22\t关系提醒：\n23\t- account / opportunity / contact 都可以有 owner，owner 始终是 `person`\n24\t- 一条 sales record 可以同时关联多个 objects\n25\t- meeting initiator 始终是 `person`\n26\t\n27\t## 语义解释层\n28\t\n29\truntime 在生成最终措辞前，应先把原始 meeting 与 CRM inputs 归一为紧凑的业务语义层。\n30\t这不是 free-form prose。\n31\t它是可复用的 semantic summary，用来提升 review、retry 与下游自动化的可靠性。\n32\t\n33\t建议语义维度：\n34\t- `relationship_state`\n35\t- `decision_pressure`\n36\t- `trust_state`\n37\t- `momentum_state`\n38\t\n39\t推荐表示方式：\n40\t- 在 `summary_fields` 中复制这些语义字段，便于下游必需访问\n41\t- 必须同时输出单独的 `semantic_summary` block，供机器直接消费\n42\t\n43\t`semantic_summary` 是必需顶层结构；`summary_fields` 中的同名字段是冗余访问层，不可替代它。\n44\t\n45\t## 输入契约\n46\t\n47\t### 必需输入\n48\t\n49\truntime 至少必须提供：\n50\t- meeting record text\n51\t- meeting time\n52\t- initiator，类型为 `person`\n53\t- account 或 opportunity association\n54\t\n55\t### 可选输入\n56\t\n57\t- meeting title\n58\t- participants list\n59\t- 已可用的 CRM fields\n60\t- 预取的 memory snippets\n61\t\n62\t### 输入示例\n63\t\n64\t```json\n65\t{\n66\t  \"meeting\": {\n67\t    \"id\": \"MEET-001\",\n68\t    \"title\": \"需求澄清会 - 智能客服升级\",\n69\t    \"meeting_time\": \"2026-04-06T15:00:00+08:00\",\n70\t    \"initiator\": {\"id\": \"USR-101\", \"name\": \"王敏\"},\n71\t    \"account\": {\"id\": \"CUST-001\", \"name\": \"华东零售集团\"},\n72\t    \"opportunity\": {\"id\": \"OPP-9001\", \"name\": \"智能客服升级项目\"},\n73\t    \"participants\": [\n74\t      {\"name\": \"王敏\", \"role\": \"客户成功经理\"},\n75\t      {\"name\": \"李总\", \"role\": \"客户运营负责人\"}\n76\t    ],\n77\t    \"record_text\": \"...\"\n78\t  },\n79\t  \"crm_context\": {\n80\t    \"account\": {\n81\t      \"account_id\": \"CUST-001\",\n82\t      \"account_name\": \"华东零售集团\"\n83\t    },\n84\t    \"person\": {\n85\t      \"person_id\": \"USR-101\",\n86\t      \"person_name\": \"王敏\",\n87\t      \"person_role\": \"客户成功经理\"\n88\t    }\n89\t  }\n90\t}\n91\t```\n92\t\n93\t### 关键规则\n94\t\n95\t- 有 ID 时优先使用基于 ID 的 key，没有 ID 时回退到 name。\n96\t- 禁止编造缺失的 CRM fields。\n97\t- 把缺失数据视为常态，并写入 `missing_information`。\n98\t- runtime package 要足够小，保证每个主要输出 claim 仍可审计。\n99\t\n100\t## 输出契约\n101\t\n102\t### 人类可读输出\n103\t\n104\t必需部分：\n105\t1. Meeting snapshot\n106\t2. Core summary and judgment\n107\t3. Knowhow focus items\n108\t4. Recommended next actions\n109\t5. Risks and open questions\n110\t\n111\t### 机器可读输出\n112\t\n113\t使用 `references/output-schema.md` 中的 schema。\n114\t顶层 `status` 允许值：\n115\t- `passed`\n116\t- `manual_review_required`\n117\t- `insufficient_context`\n118\t\n119\t### 输出示例\n120\t\n121\t```json\n122\t{\n123\t  \"status\": \"passed\",\n124\t  \"base_context\": {\n125\t    \"meeting_time\": \"2026-04-06T15:00:00+08:00\",\n126\t    \"initiator\": {\"id\": \"USR-101\", \"name\": \"王敏\"},\n127\t    \"account\": {\"id\": \"CUST-001\", \"name\": \"华东零售集团\"},\n128\t    \"opportunity\": {\"id\": \"OPP-9001\", \"name\": \"智能客服升级项目\"},\n129\t    \"participants\": [\"王敏\", \"李总\", \"陈经理\"]\n130\t  },\n131\t  \"scenario_result\": {\n132\t    \"primary_scenario\": \"需求澄清\",\n133\t    \"scenario_slug\": \"needs-clarification\",\n134\t    \"scenario_confidence\": \"high\",\n135\t    \"scenario_mode\": \"normal\",\n136\t    \"industry\": \"general-b2b\",\n137\t    \"secondary_tags\": [\"risk:budget-priority\"],\n138\t    \"evidence\": [\"...\"]\n139\t  },\n140\t  \"loaded_knowhow\": {\n141\t    \"mapping_version\": \"v1\",\n142\t    \"common\": [\"references/knowhow/common/general.md\"],\n143\t    \"scenario\": [\"references/knowhow/by-scenario/needs-clarification.md\"],\n144\t    \"industry\": [\"references/knowhow/by-industry/general-b2b.md\"],\n145\t    \"patches\": [\"references/knowhow/patches/needs-clarification__general-b2b.md\"],\n146\t    \"best_cases\": []\n147\t  },\n148\t  \"crm_data_requests\": [\n149\t    {\n150\t      \"reason\": \"risk_validation_gap\",\n151\t      \"fields\": [\"recent_interactions\", \"last_commitments\", \"implementation_status\"],\n152\t      \"why\": \"需要验证效果问题是否持续存在，以及历史承诺是否影响当前信任。\",\n153\t      \"sources\": [\"knowhow:data_requirements\"]\n154\t    }\n155\t  ],\n156\t  \"memory_sources\": [],\n157\t  \"memory_conflicts\": [],\n158\t  \"summary_fields\": {\n159\t    \"meeting_goal\": \"...\",\n160\t    \"relationship_state\": \"active-account, qualification-in-progress\",\n161\t    \"decision_pressure\": \"budget priority depends on short-term proof\",\n162\t    \"trust_state\": \"neutral-to-cautious\",\n163\t    \"momentum_state\": \"curious but not yet committed\",\n164\t    \"key_participants\": [],\n165\t    \"current_stage_judgment\": \"qualification\",\n166\t    \"next_actions\": [],\n167\t    \"risk_level\": \"medium\",\n168\t    \"missing_information\": []\n169\t  },\n170\t  \"semantic_summary\": {\n171\t    \"relationship_state\": \"active-account, qualification-in-progress\",\n172\t    \"decision_pressure\": \"budget priority depends on short-term proof\",\n173\t    \"trust_state\": \"neutral-to-cautious\",\n174\t    \"momentum_state\": \"curious but not yet committed\"\n175\t  },\n176\t  \"key_judgments\": {\n177\t    \"facts\": [],\n178\t    \"inferences\": [],\n179\t    \"open_questions\": []\n180\t  },\n181\t  \"knowhow_focus_items\": [],\n182\t  \"retrieval_trace\": {\n183\t    \"mapping_version\": \"v1\",\n184\t    \"scenario_mode\": \"normal\",\n185\t    \"allowed_request_groups\": [],\n186\t    \"requested_request_groups\": [],\n187\t    \"out_of_policy_requests\": []\n188\t  },\n189\t  \"retry_state\": {\n190\t    \"revision\": 0,\n191\t    \"status\": \"passed\",\n192\t    \"history\": []\n193\t  },\n194\t  \"review_ready_checks\": {\n195\t    \"scenario_self_consistency\": true,\n196\t    \"knowhow_coverage\": true,\n197\t    \"evidence_grounding\": true,\n198\t    \"memory_conflict_handling\": true,\n199\t    \"missing_information_handling\": true,\n200\t    \"policy_boundary_handling\": true,\n201\t    \"semantic_summary_consistency\": true,\n202\t    \"machine_output_completeness\": true\n203\t  }\n204\t}\n205\t```\n206\t\n207\t## 检索 Trace 契约\n208\t\n209\t每次运行都必须输出 `retrieval_trace`：\n210\t- `mapping_version`\n211\t- `scenario_mode`\n212\t- `allowed_request_groups`\n213\t- `requested_request_groups`\n214\t- `out_of_policy_requests`\n215\t\n216\t以 `references/scenario-retrieval-mapping.md` 作为 policy baseline。\n217\t如果请求了 policy 外字段，必须附带精确 evidence 与理由。\n218\t\n219\t`crm_data_requests` 的形成顺序是：\n220\t1. 先由 scenario retrieval mapping 给出 `allowed_request_groups`\n221\t2. 再读取已加载 scenario / patch knowhow 中的 `data_requirements`\n222\t3. 只有 meeting evidence 与当前 CRM 缺失共同支持时，才允许把对应字段并入请求\n223\t4. 如果 knowhow 声明超出 `allowed_request_groups`，只能进入 `out_of_policy_requests`\n224\t\n225\t`data_requirements` 只能细化允许组内的字段，不能直接扩大默认 retrieval scope。\n226\t当 `scenario_mode = uncertain` 时，不执行 scenario / patch knowhow 的 `data_requirements`，仍按 low-confidence fallback 只保留一个消歧 request bundle。\n227\t\n228\t## 记忆契约使用\n229\t\n230\t- 对该 skill 而言，memory 是只读的。\n231\t- scopes: person/account/opportunity/contact。\n232\t- 如果 memory 与当前 evidence 冲突，优先当前 evidence，并记录到 `memory_conflicts`。\n233\t- 使用 mixed keys：优先 `*_id`，回退到 `*_name`。\n234\t\n235\t## Best-case 使用规范\n236\t\n237\t- best-cases 是可选 reference，不是强制 retrieval。\n238\t- 只有在它们能提升已识别场景或行业的判断质量时才加载。\n239\t- 如果加载，需在 `loaded_knowhow.best_cases` 中记录标识。\n240\t- best-cases 绝不能覆盖当前 meeting evidence。\n241\t\n242\t## 评审交接契约\n243\t\n244\t调用 review skill 时，只传精简包：\n245\t- generated human summary\n246\t- generated machine output\n247\t- retrieval trace\n248\t- retry state\n249\t- loaded knowhow identifiers\n250\t- 最小支持证据摘录\n251\t\n252\treview output 必须使用：\n253\t- `pass: true|false`\n254\t- `review_status: pass|fail`\n255\t- `failure_reasons`\n256\t- `targeted_regeneration_instructions`\n257\t- `check_results`\n258\t\n259\treview output 与 summary output status 不是同一个概念。\n260\t\n261\t## 失败与重试契约\n262\t\n263\t- 状态迁移使用 `references/retry-state-machine.md`。\n264\t- 最多 2 次 targeted retries。\n265\t- 超过后返回 `status: manual_review_required`，并附最后一次 failure reasons。\n266\t\n267\t## 参考文件\n268\t\n269\t- `references/output-schema.md`\n270\t- `references/retry-state-machine.md`\n271\t- `references/scenario-retrieval-mapping.md`\n272\t- `references/memory-contract.md`\n273\t- `references/knowhow/best-cases/README.md`\n274\t- `review/SKILL.md`\n275\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "c35d13af-73df-49f9-906c-c6a3f97a9989",
+      "timestamp": "2026-04-08T11:17:33.794Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/runtime-contract.md",
+          "content": "# 运行时契约\n\n版本: `v1`\n\n本文是 `crm-meeting-summary` runtime interface 的单一事实来源。\n它定义 inputs、outputs、trace fields 和 review handoff。\n\n## 目的\n\n- 为调用方提供稳定、可审计的接口。\n- 防止 SKILL.md、examples、evals 与 schema 漂移。\n- 让业务语义保持显式，而不是被藏进 prose。\n\n## 对象模型\n\n支持四类 CRM 关联 object scopes：\n- `person`（initiator、internal owner、stakeholders）\n- `account`（customer）\n- `opportunity`\n- `contact`\n\n关系提醒：\n- account / opportunity / contact 都可以有 owner，owner 始终是 `person`\n- 一条 sales record 可以同时关联多个 objects\n- meeting initiator 始终是 `person`\n\n## 语义解释层\n\nruntime 在生成最终措辞前，应先把原始 meeting 与 CRM inputs 归一为紧凑的业务语义层。\n这不是 free-form prose。\n它是可复用的 semantic summary，用来提升 review、retry 与下游自动化的可靠性。\n\n建议语义维度：\n- `relationship_state`\n- `decision_pressure`\n- `trust_state`\n- `momentum_state`\n\n推荐表示方式：\n- 在 `summary_fields` 中复制这些语义字段，便于下游必需访问\n- 必须同时输出单独的 `semantic_summary` block，供机器直接消费\n\n`semantic_summary` 是必需顶层结构；`summary_fields` 中的同名字段是冗余访问层，不可替代它。\n\n## 输入契约\n\n### 必需输入\n\nruntime 至少必须提供：\n- meeting record text\n- meeting time\n- initiator，类型为 `person`\n- account 或 opportunity association\n\n### 可选输入\n\n- meeting title\n- participants list\n- 已可用的 CRM fields\n- 预取的 memory snippets\n\n### 输入示例\n\n```json\n{\n  \"meeting\": {\n    \"id\": \"MEET-001\",\n    \"title\": \"需求澄清会 - 智能客服升级\",\n    \"meeting_time\": \"2026-04-06T15:00:00+08:00\",\n    \"initiator\": {\"id\": \"USR-101\", \"name\": \"王敏\"},\n    \"account\": {\"id\": \"CUST-001\", \"name\": \"华东零售集团\"},\n    \"opportunity\": {\"id\": \"OPP-9001\", \"name\": \"智能客服升级项目\"},\n    \"participants\": [\n      {\"name\": \"王敏\", \"role\": \"客户成功经理\"},\n      {\"name\": \"李总\", \"role\": \"客户运营负责人\"}\n    ],\n    \"record_text\": \"...\"\n  },\n  \"crm_context\": {\n    \"account\": {\n      \"account_id\": \"CUST-001\",\n      \"account_name\": \"华东零售集团\"\n    },\n    \"person\": {\n      \"person_id\": \"USR-101\",\n      \"person_name\": \"王敏\",\n      \"person_role\": \"客户成功经理\"\n    }\n  }\n}\n```\n\n### 关键规则\n\n- 有 ID 时优先使用基于 ID 的 key，没有 ID 时回退到 name。\n- 禁止编造缺失的 CRM fields。\n- 把缺失数据视为常态，并写入 `missing_information`。\n- runtime package 要足够小，保证每个主要输出 claim 仍可审计。\n\n## 输出契约\n\n### 人类可读输出\n\n必需部分：\n1. Meeting snapshot\n2. Core summary and judgment\n3. Knowhow focus items\n4. Recommended next actions\n5. Risks and open questions\n\n### 机器可读输出\n\n使用 `references/output-schema.md` 中的 schema。\n顶层 `status` 允许值：\n- `passed`\n- `manual_review_required`\n- `insufficient_context`\n\n### 输出示例\n\n```json\n{\n  \"status\": \"passed\",\n  \"base_context\": {\n    \"meeting_time\": \"2026-04-06T15:00:00+08:00\",\n    \"initiator\": {\"id\": \"USR-101\", \"name\": \"王敏\"},\n    \"account\": {\"id\": \"CUST-001\", \"name\": \"华东零售集团\"},\n    \"opportunity\": {\"id\": \"OPP-9001\", \"name\": \"智能客服升级项目\"},\n    \"participants\": [\"王敏\", \"李总\", \"陈经理\"]\n  },\n  \"scenario_result\": {\n    \"primary_scenario\": \"需求澄清\",\n    \"scenario_slug\": \"needs-clarification\",\n    \"scenario_confidence\": \"high\",\n    \"scenario_mode\": \"normal\",\n    \"industry\": \"general-b2b\",\n    \"secondary_tags\": [\"risk:budget-priority\"],\n    \"evidence\": [\"...\"]\n  },\n  \"loaded_knowhow\": {\n    \"mapping_version\": \"v1\",\n    \"common\": [\"references/knowhow/common/general.md\"],\n    \"scenario\": [\"references/knowhow/by-scenario/needs-clarification.md\"],\n    \"industry\": [\"references/knowhow/by-industry/general-b2b.md\"],\n    \"patches\": [\"references/knowhow/patches/needs-clarification__general-b2b.md\"],\n    \"best_cases\": []\n  },\n  \"crm_data_requests\": [\n    {\n      \"reason\": \"risk_validation_gap\",\n      \"fields\": [\"recent_interactions\", \"last_commitments\", \"implementation_status\"],\n      \"why\": \"需要验证效果问题是否持续存在，以及历史承诺是否影响当前信任。\",\n      \"sources\": [\"knowhow:data_requirements\"]\n    }\n  ],\n  \"memory_sources\": [],\n  \"memory_conflicts\": [],\n  \"summary_fields\": {\n    \"meeting_goal\": \"...\",\n    \"relationship_state\": \"active-account, qualification-in-progress\",\n    \"decision_pressure\": \"budget priority depends on short-term proof\",\n    \"trust_state\": \"neutral-to-cautious\",\n    \"momentum_state\": \"curious but not yet committed\",\n    \"key_participants\": [],\n    \"current_stage_judgment\": \"qualification\",\n    \"next_actions\": [],\n    \"risk_level\": \"medium\",\n    \"missing_information\": []\n  },\n  \"semantic_summary\": {\n    \"relationship_state\": \"active-account, qualification-in-progress\",\n    \"decision_pressure\": \"budget priority depends on short-term proof\",\n    \"trust_state\": \"neutral-to-cautious\",\n    \"momentum_state\": \"curious but not yet committed\"\n  },\n  \"key_judgments\": {\n    \"facts\": [],\n    \"inferences\": [],\n    \"open_questions\": []\n  },\n  \"knowhow_focus_items\": [],\n  \"retrieval_trace\": {\n    \"mapping_version\": \"v1\",\n    \"scenario_mode\": \"normal\",\n    \"allowed_request_groups\": [],\n    \"requested_request_groups\": [],\n    \"out_of_policy_requests\": []\n  },\n  \"retry_state\": {\n    \"revision\": 0,\n    \"status\": \"passed\",\n    \"history\": []\n  },\n  \"review_ready_checks\": {\n    \"scenario_self_consistency\": true,\n    \"knowhow_coverage\": true,\n    \"evidence_grounding\": true,\n    \"memory_conflict_handling\": true,\n    \"missing_information_handling\": true,\n    \"policy_boundary_handling\": true,\n    \"semantic_summary_consistency\": true,\n    \"machine_output_completeness\": true\n  }\n}\n```\n\n## 检索 Trace 契约\n\n每次运行都必须输出 `retrieval_trace`：\n- `mapping_version`\n- `scenario_mode`\n- `allowed_request_groups`\n- `requested_request_groups`\n- `out_of_policy_requests`\n\n以 `references/scenario-retrieval-mapping.md` 作为 policy baseline。\n如果请求了 policy 外字段，必须附带精确 evidence 与理由。\n\n`crm_data_requests` 的形成顺序是：\n1. 先由 scenario retrieval mapping 给出 `allowed_request_groups`\n2. 再读取已加载 scenario / patch knowhow 中的 `data_requirements`\n3. 只有 meeting evidence 与当前 CRM 缺失共同支持时，才允许把对应字段并入请求\n4. 如果 knowhow 声明超出 `allowed_request_groups`，只能进入 `out_of_policy_requests`\n\n`data_requirements` 只能细化允许组内的字段，不能直接扩大默认 retrieval scope。\n当 `scenario_mode = uncertain` 时，不执行 scenario / patch knowhow 的 `data_requirements`，仍按 low-confidence fallback 只保留一个消歧 request bundle。\n\n## 记忆契约使用\n\n- 对该 skill 而言，memory 是只读的。\n- scopes: person/account/opportunity/contact。\n- 如果 memory 与当前 evidence 冲突，优先当前 evidence，并记录到 `memory_conflicts`。\n- 使用 mixed keys：优先 `*_id`，回退到 `*_name`。\n\n## Best-case 使用规范\n\n- best-cases 是可选 reference，不是强制 retrieval。\n- 只有在它们能提升已识别场景或行业的判断质量时才加载。\n- 如果加载，需在 `loaded_knowhow.best_cases` 中记录标识。\n- best-cases 绝不能覆盖当前 meeting evidence。\n\n## 评审交接契约\n\n调用 review skill 时，只传精简包：\n- generated human summary\n- generated machine output\n- retrieval trace\n- retry state\n- loaded knowhow identifiers\n- 最小支持证据摘录\n\nreview output 必须使用：\n- `pass: true|false`\n- `review_status: pass|fail`\n- `failure_reasons`\n- `targeted_regeneration_instructions`\n- `check_results`\n\nreview output 与 summary output status 不是同一个概念。\n\n## 失败与重试契约\n\n- 状态迁移使用 `references/retry-state-machine.md`。\n- 最多 2 次 targeted retries。\n- 超过后返回 `status: manual_review_required`，并附最后一次 failure reasons。\n\n## 参考文件\n\n- `references/output-schema.md`\n- `references/retry-state-machine.md`\n- `references/scenario-retrieval-mapping.md`\n- `references/memory-contract.md`\n- `references/knowhow/best-cases/README.md`\n- `review/SKILL.md`\n",
+          "numLines": 275,
+          "startLine": 1,
+          "totalLines": 275
+        }
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_rsBzj8eTNvK0R0l8gRYf9yfj",
+            "type": "tool_result",
+            "content": "1\t# CRM 数据字典\n2\t\n3\t使用这份字典，只请求真正能提升 summary 质量的 CRM data。\n4\t\n5\t## 账户字段\n6\t- account_id\n7\t- account_name\n8\t- industry\n9\t- lifecycle_stage\n10\t- account_tier\n11\t- current_products\n12\t- recent_health_status\n13\t- known_risks\n14\t\n15\t## 商机字段\n16\t- opportunity_id\n17\t- opportunity_name\n18\t- stage\n19\t- amount\n20\t- expected_close_date\n21\t- competitor_presence\n22\t- next_milestone\n23\t- blocker_summary\n24\t\n25\t## 互动字段\n26\t- recent_interactions\n27\t- last_commitments\n28\t- open_followups\n29\t- prior_escalations\n30\t\n31\t## 干系人字段\n32\t- person_role\n33\t- account_owner\n34\t- decision_makers\n35\t- procurement_owner\n36\t- implementation_owner\n37\t\n38\t## 交付 / 合规字段\n39\t- implementation_status\n40\t- support_tickets\n41\t- contract_status\n42\t- procurement_status\n43\t- compliance_constraints\n44\t\n45\t## 请求理由示例\n46\t\n47\t### account_profile_gap\n48\t当会议提到了 account context，但 account baseline 缺失时使用。\n49\t\n50\t### opportunity_progress_gap\n51\t当会议讨论推进、价格、时间线或 blockers，但当前 opportunity state 缺失时使用。\n52\t\n53\t### stakeholder_gap\n54\t当 influence map、owner map 或 approval chain 很关键，但核心角色不清晰时使用。\n55\t\n56\t### history_gap\n57\t当 summary 依赖历史承诺、重复异议或跨会议连续性时使用。\n58\t\n59\t### risk_validation_gap\n60\t当出现潜在不满、升级、交付或合规问题，且需要验证时使用。\n61\t\n62\t## 请求输出示例\n63\t\n64\t```json\n65\t[\n66\t  {\n67\t    \"reason\": \"opportunity_progress_gap\",\n68\t    \"fields\": [\"stage\", \"amount\", \"expected_close_date\"],\n69\t    \"why\": \"会议讨论了预算与成交时间，但当前 opportunity status 缺失。\"\n70\t  }\n71\t]\n72\t```\n73\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "d8e1c9b9-26f0-4618-a41d-78c6cf17048e",
+      "timestamp": "2026-04-08T11:17:33.795Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/crm-data-dictionary.md",
+          "content": "# CRM 数据字典\n\n使用这份字典，只请求真正能提升 summary 质量的 CRM data。\n\n## 账户字段\n- account_id\n- account_name\n- industry\n- lifecycle_stage\n- account_tier\n- current_products\n- recent_health_status\n- known_risks\n\n## 商机字段\n- opportunity_id\n- opportunity_name\n- stage\n- amount\n- expected_close_date\n- competitor_presence\n- next_milestone\n- blocker_summary\n\n## 互动字段\n- recent_interactions\n- last_commitments\n- open_followups\n- prior_escalations\n\n## 干系人字段\n- person_role\n- account_owner\n- decision_makers\n- procurement_owner\n- implementation_owner\n\n## 交付 / 合规字段\n- implementation_status\n- support_tickets\n- contract_status\n- procurement_status\n- compliance_constraints\n\n## 请求理由示例\n\n### account_profile_gap\n当会议提到了 account context，但 account baseline 缺失时使用。\n\n### opportunity_progress_gap\n当会议讨论推进、价格、时间线或 blockers，但当前 opportunity state 缺失时使用。\n\n### stakeholder_gap\n当 influence map、owner map 或 approval chain 很关键，但核心角色不清晰时使用。\n\n### history_gap\n当 summary 依赖历史承诺、重复异议或跨会议连续性时使用。\n\n### risk_validation_gap\n当出现潜在不满、升级、交付或合规问题，且需要验证时使用。\n\n## 请求输出示例\n\n```json\n[\n  {\n    \"reason\": \"opportunity_progress_gap\",\n    \"fields\": [\"stage\", \"amount\", \"expected_close_date\"],\n    \"why\": \"会议讨论了预算与成交时间，但当前 opportunity status 缺失。\"\n  }\n]\n```\n",
+          "numLines": 73,
+          "startLine": 1,
+          "totalLines": 73
+        }
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_3L0CwCRVC8xUvmln0fKUfWQS",
+            "type": "tool_result",
+            "content": "1\t# 输出 Schema\n2\t\n3\t使用这份 schema 作为 machine-consumable output 的结构定义。\n4\t字段语义以 `runtime-contract.md` 为准。\n5\t\n6\t```json\n7\t{\n8\t  \"status\": \"passed | manual_review_required | insufficient_context\",\n9\t  \"base_context\": {\n10\t    \"meeting_time\": \"string | null\",\n11\t    \"initiator\": {\"id\": \"string | null\", \"name\": \"string | null\"},\n12\t    \"account\": {\"id\": \"string | null\", \"name\": \"string | null\"},\n13\t    \"opportunity\": {\"id\": \"string | null\", \"name\": \"string | null\"},\n14\t    \"participants\": []\n15\t  },\n16\t  \"scenario_result\": {\n17\t    \"primary_scenario\": \"string\",\n18\t    \"scenario_slug\": \"string\",\n19\t    \"scenario_confidence\": \"high | medium | low\",\n20\t    \"scenario_mode\": \"normal | uncertain\",\n21\t    \"industry\": \"string | null\",\n22\t    \"secondary_tags\": [],\n23\t    \"evidence\": []\n24\t  },\n25\t  \"loaded_knowhow\": {\n26\t    \"mapping_version\": \"v1\",\n27\t    \"common\": [],\n28\t    \"scenario\": [],\n29\t    \"industry\": [],\n30\t    \"patches\": [],\n31\t    \"best_cases\": []\n32\t  },\n33\t  \"crm_data_requests\": [\n34\t    {\n35\t      \"reason\": \"string\",\n36\t      \"fields\": [],\n37\t      \"why\": \"string\",\n38\t      \"sources\": []\n39\t    }\n40\t  ],\n41\t  \"memory_sources\": [],\n42\t  \"memory_conflicts\": [],\n43\t  \"summary_fields\": {\n44\t    \"meeting_goal\": \"string\",\n45\t    \"relationship_state\": \"string\",\n46\t    \"decision_pressure\": \"string\",\n47\t    \"trust_state\": \"string\",\n48\t    \"momentum_state\": \"string\",\n49\t    \"key_participants\": [],\n50\t    \"current_stage_judgment\": \"string\",\n51\t    \"next_actions\": [],\n52\t    \"risk_level\": \"high | medium | low\",\n53\t    \"missing_information\": []\n54\t  },\n55\t  \"semantic_summary\": {\n56\t    \"relationship_state\": \"string\",\n57\t    \"decision_pressure\": \"string\",\n58\t    \"trust_state\": \"string\",\n59\t    \"momentum_state\": \"string\"\n60\t  },\n61\t  \"key_judgments\": {\n62\t    \"facts\": [],\n63\t    \"inferences\": [],\n64\t    \"open_questions\": []\n65\t  },\n66\t  \"knowhow_focus_items\": [],\n67\t  \"retrieval_trace\": {\n68\t    \"mapping_version\": \"v1\",\n69\t    \"scenario_mode\": \"normal | uncertain\",\n70\t    \"allowed_request_groups\": [],\n71\t    \"requested_request_groups\": [],\n72\t    \"out_of_policy_requests\": []\n73\t  },\n74\t  \"retry_state\": {\n75\t    \"revision\": 0,\n76\t    \"status\": \"draft_generated | passed | review_failed_retry_1 | review_failed_retry_2 | manual_review_required\",\n77\t    \"history\": []\n78\t  },\n79\t  \"review_ready_checks\": {\n80\t    \"scenario_self_consistency\": true,\n81\t    \"knowhow_coverage\": true,\n82\t    \"evidence_grounding\": true,\n83\t    \"memory_conflict_handling\": true,\n84\t    \"missing_information_handling\": true,\n85\t    \"policy_boundary_handling\": true,\n86\t    \"semantic_summary_consistency\": true,\n87\t    \"machine_output_completeness\": true\n88\t  }\n89\t}\n90\t```\n91\t\n92\t## 说明\n93\t\n94\t- `crm_data_requests[*].sources` 用于标明请求来源，例如 `knowhow:data_requirements`。\n95\t- 能用空数组时，优先输出空数组，不要省略字段。\n96\t- 未知值使用 `null`，不要编造。\n97\t- 人类可读总结与该结构分开输出。\n98\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "2a393646-6f7d-48b1-a274-d3348e82eee7",
+      "timestamp": "2026-04-08T11:17:33.796Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/output-schema.md",
+          "content": "# 输出 Schema\n\n使用这份 schema 作为 machine-consumable output 的结构定义。\n字段语义以 `runtime-contract.md` 为准。\n\n```json\n{\n  \"status\": \"passed | manual_review_required | insufficient_context\",\n  \"base_context\": {\n    \"meeting_time\": \"string | null\",\n    \"initiator\": {\"id\": \"string | null\", \"name\": \"string | null\"},\n    \"account\": {\"id\": \"string | null\", \"name\": \"string | null\"},\n    \"opportunity\": {\"id\": \"string | null\", \"name\": \"string | null\"},\n    \"participants\": []\n  },\n  \"scenario_result\": {\n    \"primary_scenario\": \"string\",\n    \"scenario_slug\": \"string\",\n    \"scenario_confidence\": \"high | medium | low\",\n    \"scenario_mode\": \"normal | uncertain\",\n    \"industry\": \"string | null\",\n    \"secondary_tags\": [],\n    \"evidence\": []\n  },\n  \"loaded_knowhow\": {\n    \"mapping_version\": \"v1\",\n    \"common\": [],\n    \"scenario\": [],\n    \"industry\": [],\n    \"patches\": [],\n    \"best_cases\": []\n  },\n  \"crm_data_requests\": [\n    {\n      \"reason\": \"string\",\n      \"fields\": [],\n      \"why\": \"string\",\n      \"sources\": []\n    }\n  ],\n  \"memory_sources\": [],\n  \"memory_conflicts\": [],\n  \"summary_fields\": {\n    \"meeting_goal\": \"string\",\n    \"relationship_state\": \"string\",\n    \"decision_pressure\": \"string\",\n    \"trust_state\": \"string\",\n    \"momentum_state\": \"string\",\n    \"key_participants\": [],\n    \"current_stage_judgment\": \"string\",\n    \"next_actions\": [],\n    \"risk_level\": \"high | medium | low\",\n    \"missing_information\": []\n  },\n  \"semantic_summary\": {\n    \"relationship_state\": \"string\",\n    \"decision_pressure\": \"string\",\n    \"trust_state\": \"string\",\n    \"momentum_state\": \"string\"\n  },\n  \"key_judgments\": {\n    \"facts\": [],\n    \"inferences\": [],\n    \"open_questions\": []\n  },\n  \"knowhow_focus_items\": [],\n  \"retrieval_trace\": {\n    \"mapping_version\": \"v1\",\n    \"scenario_mode\": \"normal | uncertain\",\n    \"allowed_request_groups\": [],\n    \"requested_request_groups\": [],\n    \"out_of_policy_requests\": []\n  },\n  \"retry_state\": {\n    \"revision\": 0,\n    \"status\": \"draft_generated | passed | review_failed_retry_1 | review_failed_retry_2 | manual_review_required\",\n    \"history\": []\n  },\n  \"review_ready_checks\": {\n    \"scenario_self_consistency\": true,\n    \"knowhow_coverage\": true,\n    \"evidence_grounding\": true,\n    \"memory_conflict_handling\": true,\n    \"missing_information_handling\": true,\n    \"policy_boundary_handling\": true,\n    \"semantic_summary_consistency\": true,\n    \"machine_output_completeness\": true\n  }\n}\n```\n\n## 说明\n\n- `crm_data_requests[*].sources` 用于标明请求来源，例如 `knowhow:data_requirements`。\n- 能用空数组时，优先输出空数组，不要省略字段。\n- 未知值使用 `null`，不要编造。\n- 人类可读总结与该结构分开输出。\n",
+          "numLines": 98,
+          "startLine": 1,
+          "totalLines": 98
+        }
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_tMZxIIQ9mlHvNfMagEbWEDbR",
+            "type": "tool_result",
+            "content": "1\t# 再生成状态机\n2\t\n3\t本文定义 `crm-meeting-summary` skill 的再生成循环。\n4\t\n5\t## 设计目标\n6\t\n7\t当 review 只在某个窄维度失败时，skill 必须保住强 summary 的主体。\n8\tretry 的目标是修复定向缺陷，不是让模型从头重写全部内容。\n9\t\n10\t## 状态图\n11\t\n12\t```text\n13\tinput_ready\n14\t  |\n15\t  v\n16\tscenario_gate\n17\t  | high / medium confidence\n18\t  |-------------------------------> draft_generated(revision=0)\n19\t  |\n20\t  | low confidence\n21\t  v\n22\tconservative_path\n23\t  |\n24\t  v\n25\tdraft_generated(revision=0, scenario_mode=uncertain)\n26\t  |\n27\t  v\n28\treview_evaluated\n29\t  | pass\n30\t  |-------------------------------> passed\n31\t  |\n32\t  | fail && revision=0\n33\t  v\n34\treview_failed_retry_1\n35\t  |\n36\t  v\n37\tdraft_generated(revision=1)\n38\t  |\n39\t  v\n40\treview_evaluated\n41\t  | pass\n42\t  |-------------------------------> passed\n43\t  |\n44\t  | fail && revision=1\n45\t  v\n46\treview_failed_retry_2\n47\t  |\n48\t  v\n49\tdraft_generated(revision=2)\n50\t  |\n51\t  v\n52\treview_evaluated\n53\t  | pass\n54\t  |-------------------------------> passed\n55\t  |\n56\t  | fail && revision=2\n57\t  v\n58\tmanual_review_required\n59\t```\n60\t\n61\t## 状态定义\n62\t\n63\t### 1. `input_ready`\n64\t\n65\t**目的**\n66\t- meeting package 已可用\n67\t- 基础 CRM context 已可用，或部分缺失\n68\t- 尚未生成任何 summary\n69\t\n70\t**必需输入**\n71\t- raw meeting record\n72\t- meeting time，如有\n73\t- 已关联的 `person` / `account` / `opportunity` / `contact` objects，如可用\n74\t\n75\t**退出条件**\n76\t- 基础归一化后进入 `scenario_gate`\n77\t\n78\t### 2. `scenario_gate`\n79\t\n80\t**目的**\n81\t- 将会议归类为一个 primary scenario\n82\t- 赋值 `scenario_confidence`\n83\t- 判断是否可以安全使用场景特定 retrieval\n84\t\n85\t**规则**\n86\t- `high` / `medium`: 进入正常 retrieval 流程\n87\t- `low`: 不能假装高置信分类已经成立\n88\t\n89\t**低置信回退**\n90\t- 除非某个 scenario 在弱证据下仍明显占优，否则将 `primary_scenario` 设为 `其他/不确定`\n91\t- 默认只加载 `common` knowhow\n92\t- 只允许最小的消歧 CRM request set\n93\t- 标记 `scenario_mode: uncertain`\n94\t- 降低下游判断置信度\n95\t\n96\t**退出条件**\n97\t- 进入 `draft_generated(revision=0)`\n98\t\n99\t### 3. `draft_generated`\n100\t\n101\t**目的**\n102\t- 产出一份同步 summary package\n103\t\n104\t**必需输出**\n105\t- human-readable summary\n106\t- machine-readable structure\n107\t- trace bundle\n108\t\n109\t**硬性约束**\n110\t1. human-readable 与 machine-readable outputs 必须来自同一事实底座。\n111\t2. machine structure 是以下字段的 source of truth：\n112\t   - `meeting_goal`\n113\t   - `current_stage_judgment`\n114\t   - `next_actions`\n115\t   - `risk_level`\n116\t   - `missing_information`\n117\t3. human-readable prose 可以扩展措辞，但不能与 machine fields 矛盾。\n118\t4. 如果 `scenario_mode=uncertain`，draft 必须降低判断强度，并显式写出歧义。\n119\t\n120\t**Trace bundle minimum**\n121\t- scenario evidence\n122\t- loaded knowhow IDs 或 paths\n123\t- CRM request reasons\n124\t- memory lookup results\n125\t- memory conflicts\n126\t- 传递给 review 的 evidence excerpts\n127\t\n128\t**退出条件**\n129\t- 进入 `review_evaluated`\n130\t\n131\t### 4. `review_evaluated`\n132\t\n133\t**目的**\n134\t- 使用 review skill 对 draft 进行评估\n135\t\n136\t**Review 输入包**\n137\t使用精简 review package，不要重新发送整份原始上下文。\n138\t\n139\t只包含：\n140\t- generated human summary\n141\t- generated machine structure\n142\t- trace bundle\n143\t- 用于验证争议 claim 的最小支持证据摘录\n144\t- loaded knowhow identifiers\n145\t\n146\t不要包含：\n147\t- 除非争议点需要，否则不要放完整 knowhow 正文\n148\t- 当窄摘录已足以证明时，不要放完整 CRM dumps\n149\t- 当只涉及一个 memory item 时，不要放完整 memory payloads\n150\t\n151\t**Review 结果结构**\n152\t- `pass: true|false`\n153\t- `failure_reasons`\n154\t- `targeted_regeneration_instructions`\n155\t- `check_results`\n156\t\n157\t**退出条件**\n158\t- `pass=true` -> `passed`\n159\t- `pass=false && revision=0` -> `review_failed_retry_1`\n160\t- `pass=false && revision=1` -> `review_failed_retry_2`\n161\t- `pass=false && revision=2` -> `manual_review_required`\n162\t\n163\t### 5. `review_failed_retry_1`\n164\t\n165\t**目的**\n166\t- 执行第一次定向修复\n167\t\n168\t**输入补充**\n169\t- prior draft\n170\t- review failure reasons\n171\t- targeted regeneration instructions\n172\t\n173\t**规则**\n174\t- 只改失败维度\n175\t- 保留通过维度\n176\t- 除非 failure reason 明确指出原事实无支撑，否则保留原 facts\n177\t- 保持相同 trace categories，只更新发生变化的部分\n178\t\n179\t**退出条件**\n180\t- 进入 `draft_generated(revision=1)`\n181\t\n182\t### 6. `review_failed_retry_2`\n183\t\n184\t与 retry 1 相同，但更严格。\n185\t\n186\t**Extra rule**\n187\t- 不允许大范围风格性重写\n188\t- 如果第二次修复需要改 scenario、knowhow set 或 CRM request scope，必须在 trace 中明确记录\n189\t\n190\t**退出条件**\n191\t- 进入 `draft_generated(revision=2)`\n192\t\n193\t### 7. `passed`\n194\t\n195\t**目的**\n196\t- 最终交付物可安全返回\n197\t\n198\t**必需输出**\n199\t- final human-readable summary\n200\t- final machine-readable structure\n201\t- `status: passed`\n202\t- final trace bundle\n203\t\n204\t### 8. `manual_review_required`\n205\t\n206\t**目的**\n207\t- 两次修复失败后停止自动化\n208\t\n209\t**必需输出**\n210\t- 当前最佳 human-readable summary\n211\t- 当前最佳 machine-readable structure\n212\t- `status: manual_review_required`\n213\t- 上一次 review 的累计 failure reasons\n214\t- 上一次 targeted regeneration instructions\n215\t- 带 retry history 的 trace bundle\n216\t\n217\t## 重试历史契约\n218\t\n219\t发生任何 retry 时，在 machine output 中加入 retry history block。\n220\t\n221\t```json\n222\t{\n223\t  \"retry_state\": {\n224\t    \"revision\": 2,\n225\t    \"status\": \"manual_review_required\",\n226\t    \"history\": [\n227\t      {\n228\t        \"revision\": 0,\n229\t        \"review_status\": \"fail\",\n230\t        \"failed_checks\": [\"knowhow_coverage\"]\n231\t      },\n232\t      {\n233\t        \"revision\": 1,\n234\t        \"review_status\": \"fail\",\n235\t        \"failed_checks\": [\"machine_output_completeness\"]\n236\t      }\n237\t    ]\n238\t  }\n239\t}\n240\t```\n241\t\n242\t## 非目标\n243\t\n244\tretry 不允许：\n245\t- 引入 evidence 中不存在的新事实\n246\t- 除非 review failure 已证明原范围不足，否则扩大 CRM retrieval scope\n247\t- 在 low-confidence 情况下静默地把 `其他/不确定` 改成高置信 scenario\n248\t- 仅为了风格而重写整份 summary\n249\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "b1916c80-212a-43a6-9851-936a4191d06f",
+      "timestamp": "2026-04-08T11:17:33.797Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/retry-state-machine.md",
+          "content": "# 再生成状态机\n\n本文定义 `crm-meeting-summary` skill 的再生成循环。\n\n## 设计目标\n\n当 review 只在某个窄维度失败时，skill 必须保住强 summary 的主体。\nretry 的目标是修复定向缺陷，不是让模型从头重写全部内容。\n\n## 状态图\n\n```text\ninput_ready\n  |\n  v\nscenario_gate\n  | high / medium confidence\n  |-------------------------------> draft_generated(revision=0)\n  |\n  | low confidence\n  v\nconservative_path\n  |\n  v\ndraft_generated(revision=0, scenario_mode=uncertain)\n  |\n  v\nreview_evaluated\n  | pass\n  |-------------------------------> passed\n  |\n  | fail && revision=0\n  v\nreview_failed_retry_1\n  |\n  v\ndraft_generated(revision=1)\n  |\n  v\nreview_evaluated\n  | pass\n  |-------------------------------> passed\n  |\n  | fail && revision=1\n  v\nreview_failed_retry_2\n  |\n  v\ndraft_generated(revision=2)\n  |\n  v\nreview_evaluated\n  | pass\n  |-------------------------------> passed\n  |\n  | fail && revision=2\n  v\nmanual_review_required\n```\n\n## 状态定义\n\n### 1. `input_ready`\n\n**目的**\n- meeting package 已可用\n- 基础 CRM context 已可用，或部分缺失\n- 尚未生成任何 summary\n\n**必需输入**\n- raw meeting record\n- meeting time，如有\n- 已关联的 `person` / `account` / `opportunity` / `contact` objects，如可用\n\n**退出条件**\n- 基础归一化后进入 `scenario_gate`\n\n### 2. `scenario_gate`\n\n**目的**\n- 将会议归类为一个 primary scenario\n- 赋值 `scenario_confidence`\n- 判断是否可以安全使用场景特定 retrieval\n\n**规则**\n- `high` / `medium`: 进入正常 retrieval 流程\n- `low`: 不能假装高置信分类已经成立\n\n**低置信回退**\n- 除非某个 scenario 在弱证据下仍明显占优，否则将 `primary_scenario` 设为 `其他/不确定`\n- 默认只加载 `common` knowhow\n- 只允许最小的消歧 CRM request set\n- 标记 `scenario_mode: uncertain`\n- 降低下游判断置信度\n\n**退出条件**\n- 进入 `draft_generated(revision=0)`\n\n### 3. `draft_generated`\n\n**目的**\n- 产出一份同步 summary package\n\n**必需输出**\n- human-readable summary\n- machine-readable structure\n- trace bundle\n\n**硬性约束**\n1. human-readable 与 machine-readable outputs 必须来自同一事实底座。\n2. machine structure 是以下字段的 source of truth：\n   - `meeting_goal`\n   - `current_stage_judgment`\n   - `next_actions`\n   - `risk_level`\n   - `missing_information`\n3. human-readable prose 可以扩展措辞，但不能与 machine fields 矛盾。\n4. 如果 `scenario_mode=uncertain`，draft 必须降低判断强度，并显式写出歧义。\n\n**Trace bundle minimum**\n- scenario evidence\n- loaded knowhow IDs 或 paths\n- CRM request reasons\n- memory lookup results\n- memory conflicts\n- 传递给 review 的 evidence excerpts\n\n**退出条件**\n- 进入 `review_evaluated`\n\n### 4. `review_evaluated`\n\n**目的**\n- 使用 review skill 对 draft 进行评估\n\n**Review 输入包**\n使用精简 review package，不要重新发送整份原始上下文。\n\n只包含：\n- generated human summary\n- generated machine structure\n- trace bundle\n- 用于验证争议 claim 的最小支持证据摘录\n- loaded knowhow identifiers\n\n不要包含：\n- 除非争议点需要，否则不要放完整 knowhow 正文\n- 当窄摘录已足以证明时，不要放完整 CRM dumps\n- 当只涉及一个 memory item 时，不要放完整 memory payloads\n\n**Review 结果结构**\n- `pass: true|false`\n- `failure_reasons`\n- `targeted_regeneration_instructions`\n- `check_results`\n\n**退出条件**\n- `pass=true` -> `passed`\n- `pass=false && revision=0` -> `review_failed_retry_1`\n- `pass=false && revision=1` -> `review_failed_retry_2`\n- `pass=false && revision=2` -> `manual_review_required`\n\n### 5. `review_failed_retry_1`\n\n**目的**\n- 执行第一次定向修复\n\n**输入补充**\n- prior draft\n- review failure reasons\n- targeted regeneration instructions\n\n**规则**\n- 只改失败维度\n- 保留通过维度\n- 除非 failure reason 明确指出原事实无支撑，否则保留原 facts\n- 保持相同 trace categories，只更新发生变化的部分\n\n**退出条件**\n- 进入 `draft_generated(revision=1)`\n\n### 6. `review_failed_retry_2`\n\n与 retry 1 相同，但更严格。\n\n**Extra rule**\n- 不允许大范围风格性重写\n- 如果第二次修复需要改 scenario、knowhow set 或 CRM request scope，必须在 trace 中明确记录\n\n**退出条件**\n- 进入 `draft_generated(revision=2)`\n\n### 7. `passed`\n\n**目的**\n- 最终交付物可安全返回\n\n**必需输出**\n- final human-readable summary\n- final machine-readable structure\n- `status: passed`\n- final trace bundle\n\n### 8. `manual_review_required`\n\n**目的**\n- 两次修复失败后停止自动化\n\n**必需输出**\n- 当前最佳 human-readable summary\n- 当前最佳 machine-readable structure\n- `status: manual_review_required`\n- 上一次 review 的累计 failure reasons\n- 上一次 targeted regeneration instructions\n- 带 retry history 的 trace bundle\n\n## 重试历史契约\n\n发生任何 retry 时，在 machine output 中加入 retry history block。\n\n```json\n{\n  \"retry_state\": {\n    \"revision\": 2,\n    \"status\": \"manual_review_required\",\n    \"history\": [\n      {\n        \"revision\": 0,\n        \"review_status\": \"fail\",\n        \"failed_checks\": [\"knowhow_coverage\"]\n      },\n      {\n        \"revision\": 1,\n        \"review_status\": \"fail\",\n        \"failed_checks\": [\"machine_output_completeness\"]\n      }\n    ]\n  }\n}\n```\n\n## 非目标\n\nretry 不允许：\n- 引入 evidence 中不存在的新事实\n- 除非 review failure 已证明原范围不足，否则扩大 CRM retrieval scope\n- 在 low-confidence 情况下静默地把 `其他/不确定` 改成高置信 scenario\n- 仅为了风格而重写整份 summary\n",
+          "numLines": 249,
+          "startLine": 1,
+          "totalLines": 249
+        }
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_SEvL1BJAwVPcPd2pz5PbFm3L",
+            "type": "tool_result",
+            "content": "1\t# 场景检索映射\n2\t\n3\t版本: `v1`\n4\t\n5\t这份 mapping 让 scenario-driven retrieval 可审计。\n6\t它不会取消模型判断，只是限制模型默认允许拉取什么。\n7\t\n8\t## 检索策略\n9\t\n10\t1. 先识别 `primary_scenario` 与 `scenario_confidence`。\n11\t2. 在加载场景特定 retrieval 前，先应用 low-confidence fallback。\n12\t3. 只加载表中允许的最小 knowhow 和 CRM fields。\n13\t4. 如果模型请求表外字段，必须在 trace 中解释例外原因。\n14\t5. scenario / patch knowhow 可以通过 `data_requirements` 细化允许组内的字段，但不能新增默认 request groups。\n15\t\n16\t## 映射表\n17\t\n18\t| Scenario | Must-load knowhow | Optional knowhow | Default CRM request groups | Prohibited default pulls |\n19\t|---|---|---|---|---|\n20\t| 首次接触 / 破冰 | common, scenario | industry | stakeholder_gap, account_profile_gap | full interaction history, contract/procurement details |\n21\t| 需求澄清 | common, scenario | industry, patch | account_profile_gap, stakeholder_gap, risk_validation_gap | pricing/package details unless explicitly discussed |\n22\t| 方案介绍 / 演示 | common, scenario | industry, patch | stakeholder_gap, history_gap | full delivery/compliance status unless implementation risk appears |\n23\t| 商务推进 / 谈判 | common, scenario | industry, patch | opportunity_progress_gap, stakeholder_gap, risk_validation_gap | full support-ticket history unless trust risk appears |\n24\t| 试点 / PoC 推进 | common, scenario | industry, patch | opportunity_progress_gap, stakeholder_gap, risk_validation_gap | full procurement details unless evaluation already enters buying process |\n25\t| 项目交付 / 实施沟通 | common, scenario | industry | history_gap, risk_validation_gap, stakeholder_gap | quote / amount / close-date unless commercial motion reappears |\n26\t| 续约 / 增购 | common, scenario | industry, patch | account_profile_gap, opportunity_progress_gap, history_gap, risk_validation_gap | deep implementation data unless delivery risk affects renewal |\n27\t| 风险 / 投诉 / 升级处理 | common, scenario | industry | history_gap, risk_validation_gap, stakeholder_gap | broad commercial pulls unless churn/commercial impact is explicit |\n28\t| 内部协同 / 复盘 | common, scenario | industry | stakeholder_gap, history_gap, opportunity_progress_gap | full memory sweep across unrelated objects |\n29\t| 其他 / 不确定 | common only | industry only if independently evidenced | stakeholder_gap or one ambiguity-resolution request only | scenario patch, broad CRM pull, broad memory pull |\n30\t\n31\t## 低置信回退规则\n32\t\n33\t如果 `scenario_confidence = low`：\n34\t- 只加载 `common` knowhow\n35\t- 只有行业有独立证据时才加载 `industry` knowhow\n36\t- 不加载 scenario patches\n37\t- CRM requests 限制为一个消歧 request bundle\n38\t- memory 限制为一个 object scope，除非当前事实要求更多\n39\t- 输出 `scenario_mode: uncertain`\n40\t\n41\t## Trace 要求\n42\t\n43\t每次运行都必须输出：\n44\t\n45\t```json\n46\t{\n47\t  \"retrieval_trace\": {\n48\t    \"mapping_version\": \"v1\",\n49\t    \"scenario_mode\": \"normal | uncertain\",\n50\t    \"allowed_request_groups\": [\"stakeholder_gap\"],\n51\t    \"requested_request_groups\": [\"stakeholder_gap\"],\n52\t    \"out_of_policy_requests\": []\n53\t  }\n54\t}\n55\t```\n56\t\n57\t## 例外策略\n58\t\n59\t如果 skill 请求了表外 retrieval，trace 必须包含：\n60\t- requested group\n61\t- 为什么当前 scenario mapping 不够\n62\t- 迫使例外发生的精确 evidence\n63\t\n64\t禁止 silent exceptions。\n65\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "784c0532-c64a-4315-84bb-177c95af79ba",
+      "timestamp": "2026-04-08T11:17:33.799Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/scenario-retrieval-mapping.md",
+          "content": "# 场景检索映射\n\n版本: `v1`\n\n这份 mapping 让 scenario-driven retrieval 可审计。\n它不会取消模型判断，只是限制模型默认允许拉取什么。\n\n## 检索策略\n\n1. 先识别 `primary_scenario` 与 `scenario_confidence`。\n2. 在加载场景特定 retrieval 前，先应用 low-confidence fallback。\n3. 只加载表中允许的最小 knowhow 和 CRM fields。\n4. 如果模型请求表外字段，必须在 trace 中解释例外原因。\n5. scenario / patch knowhow 可以通过 `data_requirements` 细化允许组内的字段，但不能新增默认 request groups。\n\n## 映射表\n\n| Scenario | Must-load knowhow | Optional knowhow | Default CRM request groups | Prohibited default pulls |\n|---|---|---|---|---|\n| 首次接触 / 破冰 | common, scenario | industry | stakeholder_gap, account_profile_gap | full interaction history, contract/procurement details |\n| 需求澄清 | common, scenario | industry, patch | account_profile_gap, stakeholder_gap, risk_validation_gap | pricing/package details unless explicitly discussed |\n| 方案介绍 / 演示 | common, scenario | industry, patch | stakeholder_gap, history_gap | full delivery/compliance status unless implementation risk appears |\n| 商务推进 / 谈判 | common, scenario | industry, patch | opportunity_progress_gap, stakeholder_gap, risk_validation_gap | full support-ticket history unless trust risk appears |\n| 试点 / PoC 推进 | common, scenario | industry, patch | opportunity_progress_gap, stakeholder_gap, risk_validation_gap | full procurement details unless evaluation already enters buying process |\n| 项目交付 / 实施沟通 | common, scenario | industry | history_gap, risk_validation_gap, stakeholder_gap | quote / amount / close-date unless commercial motion reappears |\n| 续约 / 增购 | common, scenario | industry, patch | account_profile_gap, opportunity_progress_gap, history_gap, risk_validation_gap | deep implementation data unless delivery risk affects renewal |\n| 风险 / 投诉 / 升级处理 | common, scenario | industry | history_gap, risk_validation_gap, stakeholder_gap | broad commercial pulls unless churn/commercial impact is explicit |\n| 内部协同 / 复盘 | common, scenario | industry | stakeholder_gap, history_gap, opportunity_progress_gap | full memory sweep across unrelated objects |\n| 其他 / 不确定 | common only | industry only if independently evidenced | stakeholder_gap or one ambiguity-resolution request only | scenario patch, broad CRM pull, broad memory pull |\n\n## 低置信回退规则\n\n如果 `scenario_confidence = low`：\n- 只加载 `common` knowhow\n- 只有行业有独立证据时才加载 `industry` knowhow\n- 不加载 scenario patches\n- CRM requests 限制为一个消歧 request bundle\n- memory 限制为一个 object scope，除非当前事实要求更多\n- 输出 `scenario_mode: uncertain`\n\n## Trace 要求\n\n每次运行都必须输出：\n\n```json\n{\n  \"retrieval_trace\": {\n    \"mapping_version\": \"v1\",\n    \"scenario_mode\": \"normal | uncertain\",\n    \"allowed_request_groups\": [\"stakeholder_gap\"],\n    \"requested_request_groups\": [\"stakeholder_gap\"],\n    \"out_of_policy_requests\": []\n  }\n}\n```\n\n## 例外策略\n\n如果 skill 请求了表外 retrieval，trace 必须包含：\n- requested group\n- 为什么当前 scenario mapping 不够\n- 迫使例外发生的精确 evidence\n\n禁止 silent exceptions。\n",
+          "numLines": 65,
+          "startLine": 1,
+          "totalLines": 65
+        }
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_WOOrvU2OAQ2D8gHO0mJQnCzr",
+            "type": "tool_result",
+            "content": "1\t# CRM 会议场景分类\n2\t\n3\t版本: `v1`\n4\t\n5\t使用这份 taxonomy 来识别 CRM meeting 的 primary scenario。\n6\t\n7\t## 主场景\n8\t\n9\t每个 scenario 都有一个用于 `references/knowhow/by-scenario/` 文件查找的 `slug`。\n10\t\n11\t### 1. 首次接触 / 破冰\n12\t- Slug: `first-contact`\n13\t- Definition: 早期接触，目标是建立连接、理解高层背景，或开启关系。\n14\t- Positive signals: 自我介绍、背景交换、宽泛痛点探索、尚未进入详细方案对齐。\n15\t- Exclusion signals: 深入产品 walkthrough、项目范围已确认、活跃 procurement 讨论。\n16\t- Focus: 关系基础、问题 framing、stakeholder mapping、下一步 qualification。\n17\t\n18\t### 2. 需求澄清\n19\t- Slug: `needs-clarification`\n20\t- Definition: 聚焦于澄清业务问题、范围、约束、优先级或成功标准的会议。\n21\t- Positive signals: 当前流程讨论、需求清单、问题深入、成功指标澄清。\n22\t- Exclusion signals: 价格谈判主导，或实施计划已经锁定。\n23\t- Focus: 真实需求、紧迫性、约束、决策因素、qualification 质量。\n24\t\n25\t### 3. 方案介绍 / 演示\n26\t- Slug: `solution-demo`\n27\t- Definition: 以方案说明、产品 walkthrough、能力匹配或 demo 反馈为中心的会议。\n28\t- Positive signals: demo、能力映射、功能问题、fit-gap 分析。\n29\t- Exclusion signals: 合同/法务条款主导，或交付问题复盘主导。\n30\t- Focus: fit、异议、决策信心、缺失 proof points。\n31\t\n32\t### 4. 商务推进 / 谈判\n33\t- Slug: `commercial-negotiation`\n34\t- Definition: 聚焦于价格、套餐、procurement、ROI 或 buying process 的商业推进会议。\n35\t- Positive signals: quote、budget、procurement path、对比、谈判条款、购买时间线。\n36\t- Exclusion signals: 主要仍是技术适配讨论，没有商业推进动作。\n37\t- Focus: buying intent、blockers、商业杠杆、审批路径、close risk。\n38\t\n39\t### 5. 试点 / PoC 推进\n40\t- Slug: `poc-advance`\n41\t- Definition: 围绕试点设计、评估范围、成功标准、验证过程或 proof milestones 的会议。\n42\t- Positive signals: pilot scope、milestone、acceptance criteria、test plan、evaluation owner。\n43\t- Exclusion signals: 已经进入完整实施交付。\n44\t- Focus: success definition、adoption risk、evaluation fairness、timeline discipline。\n45\t\n46\t### 6. 项目交付 / 实施沟通\n47\t- Slug: `delivery-implementation`\n48\t- Definition: 聚焦部署、实施进展、交付问题、enablement 或执行协同的会议。\n49\t- Positive signals: timeline、owner、dependency、rollout、问题解决、enablement。\n50\t- Exclusion signals: pre-sales qualification 或 pricing 仍是主话题。\n51\t- Focus: delivery risk、dependency risk、stakeholder alignment、unblock plan。\n52\t\n53\t### 7. 续约 / 增购\n54\t- Slug: `renewal-expansion`\n55\t- Definition: 目标是续约、扩容、交叉销售、增购，或重新评估合同价值的会议。\n56\t- Positive signals: renewal timing、usage value、expansion need、额外 seats/modules。\n57\t- Exclusion signals: 没有现有关系基础的全新 discovery。\n58\t- Focus: retained value、expansion signal、churn risk、效果证明。\n59\t\n60\t### 8. 风险 / 投诉 / 升级处理\n61\t- Slug: `risk-escalation`\n62\t- Definition: 由不满、升级、交付问题、信任受损或业务风险触发的会议。\n63\t- Positive signals: complaint、urgency、失望、escalation language、承诺未兑现。\n64\t- Exclusion signals: 没有实质担忧的普通状态同步。\n65\t- Focus: 根因风险、责任归属、止损、恢复方案、关系挽回。\n66\t\n67\t### 9. 内部协同 / 复盘\n68\t- Slug: `internal-review`\n69\t- Definition: 面向内部的 CRM 讨论，用于 account strategy、handoff、决策支持或 deal review。\n70\t- Positive signals: 内部对齐、策略复盘、owner 协同、下一步规划。\n71\t- Exclusion signals: 以客户外部沟通内容为主。\n72\t- Focus: 决策清晰度、owner 清晰度、风险图谱、协同动作。\n73\t\n74\t### 10. 其他 / 不确定\n75\t- Slug: `uncertain`\n76\t- Definition: 当证据不足以强支撑任一主场景时使用。\n77\t- Focus: 解释歧义，并列出完成可靠分类所缺的信号。\n78\t\n79\t## 次级标签维度\n80\t\n81\t在证据支持时，可使用零个或多个 tags：\n82\t- industry\n83\t- customer_stage\n84\t- decision_chain_role\n85\t- risk\n86\t- compliance\n87\t- competitor\n88\t\n89\t## 分类规则\n90\t\n91\t1. 只能选一个 primary scenario。\n92\t2. 业务意图优先于字面会议标题。\n93\t3. 如果两个 scenario 竞争，选最能解释会议主决策压力的那个。\n94\t4. 证据弱时，降低 confidence，并使用 `其他/不确定`。\n95\t5. 记录用于分类的关键 evidence。\n96\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "6ec23fca-88b4-4854-b427-5ee6fd04a2fa",
+      "timestamp": "2026-04-08T11:17:33.800Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/taxonomy.md",
+          "content": "# CRM 会议场景分类\n\n版本: `v1`\n\n使用这份 taxonomy 来识别 CRM meeting 的 primary scenario。\n\n## 主场景\n\n每个 scenario 都有一个用于 `references/knowhow/by-scenario/` 文件查找的 `slug`。\n\n### 1. 首次接触 / 破冰\n- Slug: `first-contact`\n- Definition: 早期接触，目标是建立连接、理解高层背景，或开启关系。\n- Positive signals: 自我介绍、背景交换、宽泛痛点探索、尚未进入详细方案对齐。\n- Exclusion signals: 深入产品 walkthrough、项目范围已确认、活跃 procurement 讨论。\n- Focus: 关系基础、问题 framing、stakeholder mapping、下一步 qualification。\n\n### 2. 需求澄清\n- Slug: `needs-clarification`\n- Definition: 聚焦于澄清业务问题、范围、约束、优先级或成功标准的会议。\n- Positive signals: 当前流程讨论、需求清单、问题深入、成功指标澄清。\n- Exclusion signals: 价格谈判主导，或实施计划已经锁定。\n- Focus: 真实需求、紧迫性、约束、决策因素、qualification 质量。\n\n### 3. 方案介绍 / 演示\n- Slug: `solution-demo`\n- Definition: 以方案说明、产品 walkthrough、能力匹配或 demo 反馈为中心的会议。\n- Positive signals: demo、能力映射、功能问题、fit-gap 分析。\n- Exclusion signals: 合同/法务条款主导，或交付问题复盘主导。\n- Focus: fit、异议、决策信心、缺失 proof points。\n\n### 4. 商务推进 / 谈判\n- Slug: `commercial-negotiation`\n- Definition: 聚焦于价格、套餐、procurement、ROI 或 buying process 的商业推进会议。\n- Positive signals: quote、budget、procurement path、对比、谈判条款、购买时间线。\n- Exclusion signals: 主要仍是技术适配讨论，没有商业推进动作。\n- Focus: buying intent、blockers、商业杠杆、审批路径、close risk。\n\n### 5. 试点 / PoC 推进\n- Slug: `poc-advance`\n- Definition: 围绕试点设计、评估范围、成功标准、验证过程或 proof milestones 的会议。\n- Positive signals: pilot scope、milestone、acceptance criteria、test plan、evaluation owner。\n- Exclusion signals: 已经进入完整实施交付。\n- Focus: success definition、adoption risk、evaluation fairness、timeline discipline。\n\n### 6. 项目交付 / 实施沟通\n- Slug: `delivery-implementation`\n- Definition: 聚焦部署、实施进展、交付问题、enablement 或执行协同的会议。\n- Positive signals: timeline、owner、dependency、rollout、问题解决、enablement。\n- Exclusion signals: pre-sales qualification 或 pricing 仍是主话题。\n- Focus: delivery risk、dependency risk、stakeholder alignment、unblock plan。\n\n### 7. 续约 / 增购\n- Slug: `renewal-expansion`\n- Definition: 目标是续约、扩容、交叉销售、增购，或重新评估合同价值的会议。\n- Positive signals: renewal timing、usage value、expansion need、额外 seats/modules。\n- Exclusion signals: 没有现有关系基础的全新 discovery。\n- Focus: retained value、expansion signal、churn risk、效果证明。\n\n### 8. 风险 / 投诉 / 升级处理\n- Slug: `risk-escalation`\n- Definition: 由不满、升级、交付问题、信任受损或业务风险触发的会议。\n- Positive signals: complaint、urgency、失望、escalation language、承诺未兑现。\n- Exclusion signals: 没有实质担忧的普通状态同步。\n- Focus: 根因风险、责任归属、止损、恢复方案、关系挽回。\n\n### 9. 内部协同 / 复盘\n- Slug: `internal-review`\n- Definition: 面向内部的 CRM 讨论，用于 account strategy、handoff、决策支持或 deal review。\n- Positive signals: 内部对齐、策略复盘、owner 协同、下一步规划。\n- Exclusion signals: 以客户外部沟通内容为主。\n- Focus: 决策清晰度、owner 清晰度、风险图谱、协同动作。\n\n### 10. 其他 / 不确定\n- Slug: `uncertain`\n- Definition: 当证据不足以强支撑任一主场景时使用。\n- Focus: 解释歧义，并列出完成可靠分类所缺的信号。\n\n## 次级标签维度\n\n在证据支持时，可使用零个或多个 tags：\n- industry\n- customer_stage\n- decision_chain_role\n- risk\n- compliance\n- competitor\n\n## 分类规则\n\n1. 只能选一个 primary scenario。\n2. 业务意图优先于字面会议标题。\n3. 如果两个 scenario 竞争，选最能解释会议主决策压力的那个。\n4. 证据弱时，降低 confidence，并使用 `其他/不确定`。\n5. 记录用于分类的关键 evidence。\n",
+          "numLines": 96,
+          "startLine": 1,
+          "totalLines": 96
+        }
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_FpcQXVJ1ehiQd8ubVABwgWVs",
+            "type": "tool_result",
+            "content": "1\t# Memory 使用契约\n2\t\n3\t版本: `v1`\n4\t\n5\t将 memory 视为外部数据源。该 skill 只读取 memory，不负责定义 memory 系统如何产生或治理。\n6\t\n7\t## Memory 对象范围\n8\t- person\n9\t- account\n10\t- opportunity\n11\t- contact\n12\t\n13\t## CRM 对象关系提醒\n14\t- account / opportunity / contact 都可以有 owner\n15\t- owner 始终是 `person`\n16\t- 一条 sales record 可以在 account、opportunity 或 contact 下发起\n17\t- 一条 sales record 可能同时关联多个 objects\n18\t- initiator 是 `person`\n19\t\n20\t## 查找优先级\n21\t1. object ID\n22\t2. object name\n23\t3. ambiguous match -> 不猜，直接返回歧义\n24\t\n25\t## 关键策略\n26\t在 mock 与 runtime contracts 中使用 mixed keys：\n27\t- 有 `*_id` 时优先使用\n28\t- 没有 ID 时回退到 `*_name`\n29\t\n30\t## Skill 侧使用规则\n31\t1. 当前 meeting record 优先级最高。\n32\t2. 当前 CRM data 优先级第二。\n33\t3. memory 只做补充上下文，不能覆盖当前证据。\n34\t4. 如果 memory 提供的字段多于所需，只读最小相关子集。\n35\t\n36\t## 适合的 skill 侧 memory 用法\n37\t- relationship continuity\n38\t- stakeholder preference patterns\n39\t- prior commitment history\n40\t- historical sensitivity or escalation context\n41\t- recurring objections or approval patterns\n42\t\n43\t## 不适合的 skill 侧 memory 用法\n44\t- 不要把旧 memory 当成当前事实\n45\t- 不要仅凭 memory 推断缺失的 CRM fields\n46\t- 不要在缺少 source 支撑时用 memory 抬高置信度\n47\t\n48\t## 冲突处理\n49\t如果 memory 与当前 evidence 冲突：\n50\t1. 优先信任当前 meeting/CRM evidence\n51\t2. 标记冲突用于 review\n52\t3. 如果冲突影响关键判断，降低置信度\n53\t\n54\t## 建议的机器可读 trace\n55\t\n56\t```json\n57\t{\n58\t  \"memory_sources\": [\n59\t    {\n60\t      \"scope\": \"account\",\n61\t      \"lookup_key\": \"account_id:CUST-001\",\n62\t      \"used\": true,\n63\t      \"notes\": [\"提供历史采购偏好上下文。\"]\n64\t    }\n65\t  ],\n66\t  \"memory_conflicts\": []\n67\t}\n68\t```\n69\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "9c16cd9d-6232-4521-9b10-188325672f64",
+      "timestamp": "2026-04-08T11:17:33.802Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/memory-contract.md",
+          "content": "# Memory 使用契约\n\n版本: `v1`\n\n将 memory 视为外部数据源。该 skill 只读取 memory，不负责定义 memory 系统如何产生或治理。\n\n## Memory 对象范围\n- person\n- account\n- opportunity\n- contact\n\n## CRM 对象关系提醒\n- account / opportunity / contact 都可以有 owner\n- owner 始终是 `person`\n- 一条 sales record 可以在 account、opportunity 或 contact 下发起\n- 一条 sales record 可能同时关联多个 objects\n- initiator 是 `person`\n\n## 查找优先级\n1. object ID\n2. object name\n3. ambiguous match -> 不猜，直接返回歧义\n\n## 关键策略\n在 mock 与 runtime contracts 中使用 mixed keys：\n- 有 `*_id` 时优先使用\n- 没有 ID 时回退到 `*_name`\n\n## Skill 侧使用规则\n1. 当前 meeting record 优先级最高。\n2. 当前 CRM data 优先级第二。\n3. memory 只做补充上下文，不能覆盖当前证据。\n4. 如果 memory 提供的字段多于所需，只读最小相关子集。\n\n## 适合的 skill 侧 memory 用法\n- relationship continuity\n- stakeholder preference patterns\n- prior commitment history\n- historical sensitivity or escalation context\n- recurring objections or approval patterns\n\n## 不适合的 skill 侧 memory 用法\n- 不要把旧 memory 当成当前事实\n- 不要仅凭 memory 推断缺失的 CRM fields\n- 不要在缺少 source 支撑时用 memory 抬高置信度\n\n## 冲突处理\n如果 memory 与当前 evidence 冲突：\n1. 优先信任当前 meeting/CRM evidence\n2. 标记冲突用于 review\n3. 如果冲突影响关键判断，降低置信度\n\n## 建议的机器可读 trace\n\n```json\n{\n  \"memory_sources\": [\n    {\n      \"scope\": \"account\",\n      \"lookup_key\": \"account_id:CUST-001\",\n      \"used\": true,\n      \"notes\": [\"提供历史采购偏好上下文。\"]\n    }\n  ],\n  \"memory_conflicts\": []\n}\n```\n",
+          "numLines": 69,
+          "startLine": 1,
+          "totalLines": 69
+        }
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_W0cHrBgH4E1wHoASKtxQunvS",
+            "type": "tool_result",
+            "content": "1\t---\n2\tname: crm-meeting-summary-review\n3\tdescription: 当需要校验 crm-meeting-summary skill 的输出，判断一份 CRM 会议总结是否事实有据、风险充分、符合 knowhow 覆盖要求，并且可以安全交付时，应使用此 skill；凡是生成的 CRM meeting summary 需要 pass/fail 审核与定向再生成反馈，都应调用它。\n4\t---\n5\t\n6\t# CRM 会议总结评审\n7\t\n8\t把这份 review skill 当成 `crm-meeting-summary` 的**真实运行时质量闸门**。\n9\t它不是泛泛点评，也不是重写器。默认职责只有三个：\n10\t1. 判断 pass / fail\n11\t2. 指出具体 failure reasons\n12\t3. 只对失败维度给出 targeted regeneration instructions\n13\t\n14\t除非用户明确要求，不要重写 summary 正文。\n15\t\n16\t## 评审输入\n17\t\n18\t调用方至少应传入：\n19\t- generated human-readable summary\n20\t- generated machine-readable output\n21\t- loaded knowhow identifiers\n22\t- retrieval trace\n23\t- retry state\n24\t- 用于验证 claim 的最小支持证据摘录\n25\t\n26\treview handoff 边界和状态分离见 `../references/runtime-contract.md`。\n27\t\n28\t如果输入不满足最小评审条件：\n29\t- 直接 fail\n30\t- 明确指出缺失了哪些必需输入\n31\t- 不要假装可以完整评审\n32\t\n33\t## 评审规则\n34\t\n35\t按严格优先级顺序审查：\n36\t1. 事实准确性\n37\t2. 风险覆盖\n38\t3. 业务价值\n39\t\n40\t### 优先级 1：事实准确性\n41\t\n42\t出现以下任一情况立即 fail：\n43\t- claim 无法被 meeting notes、CRM data 或 memory 支撑\n44\t- fabricated account state、opportunity state、participant role 或 next step\n45\t- 混淆事实与推断\n46\t- 用 stale memory 覆盖当前 evidence\n47\t- machine-readable fields 与 human-readable summary 不一致\n48\t- `semantic_summary` labels 无证据支撑\n49\t\n50\t### 优先级 2：风险覆盖\n51\t\n52\t检查 summary 是否遗漏或弱化了 knowhow 或 source evidence 已支持的重要风险信号，包括：\n53\t- deal progression risk\n54\t- stakeholder risk\n55\t- commitment risk\n56\t- delivery or implementation risk\n57\t- compliance or policy boundary risk\n58\t- escalation, dissatisfaction, or churn risk\n59\t\n60\t高显著性风险被遗漏、模糊化或错误标注时必须 fail。\n61\t\n62\t### 优先级 3：业务价值\n63\t\n64\t检查输出是否真正可用于行动：\n65\t- 主结论是否清楚\n66\t- next actions 是否 evidence-based\n67\t- knowhow focus items 是否被覆盖\n68\t- open questions 是否明确\n69\t- recommendations 是否足够具体、可以直接使用\n70\t\n71\t如果输出技术上准确，但业务上空洞，也必须 fail。\n72\t\n73\t## 必需检查项\n74\t\n75\t至少返回以下检查项：\n76\t- scenario_self_consistency\n77\t- knowhow_coverage\n78\t- evidence_grounding\n79\t- memory_conflict_handling\n80\t- missing_information_handling\n81\t- policy_boundary_handling\n82\t- semantic_summary_consistency\n83\t- machine_output_completeness\n84\t\n85\t`review_ready_checks` 必须保持 boolean，并与 `../references/output-schema.md` 一致。\n86\t\n87\t## 输出格式\n88\t\n89\t始终返回以下结构化结果：\n90\t\n91\t```json\n92\t{\n93\t  \"pass\": true,\n94\t  \"review_status\": \"pass\",\n95\t  \"failure_reasons\": [],\n96\t  \"targeted_regeneration_instructions\": [],\n97\t  \"check_results\": {\n98\t    \"scenario_self_consistency\": \"pass\",\n99\t    \"knowhow_coverage\": \"pass\",\n100\t    \"evidence_grounding\": \"pass\",\n101\t    \"memory_conflict_handling\": \"pass\",\n102\t    \"missing_information_handling\": \"pass\",\n103\t    \"policy_boundary_handling\": \"pass\",\n104\t    \"semantic_summary_consistency\": \"pass\",\n105\t    \"machine_output_completeness\": \"pass\"\n106\t  },\n107\t  \"notes\": []\n108\t}\n109\t```\n110\t\n111\treview 失败时：\n112\t- `pass = false`\n113\t- `review_status = fail`\n114\t- 列出具体 `failure_reasons`\n115\t- 只针对失败维度给出 `targeted_regeneration_instructions`\n116\t- 除非整份输出都不可用，否则不要要求 full rewrite\n117\t\n118\t## 真实运行时约束\n119\t\n120\t当这份 review skill 被主 skill 调用时，必须遵守：\n121\t1. 只审查传入包，不主动扩大上下文范围\n122\t2. 当最小证据摘录已足够时，不要求完整 CRM dump 或完整 knowhow 正文\n123\t3. 不把 `review_status` 和最终 summary 的 `status` 混为一体\n124\t4. 不生成新的业务事实\n125\t5. 不把“风格不喜欢”当作 fail 原因\n126\t\n127\t## 评审方法\n128\t\n129\t1. 将每个 major claim 与 evidence excerpts 和 machine fields 对照。\n130\t2. 验证 scenario classification 是否有依据，必要时是否使用了 low-confidence fallback。\n131\t3. 验证 knowhow-derived focus items 是否进入最终输出。\n132\t4. 验证 missing information 是否被显式暴露，而不是被隐藏。\n133\t5. 验证风险没有在缺乏证据时被降级。\n134\t6. 验证 `semantic_summary` 与 `summary_fields` 中的语义字段是否对齐且有证据支撑。\n135\t7. 验证 machine output 是否可被下游步骤消费。\n136\t8. 验证 human-readable summary 与 machine-readable output 在决策层表达的是同一件事。\n137\t9. 验证 contract 要求时，`retrieval_trace` 和 `retry_state` 是否存在。\n138\t\n139\t## 升级规则\n140\t\n141\t如果证据太弱，无法判断 summary 是否正确：\n142\t- 必须 fail\n143\t- 明确请求所缺的具体上下文\n144\t- 不要放过一份模糊输出\n145\t\n146\t如果 revision 已达到 2 且仍失败：\n147\t- 保持 fail\n148\t- 输出最后一轮最关键的 failure reasons\n149\t- 不要再建议无限重试\n150\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "7f9bd5a7-ae7d-42a5-8626-4d7ef880eb71",
+      "timestamp": "2026-04-08T11:17:33.803Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/review/SKILL.md",
+          "content": "---\nname: crm-meeting-summary-review\ndescription: 当需要校验 crm-meeting-summary skill 的输出，判断一份 CRM 会议总结是否事实有据、风险充分、符合 knowhow 覆盖要求，并且可以安全交付时，应使用此 skill；凡是生成的 CRM meeting summary 需要 pass/fail 审核与定向再生成反馈，都应调用它。\n---\n\n# CRM 会议总结评审\n\n把这份 review skill 当成 `crm-meeting-summary` 的**真实运行时质量闸门**。\n它不是泛泛点评，也不是重写器。默认职责只有三个：\n1. 判断 pass / fail\n2. 指出具体 failure reasons\n3. 只对失败维度给出 targeted regeneration instructions\n\n除非用户明确要求，不要重写 summary 正文。\n\n## 评审输入\n\n调用方至少应传入：\n- generated human-readable summary\n- generated machine-readable output\n- loaded knowhow identifiers\n- retrieval trace\n- retry state\n- 用于验证 claim 的最小支持证据摘录\n\nreview handoff 边界和状态分离见 `../references/runtime-contract.md`。\n\n如果输入不满足最小评审条件：\n- 直接 fail\n- 明确指出缺失了哪些必需输入\n- 不要假装可以完整评审\n\n## 评审规则\n\n按严格优先级顺序审查：\n1. 事实准确性\n2. 风险覆盖\n3. 业务价值\n\n### 优先级 1：事实准确性\n\n出现以下任一情况立即 fail：\n- claim 无法被 meeting notes、CRM data 或 memory 支撑\n- fabricated account state、opportunity state、participant role 或 next step\n- 混淆事实与推断\n- 用 stale memory 覆盖当前 evidence\n- machine-readable fields 与 human-readable summary 不一致\n- `semantic_summary` labels 无证据支撑\n\n### 优先级 2：风险覆盖\n\n检查 summary 是否遗漏或弱化了 knowhow 或 source evidence 已支持的重要风险信号，包括：\n- deal progression risk\n- stakeholder risk\n- commitment risk\n- delivery or implementation risk\n- compliance or policy boundary risk\n- escalation, dissatisfaction, or churn risk\n\n高显著性风险被遗漏、模糊化或错误标注时必须 fail。\n\n### 优先级 3：业务价值\n\n检查输出是否真正可用于行动：\n- 主结论是否清楚\n- next actions 是否 evidence-based\n- knowhow focus items 是否被覆盖\n- open questions 是否明确\n- recommendations 是否足够具体、可以直接使用\n\n如果输出技术上准确，但业务上空洞，也必须 fail。\n\n## 必需检查项\n\n至少返回以下检查项：\n- scenario_self_consistency\n- knowhow_coverage\n- evidence_grounding\n- memory_conflict_handling\n- missing_information_handling\n- policy_boundary_handling\n- semantic_summary_consistency\n- machine_output_completeness\n\n`review_ready_checks` 必须保持 boolean，并与 `../references/output-schema.md` 一致。\n\n## 输出格式\n\n始终返回以下结构化结果：\n\n```json\n{\n  \"pass\": true,\n  \"review_status\": \"pass\",\n  \"failure_reasons\": [],\n  \"targeted_regeneration_instructions\": [],\n  \"check_results\": {\n    \"scenario_self_consistency\": \"pass\",\n    \"knowhow_coverage\": \"pass\",\n    \"evidence_grounding\": \"pass\",\n    \"memory_conflict_handling\": \"pass\",\n    \"missing_information_handling\": \"pass\",\n    \"policy_boundary_handling\": \"pass\",\n    \"semantic_summary_consistency\": \"pass\",\n    \"machine_output_completeness\": \"pass\"\n  },\n  \"notes\": []\n}\n```\n\nreview 失败时：\n- `pass = false`\n- `review_status = fail`\n- 列出具体 `failure_reasons`\n- 只针对失败维度给出 `targeted_regeneration_instructions`\n- 除非整份输出都不可用，否则不要要求 full rewrite\n\n## 真实运行时约束\n\n当这份 review skill 被主 skill 调用时，必须遵守：\n1. 只审查传入包，不主动扩大上下文范围\n2. 当最小证据摘录已足够时，不要求完整 CRM dump 或完整 knowhow 正文\n3. 不把 `review_status` 和最终 summary 的 `status` 混为一体\n4. 不生成新的业务事实\n5. 不把“风格不喜欢”当作 fail 原因\n\n## 评审方法\n\n1. 将每个 major claim 与 evidence excerpts 和 machine fields 对照。\n2. 验证 scenario classification 是否有依据，必要时是否使用了 low-confidence fallback。\n3. 验证 knowhow-derived focus items 是否进入最终输出。\n4. 验证 missing information 是否被显式暴露，而不是被隐藏。\n5. 验证风险没有在缺乏证据时被降级。\n6. 验证 `semantic_summary` 与 `summary_fields` 中的语义字段是否对齐且有证据支撑。\n7. 验证 machine output 是否可被下游步骤消费。\n8. 验证 human-readable summary 与 machine-readable output 在决策层表达的是同一件事。\n9. 验证 contract 要求时，`retrieval_trace` 和 `retry_state` 是否存在。\n\n## 升级规则\n\n如果证据太弱，无法判断 summary 是否正确：\n- 必须 fail\n- 明确请求所缺的具体上下文\n- 不要放过一份模糊输出\n\n如果 revision 已达到 2 且仍失败：\n- 保持 fail\n- 输出最后一轮最关键的 failure reasons\n- 不要再建议无限重试\n",
+          "numLines": 150,
+          "startLine": 1,
+          "totalLines": 150
+        }
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 36314,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_002bc4bca397adc00169d6394f2fcc8198a2e06dcb47770f46",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_Q4bQGzmaAaSQPR1Ibb22bKxr",
+            "name": "Glob",
+            "input": {
+              "path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/knowhow/common",
+              "pattern": "*.md"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "44b05d95-c79c-4fb5-8ba1-8c418d38ee7d"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_Q4bQGzmaAaSQPR1Ibb22bKxr",
+            "type": "tool_result",
+            "content": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/knowhow/common/general.md"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "e3d3bc5c-3480-4743-abbd-640e49c2d866",
+      "timestamp": "2026-04-08T11:17:41.820Z",
+      "tool_use_result": {
+        "filenames": [
+          "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/knowhow/common/general.md"
+        ],
+        "durationMs": 49,
+        "numFiles": 1,
+        "truncated": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 36376,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_0008d0f20269697d0169d63957328481958ff7cc5e6261fc40",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_7kqzXqJmkQ8Sd1qonXMuyFap",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/knowhow/common/general.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "a9b2d654-ff6f-4adb-b83a-267c7bdcfe13"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 36376,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_0008d0f20269697d0169d63957328481958ff7cc5e6261fc40",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_bs2YwehpfibAlOzxSNuaiLNt",
+            "name": "Read",
+            "input": {
+              "file_path": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/knowhow/by-scenario/needs-clarification.md",
+              "limit": 4000,
+              "offset": 1,
+              "pages": "1"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "4ec2a344-db2d-45a0-812b-9bc8537c7042"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_bs2YwehpfibAlOzxSNuaiLNt",
+            "type": "tool_result",
+            "content": "1\t# 场景 knowhow：需求澄清\n2\t\n3\t版本: `v1`\n4\t\n5\t## 这类会议的目的\n6\t这类会议的目标，是判断业务问题是否真实、紧迫、具体，并且是否值得继续推进到解决方案或试点阶段。\n7\t\n8\t## 关注点\n9\t- 底层业务问题是否真实且紧迫？\n10\t- 痛点是否具体，还是仍停留在泛泛描述？\n11\t- 成功标准是否可见？\n12\t- 阻塞、约束或依赖是否被明确说出？\n13\t- 当前体现的是购买严肃度，还是仅仅探索性好奇？\n14\t- 当前 account/opportunity stage 是否支持继续推进，还是讨论已经跑在 qualification reality 前面？\n15\t\n16\t## 正向信号\n17\t- 具体的 current-state pain\n18\t- 可度量的成功标准\n19\t- 明确点名的 owner 或决策参与者\n20\t- 时间线或不行动的后果\n21\t- 问题与业务优先级之间的明确连接\n22\t\n23\t## 风险信号\n24\t- 需求模糊且没有紧迫性\n25\t- 下一步没有 owner\n26\t- 痛点与预算或优先级没有连接\n27\t- 在需求尚未明确前就进入方案讨论\n28\t- 历史会议中的重复关注点仍未解决\n29\t\n30\t## data_requirements\n31\t优先只拉能关闭真实不确定性的字段：\n32\t\n33\t```json\n34\t[\n35\t  {\n36\t    \"request_group\": \"account_profile_gap\",\n37\t    \"fields\": [\"industry\", \"lifecycle_stage\", \"current_products\"],\n38\t    \"why\": \"当会议只出现模糊业务背景时，需要 account baseline 来判断问题是否真实且紧迫。\",\n39\t    \"conditions\": [\"meeting 中只出现泛化痛点，缺少 account context 证据\"],\n40\t    \"priority\": \"optional\"\n41\t  },\n42\t  {\n43\t    \"request_group\": \"stakeholder_gap\",\n44\t    \"fields\": [\"decision_makers\", \"account_owner\"],\n45\t    \"why\": \"当 owner 或决策链不清晰时，需要验证是否存在明确负责人与审批路径。\",\n46\t    \"conditions\": [\"会议提及推进但未出现明确 owner 或决策角色\"],\n47\t    \"priority\": \"high\"\n48\t  },\n49\t  {\n50\t    \"request_group\": \"risk_validation_gap\",\n51\t    \"fields\": [\"last_commitments\", \"implementation_status\"],\n52\t    \"why\": \"当 trust 或历史承诺成为风险点时，需要验证承诺是否兑现与实施状态。\",\n53\t    \"conditions\": [\"会议出现信任/延期/承诺兑现问题，但当前 CRM 缺失历史承诺与实施状态\"],\n54\t    \"priority\": \"high\"\n55\t  }\n56\t]\n57\t```\n58\t\n59\t## 伪进展预警\n60\t以下信号除非有更强证据支撑，否则都视为弱信号：\n61\t- stakeholder enthusiasm，但没有 owner accountability\n62\t- 对 features 感兴趣，但问题并不紧迫\n63\t- 同意“看看 proposal”，但没有 success criteria 或下一次 checkpoint\n64\t\n65\t## 建议的下一步逻辑\n66\t优先选择能提升 qualification 质量的动作：stakeholder mapping、success criteria confirmation、blocker clarification、timeline validation。\n67\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "49ba46e5-0bf9-4b53-8769-e5941bd7e4cf",
+      "timestamp": "2026-04-08T11:17:46.701Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/knowhow/by-scenario/needs-clarification.md",
+          "content": "# 场景 knowhow：需求澄清\n\n版本: `v1`\n\n## 这类会议的目的\n这类会议的目标，是判断业务问题是否真实、紧迫、具体，并且是否值得继续推进到解决方案或试点阶段。\n\n## 关注点\n- 底层业务问题是否真实且紧迫？\n- 痛点是否具体，还是仍停留在泛泛描述？\n- 成功标准是否可见？\n- 阻塞、约束或依赖是否被明确说出？\n- 当前体现的是购买严肃度，还是仅仅探索性好奇？\n- 当前 account/opportunity stage 是否支持继续推进，还是讨论已经跑在 qualification reality 前面？\n\n## 正向信号\n- 具体的 current-state pain\n- 可度量的成功标准\n- 明确点名的 owner 或决策参与者\n- 时间线或不行动的后果\n- 问题与业务优先级之间的明确连接\n\n## 风险信号\n- 需求模糊且没有紧迫性\n- 下一步没有 owner\n- 痛点与预算或优先级没有连接\n- 在需求尚未明确前就进入方案讨论\n- 历史会议中的重复关注点仍未解决\n\n## data_requirements\n优先只拉能关闭真实不确定性的字段：\n\n```json\n[\n  {\n    \"request_group\": \"account_profile_gap\",\n    \"fields\": [\"industry\", \"lifecycle_stage\", \"current_products\"],\n    \"why\": \"当会议只出现模糊业务背景时，需要 account baseline 来判断问题是否真实且紧迫。\",\n    \"conditions\": [\"meeting 中只出现泛化痛点，缺少 account context 证据\"],\n    \"priority\": \"optional\"\n  },\n  {\n    \"request_group\": \"stakeholder_gap\",\n    \"fields\": [\"decision_makers\", \"account_owner\"],\n    \"why\": \"当 owner 或决策链不清晰时，需要验证是否存在明确负责人与审批路径。\",\n    \"conditions\": [\"会议提及推进但未出现明确 owner 或决策角色\"],\n    \"priority\": \"high\"\n  },\n  {\n    \"request_group\": \"risk_validation_gap\",\n    \"fields\": [\"last_commitments\", \"implementation_status\"],\n    \"why\": \"当 trust 或历史承诺成为风险点时，需要验证承诺是否兑现与实施状态。\",\n    \"conditions\": [\"会议出现信任/延期/承诺兑现问题，但当前 CRM 缺失历史承诺与实施状态\"],\n    \"priority\": \"high\"\n  }\n]\n```\n\n## 伪进展预警\n以下信号除非有更强证据支撑，否则都视为弱信号：\n- stakeholder enthusiasm，但没有 owner accountability\n- 对 features 感兴趣，但问题并不紧迫\n- 同意“看看 proposal”，但没有 success criteria 或下一次 checkpoint\n\n## 建议的下一步逻辑\n优先选择能提升 qualification 质量的动作：stakeholder mapping、success criteria confirmation、blocker clarification、timeline validation。\n",
+          "numLines": 67,
+          "startLine": 1,
+          "totalLines": 67
+        }
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_7kqzXqJmkQ8Sd1qonXMuyFap",
+            "type": "tool_result",
+            "content": "1\t# 通用 knowhow\n2\t\n3\t版本: `v1`\n4\t\n5\t将这些规则应用到所有 CRM meeting summaries。\n6\t\n7\t## 通用关注点\n8\t1. 这次会议实际服务于什么业务目标？\n9\t2. 哪些证据说明这是实质进展，而不是礼貌性回应？\n10\t3. 哪些风险被明确说出、被暗示，或被回避？\n11\t4. 谁做了什么承诺，截止何时？\n12\t5. 为了安全进入下一步，还缺什么信息？\n13\t6. 哪些 account-stage 或 opportunity-stage 事实会影响这次会议的解读？\n14\t7. 是否有参与者重复了历史上已知的关注点，应该被抬高优先级？\n15\t\n16\t## CRM 原生上下文规则\n17\t在做最终判断前，要把会议与以下上下文交叉核对：\n18\t- account profile\n19\t- relationship 或 opportunity stage\n20\t- 当前影响评分的风险或进展项\n21\t- 相关 person/account/opportunity/contact memory\n22\t\n23\t如果这些信息缺失且确实重要，就请求最小缺失 CRM fields，不要猜。\n24\t\n25\t## 通用总结边界\n26\t- 区分事实与解释\n27\t- 显式标记不确定性\n28\t- 不要过度声称 customer intent\n29\t- stakeholder ownership 不清晰时，不要假装内部已有确定判断\n30\t- 不要把友好语气误判成 deal advancement\n31\t\n32\t## 通用动作规则\n33\tRecommended next actions 必须绑定到本次会议证据或已验证 CRM context。\n34\t\n35\t## 重复提及规则\n36\t如果 stakeholder 或 object memory 显示同一关注点跨多次会议重复出现，要在 summary 中显式指出这种重复，并把它视为比一次性提及更强的信号。\n37\t\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "5e0f2139-dae6-4afe-baa2-06024ec8f7f9",
+      "timestamp": "2026-04-08T11:17:46.703Z",
+      "tool_use_result": {
+        "type": "text",
+        "file": {
+          "filePath": "/Users/zhaopx/.claude/skills/crm-meeting-summary/references/knowhow/common/general.md",
+          "content": "# 通用 knowhow\n\n版本: `v1`\n\n将这些规则应用到所有 CRM meeting summaries。\n\n## 通用关注点\n1. 这次会议实际服务于什么业务目标？\n2. 哪些证据说明这是实质进展，而不是礼貌性回应？\n3. 哪些风险被明确说出、被暗示，或被回避？\n4. 谁做了什么承诺，截止何时？\n5. 为了安全进入下一步，还缺什么信息？\n6. 哪些 account-stage 或 opportunity-stage 事实会影响这次会议的解读？\n7. 是否有参与者重复了历史上已知的关注点，应该被抬高优先级？\n\n## CRM 原生上下文规则\n在做最终判断前，要把会议与以下上下文交叉核对：\n- account profile\n- relationship 或 opportunity stage\n- 当前影响评分的风险或进展项\n- 相关 person/account/opportunity/contact memory\n\n如果这些信息缺失且确实重要，就请求最小缺失 CRM fields，不要猜。\n\n## 通用总结边界\n- 区分事实与解释\n- 显式标记不确定性\n- 不要过度声称 customer intent\n- stakeholder ownership 不清晰时，不要假装内部已有确定判断\n- 不要把友好语气误判成 deal advancement\n\n## 通用动作规则\nRecommended next actions 必须绑定到本次会议证据或已验证 CRM context。\n\n## 重复提及规则\n如果 stakeholder 或 object memory 显示同一关注点跨多次会议重复出现，要在 summary 中显式指出这种重复，并把它视为比一次性提及更强的信号。\n",
+          "numLines": 37,
+          "startLine": 1,
+          "totalLines": 37
+        }
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 38305,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_0b76708f1ce284230169d6395d19848197a0779c364399f51d",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_R5fCBO08v4AqRTMW15bnE4Kx",
+            "name": "TodoWrite",
+            "input": {
+              "todos": [
+                {
+                  "activeForm": "读取输入包与契约文件",
+                  "content": "读取输入包与契约文件",
+                  "status": "completed"
+                },
+                {
+                  "activeForm": "生成草稿总结与 machine JSON",
+                  "content": "生成草稿总结与 machine JSON",
+                  "status": "in_progress"
+                },
+                {
+                  "activeForm": "执行评审并定向修复",
+                  "content": "执行评审并定向修复",
+                  "status": "pending"
+                },
+                {
+                  "activeForm": "返回最终结果",
+                  "content": "返回最终结果",
+                  "status": "pending"
+                }
+              ]
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "e781ce4a-ba0e-4a2e-9a3c-b1ceef2e8bbc"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_R5fCBO08v4AqRTMW15bnE4Kx",
+            "type": "tool_result",
+            "content": "Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "8a1a2513-001e-4918-bb1f-a1afa8ca052f",
+      "timestamp": "2026-04-08T11:18:05.120Z",
+      "tool_use_result": {
+        "oldTodos": [
+          {
+            "content": "读取输入包与契约文件",
+            "status": "in_progress",
+            "activeForm": "读取输入包与契约文件"
+          },
+          {
+            "content": "生成草稿总结与 machine JSON",
+            "status": "pending",
+            "activeForm": "生成草稿总结与 machine JSON"
+          },
+          {
+            "content": "执行评审并定向修复",
+            "status": "pending",
+            "activeForm": "执行评审并定向修复"
+          },
+          {
+            "content": "返回最终结果",
+            "status": "pending",
+            "activeForm": "返回最终结果"
+          }
+        ],
+        "newTodos": [
+          {
+            "content": "读取输入包与契约文件",
+            "status": "completed",
+            "activeForm": "读取输入包与契约文件"
+          },
+          {
+            "content": "生成草稿总结与 machine JSON",
+            "status": "in_progress",
+            "activeForm": "生成草稿总结与 machine JSON"
+          },
+          {
+            "content": "执行评审并定向修复",
+            "status": "pending",
+            "activeForm": "执行评审并定向修复"
+          },
+          {
+            "content": "返回最终结果",
+            "status": "pending",
+            "activeForm": "返回最终结果"
+          }
+        ],
+        "verificationNudgeNeeded": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 38453,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_0e93dc097e0cb8f70169d6396f1bcc8198a2bc3998d498f614",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_hKfLE1K5lqd8uM2rr17k2GuQ",
+            "name": "Skill",
+            "input": {
+              "args": "",
+              "skill": "crm-meeting-summary-review"
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "676e03ca-fa60-41d0-998d-b21d658afab9"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_hKfLE1K5lqd8uM2rr17k2GuQ",
+            "content": "Launching skill: crm-meeting-summary-review"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "be8b14a1-0ba9-4f18-8b66-a5520087d482",
+      "timestamp": "2026-04-08T11:18:13.086Z",
+      "tool_use_result": {
+        "success": true,
+        "commandName": "crm-meeting-summary-review"
+      }
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "Base directory for this skill: /Users/zhaopx/.claude/skills/crm-meeting-summary-review\n\n# CRM 会议总结评审\n\n把这份 review skill 当成 `crm-meeting-summary` 的**真实运行时质量闸门**。\n它不是泛泛点评，也不是重写器。默认职责只有三个：\n1. 判断 pass / fail\n2. 指出具体 failure reasons\n3. 只对失败维度给出 targeted regeneration instructions\n\n除非用户明确要求，不要重写 summary 正文。\n\n## 评审输入\n\n调用方至少应传入：\n- generated human-readable summary\n- generated machine-readable output\n- loaded knowhow identifiers\n- retrieval trace\n- retry state\n- 用于验证 claim 的最小支持证据摘录\n\nreview handoff 边界和状态分离见 `../references/runtime-contract.md`。\n\n如果输入不满足最小评审条件：\n- 直接 fail\n- 明确指出缺失了哪些必需输入\n- 不要假装可以完整评审\n\n## 评审规则\n\n按严格优先级顺序审查：\n1. 事实准确性\n2. 风险覆盖\n3. 业务价值\n\n### 优先级 1：事实准确性\n\n出现以下任一情况立即 fail：\n- claim 无法被 meeting notes、CRM data 或 memory 支撑\n- fabricated account state、opportunity state、participant role 或 next step\n- 混淆事实与推断\n- 用 stale memory 覆盖当前 evidence\n- machine-readable fields 与 human-readable summary 不一致\n- `semantic_summary` labels 无证据支撑\n\n### 优先级 2：风险覆盖\n\n检查 summary 是否遗漏或弱化了 knowhow 或 source evidence 已支持的重要风险信号，包括：\n- deal progression risk\n- stakeholder risk\n- commitment risk\n- delivery or implementation risk\n- compliance or policy boundary risk\n- escalation, dissatisfaction, or churn risk\n\n高显著性风险被遗漏、模糊化或错误标注时必须 fail。\n\n### 优先级 3：业务价值\n\n检查输出是否真正可用于行动：\n- 主结论是否清楚\n- next actions 是否 evidence-based\n- knowhow focus items 是否被覆盖\n- open questions 是否明确\n- recommendations 是否足够具体、可以直接使用\n\n如果输出技术上准确，但业务上空洞，也必须 fail。\n\n## 必需检查项\n\n至少返回以下检查项：\n- scenario_self_consistency\n- knowhow_coverage\n- evidence_grounding\n- memory_conflict_handling\n- missing_information_handling\n- policy_boundary_handling\n- semantic_summary_consistency\n- machine_output_completeness\n\n`review_ready_checks` 必须保持 boolean，并与 `../references/output-schema.md` 一致。\n\n## 输出格式\n\n始终返回以下结构化结果：\n\n```json\n{\n  \"pass\": true,\n  \"review_status\": \"pass\",\n  \"failure_reasons\": [],\n  \"targeted_regeneration_instructions\": [],\n  \"check_results\": {\n    \"scenario_self_consistency\": \"pass\",\n    \"knowhow_coverage\": \"pass\",\n    \"evidence_grounding\": \"pass\",\n    \"memory_conflict_handling\": \"pass\",\n    \"missing_information_handling\": \"pass\",\n    \"policy_boundary_handling\": \"pass\",\n    \"semantic_summary_consistency\": \"pass\",\n    \"machine_output_completeness\": \"pass\"\n  },\n  \"notes\": []\n}\n```\n\nreview 失败时：\n- `pass = false`\n- `review_status = fail`\n- 列出具体 `failure_reasons`\n- 只针对失败维度给出 `targeted_regeneration_instructions`\n- 除非整份输出都不可用，否则不要要求 full rewrite\n\n## 真实运行时约束\n\n当这份 review skill 被主 skill 调用时，必须遵守：\n1. 只审查传入包，不主动扩大上下文范围\n2. 当最小证据摘录已足够时，不要求完整 CRM dump 或完整 knowhow 正文\n3. 不把 `review_status` 和最终 summary 的 `status` 混为一体\n4. 不生成新的业务事实\n5. 不把“风格不喜欢”当作 fail 原因\n\n## 评审方法\n\n1. 将每个 major claim 与 evidence excerpts 和 machine fields 对照。\n2. 验证 scenario classification 是否有依据，必要时是否使用了 low-confidence fallback。\n3. 验证 knowhow-derived focus items 是否进入最终输出。\n4. 验证 missing information 是否被显式暴露，而不是被隐藏。\n5. 验证风险没有在缺乏证据时被降级。\n6. 验证 `semantic_summary` 与 `summary_fields` 中的语义字段是否对齐且有证据支撑。\n7. 验证 machine output 是否可被下游步骤消费。\n8. 验证 human-readable summary 与 machine-readable output 在决策层表达的是同一件事。\n9. 验证 contract 要求时，`retrieval_trace` 和 `retry_state` 是否存在。\n\n## 升级规则\n\n如果证据太弱，无法判断 summary 是否正确：\n- 必须 fail\n- 明确请求所缺的具体上下文\n- 不要放过一份模糊输出\n\n如果 revision 已达到 2 且仍失败：\n- 保持 fail\n- 输出最后一轮最关键的 failure reasons\n- 不要再建议无限重试\n"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "9aca20fa-55f2-405b-8dfb-9c423cf5c219",
+      "timestamp": "2026-04-08T11:18:13.086Z",
+      "isSynthetic": true
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 39911,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_0299954336b284c70169d639765a3c8193b713c66d8bc934d8",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call_4F6UEwcZieijzizynqRY48r8",
+            "name": "TodoWrite",
+            "input": {
+              "todos": [
+                {
+                  "activeForm": "读取输入包与契约文件",
+                  "content": "读取输入包与契约文件",
+                  "status": "completed"
+                },
+                {
+                  "activeForm": "生成草稿总结与 machine JSON",
+                  "content": "生成草稿总结与 machine JSON",
+                  "status": "completed"
+                },
+                {
+                  "activeForm": "执行评审并定向修复",
+                  "content": "执行评审并定向修复",
+                  "status": "completed"
+                },
+                {
+                  "activeForm": "返回最终结果",
+                  "content": "返回最终结果",
+                  "status": "in_progress"
+                }
+              ]
+            }
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "78c52391-f85f-4e19-bb5d-93573842d437"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "call_4F6UEwcZieijzizynqRY48r8",
+            "type": "tool_result",
+            "content": "Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "4c8195d1-be40-4282-bd53-eb67701d4081",
+      "timestamp": "2026-04-08T11:18:20.681Z",
+      "tool_use_result": {
+        "oldTodos": [
+          {
+            "content": "读取输入包与契约文件",
+            "status": "completed",
+            "activeForm": "读取输入包与契约文件"
+          },
+          {
+            "content": "生成草稿总结与 machine JSON",
+            "status": "in_progress",
+            "activeForm": "生成草稿总结与 machine JSON"
+          },
+          {
+            "content": "执行评审并定向修复",
+            "status": "pending",
+            "activeForm": "执行评审并定向修复"
+          },
+          {
+            "content": "返回最终结果",
+            "status": "pending",
+            "activeForm": "返回最终结果"
+          }
+        ],
+        "newTodos": [
+          {
+            "content": "读取输入包与契约文件",
+            "status": "completed",
+            "activeForm": "读取输入包与契约文件"
+          },
+          {
+            "content": "生成草稿总结与 machine JSON",
+            "status": "completed",
+            "activeForm": "生成草稿总结与 machine JSON"
+          },
+          {
+            "content": "执行评审并定向修复",
+            "status": "completed",
+            "activeForm": "执行评审并定向修复"
+          },
+          {
+            "content": "返回最终结果",
+            "status": "in_progress",
+            "activeForm": "返回最终结果"
+          }
+        ],
+        "verificationNudgeNeeded": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "type": "message",
+        "model": "model",
+        "usage": {
+          "input_tokens": 40059,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0,
+          "claude_cache_creation_5_m_tokens": 0,
+          "claude_cache_creation_1_h_tokens": 0
+        },
+        "role": "assistant",
+        "id": "resp_0291806d5cda70560169d6397deb108195b562e8ae6eaf073c",
+        "content": [
+          {
+            "type": "text",
+            "text": "## Meeting snapshot\n- 会议：项目沟通\n- 时间：2026-04-05T10:00:00+08:00\n- 发起人：王敏\n- 账户：华东零售集团\n- 商机：null\n- 参会人：王敏（客户成功经理）、李总（业务负责人）\n\n## Core summary and judgment\n- **事实**：本次沟通只明确了三件事：  \n  1. 双方回顾了近期合作感受。  \n  2. 客户提到后续“可能继续看看有没有优化空间”。  \n  3. 客户内部还要再看，但没有明确这是预算、采购、试点还是交付问题。\n- **判断**：当前不支持把这次会议高置信归类为需求澄清、商务推进、试点推进或交付沟通。按契约应进入 `scenario_mode: uncertain`，主场景标记为“其他/不确定”。\n- **业务结论**：这不是实质推进证据，更像一次低信息密度的关系维护/模糊探索性沟通。现阶段不能把客户友好表达解读为明确推进意图。\n\n## Knowhow focus items\n- 当前会议实际服务的业务目标不清楚，不能假设已经进入某个明确流程阶段。\n- 没有出现可执行 owner、明确成功标准、明确下一检查点，属于弱推进信号。\n- 当前最关键的不是扩展结论，而是补齐最小判定信息：客户内部谁决策、这次“再看看”具体指向什么、下一步是否有明确检查点。\n\n## Recommended next actions\n1. 向客户确认“优化空间”具体指向：是业务需求、采购评估、试点验证，还是当前合作交付体验。\n2. 明确下一步 owner 和决策角色，至少确认：业务负责人、实际决策人、内部推进人。\n3. 约一个有明确目标的 follow-up，目标只能三选一：  \n   - 澄清需求与成功标准  \n   - 确认是否存在试点/采购路径  \n   - 确认当前合作中的具体阻塞点\n4. 在 CRM 中补拉最小字段：`decision_makers`、`account_owner`，用于消除当前场景歧义。\n\n## Risks and open questions\n- **主要风险**：把模糊兴趣误判成推进信号，导致后续动作跑空。\n- **风险信号**：没有明确 owner、没有明确场景、没有明确下一步检查点。\n- **未决问题**：\n  - 客户内部“再看看”具体在看什么？\n  - 当前讨论对应的是存量合作优化，还是潜在新项目机会？\n  - 李总是否为决策人，还是仅为业务接口人？\n  - 是否存在历史承诺、已知问题或上下文缺口影响本次表达？\n\n```json\n{\n  \"status\": \"passed\",\n  \"base_context\": {\n    \"meeting_time\": \"2026-04-05T10:00:00+08:00\",\n    \"initiator\": {\n      \"id\": null,\n      \"name\": \"王敏\"\n    },\n    \"account\": {\n      \"id\": null,\n      \"name\": \"华东零售集团\"\n    },\n    \"opportunity\": {\n      \"id\": null,\n      \"name\": null\n    },\n    \"participants\": [\n      {\n        \"name\": \"王敏\",\n        \"role\": \"客户成功经理\"\n      },\n      {\n        \"name\": \"李总\",\n        \"role\": \"业务负责人\"\n      }\n    ]\n  },\n  \"scenario_result\": {\n    \"primary_scenario\": \"其他/不确定\",\n    \"scenario_slug\": \"uncertain\",\n    \"scenario_confidence\": \"low\",\n    \"scenario_mode\": \"uncertain\",\n    \"industry\": null,\n    \"secondary_tags\": [\n      \"risk:ambiguous-next-step\",\n      \"risk:weak-progression-signal\"\n    ],\n    \"evidence\": [\n      \"双方简单沟通了最近合作感受\",\n      \"后面可能会继续看看有没有优化空间\",\n      \"客户表示内部还要再看看\",\n      \"没有明确说是预算、采购、试点还是交付问题\"\n    ]\n  },\n  \"loaded_knowhow\": {\n    \"mapping_version\": \"v1\",\n    \"common\": [\n      \"references/knowhow/common/general.md\"\n    ],\n    \"scenario\": [],\n    \"industry\": [],\n    \"patches\": [],\n    \"best_cases\": []\n  },\n  \"crm_data_requests\": [\n    {\n      \"reason\": \"stakeholder_gap\",\n      \"fields\": [\n        \"decision_makers\",\n        \"account_owner\"\n      ],\n      \"why\": \"当前会议无法判定客户内部“再看看”由谁推动，也无法判断是否存在明确 owner 或决策链，需用一个最小消歧请求包补齐。\",\n      \"sources\": [\n        \"scenario-retrieval-mapping:v1 low-confidence fallback\",\n        \"crm-data-dictionary\"\n      ]\n    }\n  ],\n  \"memory_sources\": [],\n  \"memory_conflicts\": [],\n  \"summary_fields\": {\n    \"meeting_goal\": \"维持沟通并初步探查后续是否存在优化空间，但未形成明确业务目标。\",\n    \"relationship_state\": \"existing relationship with unclear current motion\",\n    \"decision_pressure\": \"low and undefined; no explicit budget, procurement, pilot, or delivery trigger stated\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"weak exploratory signal without clear progression\",\n    \"key_participants\": [\n      {\n        \"name\": \"王敏\",\n        \"role\": \"客户成功经理\",\n        \"type\": \"explicit_fact\"\n      },\n      {\n        \"name\": \"李总\",\n        \"role\": \"业务负责人\",\n        \"type\": \"explicit_fact\"\n      }\n    ],\n    \"current_stage_judgment\": \"无法可靠判断当前处于需求澄清、商务推进、试点还是交付阶段；应视为其他/不确定。\",\n    \"next_actions\": [\n      \"确认客户所说“优化空间”具体指向的业务场景。\",\n      \"确认客户内部下一步 owner 和决策角色。\",\n      \"安排一个目标明确的 follow-up，并定义本次 follow-up 要解决的单一问题。\"\n    ],\n    \"risk_level\": \"medium\",\n    \"missing_information\": [\n      \"缺少 opportunity 关联信息。\",\n      \"缺少 account baseline，例如 industry、lifecycle_stage、current_products。\",\n      \"缺少 decision_makers 与 account_owner，无法判断推进责任链。\",\n      \"缺少历史互动与承诺信息，无法判断“继续看看”是否为重复表述或延迟信号。\",\n      \"缺少对“优化空间”具体内容的定义。\"\n    ]\n  },\n  \"semantic_summary\": {\n    \"relationship_state\": \"existing relationship with unclear current motion\",\n    \"decision_pressure\": \"low and undefined; no explicit budget, procurement, pilot, or delivery trigger stated\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"weak exploratory signal without clear progression\"\n  },\n  \"key_judgments\": {\n    \"facts\": [\n      \"会议只提到近期合作感受与后续可能存在优化空间。\",\n      \"客户明确表示内部还要再看。\",\n      \"会议记录没有说明预算、采购、试点或交付问题。\"\n    ],\n    \"inferences\": [\n      \"当前不应把客户表达解读为明确推进意图。\",\n      \"本次更接近低信息密度的探索性沟通，而非明确阶段性推进会议。\"\n    ],\n    \"open_questions\": [\n      \"客户内部具体在评估什么？\",\n      \"李总是否为决策人还是业务接口人？\",\n      \"是否存在潜在商机或只是存量合作优化？\",\n      \"下一步是否会形成明确 owner 和检查点？\"\n    ]\n  },\n  \"knowhow_focus_items\": [\n    {\n      \"item\": \"不要把友好语气或模糊兴趣误判成 deal advancement。\",\n      \"source\": \"references/knowhow/common/general.md\"\n    },\n    {\n      \"item\": \"在 stakeholder ownership 不清晰时，不要假装已有确定推进判断。\",\n      \"source\": \"references/knowhow/common/general.md\"\n    },\n    {\n      \"item\": \"为安全进入下一步，需要先补齐最小关键信息，而不是扩展结论。\",\n      \"source\": \"references/knowhow/common/general.md\"\n    }\n  ],\n  \"retrieval_trace\": {\n    \"mapping_version\": \"v1\",\n    \"scenario_mode\": \"uncertain\",\n    \"allowed_request_groups\": [\n      \"stakeholder_gap\"\n    ],\n    \"requested_request_groups\": [\n      \"stakeholder_gap\"\n    ],\n    \"out_of_policy_requests\": []\n  },\n  \"retry_state\": {\n    \"revision\": 0,\n    \"status\": \"passed\",\n    \"history\": [\n      {\n        \"revision\": 0,\n        \"review_status\": \"pass\",\n        \"failed_checks\": []\n      }\n    ]\n  },\n  \"review_ready_checks\": {\n    \"scenario_self_consistency\": true,\n    \"knowhow_coverage\": true,\n    \"evidence_grounding\": true,\n    \"memory_conflict_handling\": true,\n    \"missing_information_handling\": true,\n    \"policy_boundary_handling\": true,\n    \"semantic_summary_consistency\": true,\n    \"machine_output_completeness\": true\n  },\n  \"review_result\": {\n    \"pass\": true,\n    \"review_status\": \"pass\",\n    \"failure_reasons\": [],\n    \"targeted_regeneration_instructions\": [],\n    \"check_results\": {\n      \"scenario_self_consistency\": \"pass\",\n      \"knowhow_coverage\": \"pass\",\n      \"evidence_grounding\": \"pass\",\n      \"memory_conflict_handling\": \"pass\",\n      \"missing_information_handling\": \"pass\",\n      \"policy_boundary_handling\": \"pass\",\n      \"semantic_summary_consistency\": \"pass\",\n      \"machine_output_completeness\": \"pass\"\n    },\n    \"notes\": [\n      \"当前输出采用 low-confidence fallback，未越权扩展 retrieval。\",\n      \"human summary 与 machine output 对主结论保持一致。\"\n    ]\n  }\n}\n```"
+          }
+        ],
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "uuid": "8b406826-8f02-4136-8f15-c7b7363aaddf"
+    },
+    {
+      "type": "result",
+      "subtype": "success",
+      "is_error": false,
+      "duration_ms": 143994,
+      "duration_api_ms": 143626,
+      "num_turns": 29,
+      "result": "## Meeting snapshot\n- 会议：项目沟通\n- 时间：2026-04-05T10:00:00+08:00\n- 发起人：王敏\n- 账户：华东零售集团\n- 商机：null\n- 参会人：王敏（客户成功经理）、李总（业务负责人）\n\n## Core summary and judgment\n- **事实**：本次沟通只明确了三件事：  \n  1. 双方回顾了近期合作感受。  \n  2. 客户提到后续“可能继续看看有没有优化空间”。  \n  3. 客户内部还要再看，但没有明确这是预算、采购、试点还是交付问题。\n- **判断**：当前不支持把这次会议高置信归类为需求澄清、商务推进、试点推进或交付沟通。按契约应进入 `scenario_mode: uncertain`，主场景标记为“其他/不确定”。\n- **业务结论**：这不是实质推进证据，更像一次低信息密度的关系维护/模糊探索性沟通。现阶段不能把客户友好表达解读为明确推进意图。\n\n## Knowhow focus items\n- 当前会议实际服务的业务目标不清楚，不能假设已经进入某个明确流程阶段。\n- 没有出现可执行 owner、明确成功标准、明确下一检查点，属于弱推进信号。\n- 当前最关键的不是扩展结论，而是补齐最小判定信息：客户内部谁决策、这次“再看看”具体指向什么、下一步是否有明确检查点。\n\n## Recommended next actions\n1. 向客户确认“优化空间”具体指向：是业务需求、采购评估、试点验证，还是当前合作交付体验。\n2. 明确下一步 owner 和决策角色，至少确认：业务负责人、实际决策人、内部推进人。\n3. 约一个有明确目标的 follow-up，目标只能三选一：  \n   - 澄清需求与成功标准  \n   - 确认是否存在试点/采购路径  \n   - 确认当前合作中的具体阻塞点\n4. 在 CRM 中补拉最小字段：`decision_makers`、`account_owner`，用于消除当前场景歧义。\n\n## Risks and open questions\n- **主要风险**：把模糊兴趣误判成推进信号，导致后续动作跑空。\n- **风险信号**：没有明确 owner、没有明确场景、没有明确下一步检查点。\n- **未决问题**：\n  - 客户内部“再看看”具体在看什么？\n  - 当前讨论对应的是存量合作优化，还是潜在新项目机会？\n  - 李总是否为决策人，还是仅为业务接口人？\n  - 是否存在历史承诺、已知问题或上下文缺口影响本次表达？\n\n```json\n{\n  \"status\": \"passed\",\n  \"base_context\": {\n    \"meeting_time\": \"2026-04-05T10:00:00+08:00\",\n    \"initiator\": {\n      \"id\": null,\n      \"name\": \"王敏\"\n    },\n    \"account\": {\n      \"id\": null,\n      \"name\": \"华东零售集团\"\n    },\n    \"opportunity\": {\n      \"id\": null,\n      \"name\": null\n    },\n    \"participants\": [\n      {\n        \"name\": \"王敏\",\n        \"role\": \"客户成功经理\"\n      },\n      {\n        \"name\": \"李总\",\n        \"role\": \"业务负责人\"\n      }\n    ]\n  },\n  \"scenario_result\": {\n    \"primary_scenario\": \"其他/不确定\",\n    \"scenario_slug\": \"uncertain\",\n    \"scenario_confidence\": \"low\",\n    \"scenario_mode\": \"uncertain\",\n    \"industry\": null,\n    \"secondary_tags\": [\n      \"risk:ambiguous-next-step\",\n      \"risk:weak-progression-signal\"\n    ],\n    \"evidence\": [\n      \"双方简单沟通了最近合作感受\",\n      \"后面可能会继续看看有没有优化空间\",\n      \"客户表示内部还要再看看\",\n      \"没有明确说是预算、采购、试点还是交付问题\"\n    ]\n  },\n  \"loaded_knowhow\": {\n    \"mapping_version\": \"v1\",\n    \"common\": [\n      \"references/knowhow/common/general.md\"\n    ],\n    \"scenario\": [],\n    \"industry\": [],\n    \"patches\": [],\n    \"best_cases\": []\n  },\n  \"crm_data_requests\": [\n    {\n      \"reason\": \"stakeholder_gap\",\n      \"fields\": [\n        \"decision_makers\",\n        \"account_owner\"\n      ],\n      \"why\": \"当前会议无法判定客户内部“再看看”由谁推动，也无法判断是否存在明确 owner 或决策链，需用一个最小消歧请求包补齐。\",\n      \"sources\": [\n        \"scenario-retrieval-mapping:v1 low-confidence fallback\",\n        \"crm-data-dictionary\"\n      ]\n    }\n  ],\n  \"memory_sources\": [],\n  \"memory_conflicts\": [],\n  \"summary_fields\": {\n    \"meeting_goal\": \"维持沟通并初步探查后续是否存在优化空间，但未形成明确业务目标。\",\n    \"relationship_state\": \"existing relationship with unclear current motion\",\n    \"decision_pressure\": \"low and undefined; no explicit budget, procurement, pilot, or delivery trigger stated\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"weak exploratory signal without clear progression\",\n    \"key_participants\": [\n      {\n        \"name\": \"王敏\",\n        \"role\": \"客户成功经理\",\n        \"type\": \"explicit_fact\"\n      },\n      {\n        \"name\": \"李总\",\n        \"role\": \"业务负责人\",\n        \"type\": \"explicit_fact\"\n      }\n    ],\n    \"current_stage_judgment\": \"无法可靠判断当前处于需求澄清、商务推进、试点还是交付阶段；应视为其他/不确定。\",\n    \"next_actions\": [\n      \"确认客户所说“优化空间”具体指向的业务场景。\",\n      \"确认客户内部下一步 owner 和决策角色。\",\n      \"安排一个目标明确的 follow-up，并定义本次 follow-up 要解决的单一问题。\"\n    ],\n    \"risk_level\": \"medium\",\n    \"missing_information\": [\n      \"缺少 opportunity 关联信息。\",\n      \"缺少 account baseline，例如 industry、lifecycle_stage、current_products。\",\n      \"缺少 decision_makers 与 account_owner，无法判断推进责任链。\",\n      \"缺少历史互动与承诺信息，无法判断“继续看看”是否为重复表述或延迟信号。\",\n      \"缺少对“优化空间”具体内容的定义。\"\n    ]\n  },\n  \"semantic_summary\": {\n    \"relationship_state\": \"existing relationship with unclear current motion\",\n    \"decision_pressure\": \"low and undefined; no explicit budget, procurement, pilot, or delivery trigger stated\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"weak exploratory signal without clear progression\"\n  },\n  \"key_judgments\": {\n    \"facts\": [\n      \"会议只提到近期合作感受与后续可能存在优化空间。\",\n      \"客户明确表示内部还要再看。\",\n      \"会议记录没有说明预算、采购、试点或交付问题。\"\n    ],\n    \"inferences\": [\n      \"当前不应把客户表达解读为明确推进意图。\",\n      \"本次更接近低信息密度的探索性沟通，而非明确阶段性推进会议。\"\n    ],\n    \"open_questions\": [\n      \"客户内部具体在评估什么？\",\n      \"李总是否为决策人还是业务接口人？\",\n      \"是否存在潜在商机或只是存量合作优化？\",\n      \"下一步是否会形成明确 owner 和检查点？\"\n    ]\n  },\n  \"knowhow_focus_items\": [\n    {\n      \"item\": \"不要把友好语气或模糊兴趣误判成 deal advancement。\",\n      \"source\": \"references/knowhow/common/general.md\"\n    },\n    {\n      \"item\": \"在 stakeholder ownership 不清晰时，不要假装已有确定推进判断。\",\n      \"source\": \"references/knowhow/common/general.md\"\n    },\n    {\n      \"item\": \"为安全进入下一步，需要先补齐最小关键信息，而不是扩展结论。\",\n      \"source\": \"references/knowhow/common/general.md\"\n    }\n  ],\n  \"retrieval_trace\": {\n    \"mapping_version\": \"v1\",\n    \"scenario_mode\": \"uncertain\",\n    \"allowed_request_groups\": [\n      \"stakeholder_gap\"\n    ],\n    \"requested_request_groups\": [\n      \"stakeholder_gap\"\n    ],\n    \"out_of_policy_requests\": []\n  },\n  \"retry_state\": {\n    \"revision\": 0,\n    \"status\": \"passed\",\n    \"history\": [\n      {\n        \"revision\": 0,\n        \"review_status\": \"pass\",\n        \"failed_checks\": []\n      }\n    ]\n  },\n  \"review_ready_checks\": {\n    \"scenario_self_consistency\": true,\n    \"knowhow_coverage\": true,\n    \"evidence_grounding\": true,\n    \"memory_conflict_handling\": true,\n    \"missing_information_handling\": true,\n    \"policy_boundary_handling\": true,\n    \"semantic_summary_consistency\": true,\n    \"machine_output_completeness\": true\n  },\n  \"review_result\": {\n    \"pass\": true,\n    \"review_status\": \"pass\",\n    \"failure_reasons\": [],\n    \"targeted_regeneration_instructions\": [],\n    \"check_results\": {\n      \"scenario_self_consistency\": \"pass\",\n      \"knowhow_coverage\": \"pass\",\n      \"evidence_grounding\": \"pass\",\n      \"memory_conflict_handling\": \"pass\",\n      \"missing_information_handling\": \"pass\",\n      \"policy_boundary_handling\": \"pass\",\n      \"semantic_summary_consistency\": \"pass\",\n      \"machine_output_completeness\": \"pass\"\n    },\n    \"notes\": [\n      \"当前输出采用 low-confidence fallback，未越权扩展 retrieval。\",\n      \"human summary 与 machine output 对主结论保持一致。\"\n    ]\n  }\n}\n```",
+      "stop_reason": "end_turn",
+      "session_id": "20ba1779-56f8-44d3-adc1-1bd14042786b",
+      "total_cost_usd": 3.022335,
+      "usage": {
+        "input_tokens": 526573,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 496640,
+        "output_tokens": 5646,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard"
+      },
+      "modelUsage": {
+        "gpt-5.4": {
+          "inputTokens": 526573,
+          "outputTokens": 5646,
+          "cacheReadInputTokens": 496640,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 3.022335,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000
+        }
+      },
+      "permission_denials": [],
+      "fast_mode_state": "off",
+      "uuid": "86ace363-d0b8-4e6a-b750-e37361350026"
+    }
+  ],
+  "final_text": "## Meeting snapshot\n- 会议：项目沟通\n- 时间：2026-04-05T10:00:00+08:00\n- 发起人：王敏\n- 账户：华东零售集团\n- 商机：null\n- 参会人：王敏（客户成功经理）、李总（业务负责人）\n\n## Core summary and judgment\n- **事实**：本次沟通只明确了三件事：  \n  1. 双方回顾了近期合作感受。  \n  2. 客户提到后续“可能继续看看有没有优化空间”。  \n  3. 客户内部还要再看，但没有明确这是预算、采购、试点还是交付问题。\n- **判断**：当前不支持把这次会议高置信归类为需求澄清、商务推进、试点推进或交付沟通。按契约应进入 `scenario_mode: uncertain`，主场景标记为“其他/不确定”。\n- **业务结论**：这不是实质推进证据，更像一次低信息密度的关系维护/模糊探索性沟通。现阶段不能把客户友好表达解读为明确推进意图。\n\n## Knowhow focus items\n- 当前会议实际服务的业务目标不清楚，不能假设已经进入某个明确流程阶段。\n- 没有出现可执行 owner、明确成功标准、明确下一检查点，属于弱推进信号。\n- 当前最关键的不是扩展结论，而是补齐最小判定信息：客户内部谁决策、这次“再看看”具体指向什么、下一步是否有明确检查点。\n\n## Recommended next actions\n1. 向客户确认“优化空间”具体指向：是业务需求、采购评估、试点验证，还是当前合作交付体验。\n2. 明确下一步 owner 和决策角色，至少确认：业务负责人、实际决策人、内部推进人。\n3. 约一个有明确目标的 follow-up，目标只能三选一：  \n   - 澄清需求与成功标准  \n   - 确认是否存在试点/采购路径  \n   - 确认当前合作中的具体阻塞点\n4. 在 CRM 中补拉最小字段：`decision_makers`、`account_owner`，用于消除当前场景歧义。\n\n## Risks and open questions\n- **主要风险**：把模糊兴趣误判成推进信号，导致后续动作跑空。\n- **风险信号**：没有明确 owner、没有明确场景、没有明确下一步检查点。\n- **未决问题**：\n  - 客户内部“再看看”具体在看什么？\n  - 当前讨论对应的是存量合作优化，还是潜在新项目机会？\n  - 李总是否为决策人，还是仅为业务接口人？\n  - 是否存在历史承诺、已知问题或上下文缺口影响本次表达？\n\n```json\n{\n  \"status\": \"passed\",\n  \"base_context\": {\n    \"meeting_time\": \"2026-04-05T10:00:00+08:00\",\n    \"initiator\": {\n      \"id\": null,\n      \"name\": \"王敏\"\n    },\n    \"account\": {\n      \"id\": null,\n      \"name\": \"华东零售集团\"\n    },\n    \"opportunity\": {\n      \"id\": null,\n      \"name\": null\n    },\n    \"participants\": [\n      {\n        \"name\": \"王敏\",\n        \"role\": \"客户成功经理\"\n      },\n      {\n        \"name\": \"李总\",\n        \"role\": \"业务负责人\"\n      }\n    ]\n  },\n  \"scenario_result\": {\n    \"primary_scenario\": \"其他/不确定\",\n    \"scenario_slug\": \"uncertain\",\n    \"scenario_confidence\": \"low\",\n    \"scenario_mode\": \"uncertain\",\n    \"industry\": null,\n    \"secondary_tags\": [\n      \"risk:ambiguous-next-step\",\n      \"risk:weak-progression-signal\"\n    ],\n    \"evidence\": [\n      \"双方简单沟通了最近合作感受\",\n      \"后面可能会继续看看有没有优化空间\",\n      \"客户表示内部还要再看看\",\n      \"没有明确说是预算、采购、试点还是交付问题\"\n    ]\n  },\n  \"loaded_knowhow\": {\n    \"mapping_version\": \"v1\",\n    \"common\": [\n      \"references/knowhow/common/general.md\"\n    ],\n    \"scenario\": [],\n    \"industry\": [],\n    \"patches\": [],\n    \"best_cases\": []\n  },\n  \"crm_data_requests\": [\n    {\n      \"reason\": \"stakeholder_gap\",\n      \"fields\": [\n        \"decision_makers\",\n        \"account_owner\"\n      ],\n      \"why\": \"当前会议无法判定客户内部“再看看”由谁推动，也无法判断是否存在明确 owner 或决策链，需用一个最小消歧请求包补齐。\",\n      \"sources\": [\n        \"scenario-retrieval-mapping:v1 low-confidence fallback\",\n        \"crm-data-dictionary\"\n      ]\n    }\n  ],\n  \"memory_sources\": [],\n  \"memory_conflicts\": [],\n  \"summary_fields\": {\n    \"meeting_goal\": \"维持沟通并初步探查后续是否存在优化空间，但未形成明确业务目标。\",\n    \"relationship_state\": \"existing relationship with unclear current motion\",\n    \"decision_pressure\": \"low and undefined; no explicit budget, procurement, pilot, or delivery trigger stated\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"weak exploratory signal without clear progression\",\n    \"key_participants\": [\n      {\n        \"name\": \"王敏\",\n        \"role\": \"客户成功经理\",\n        \"type\": \"explicit_fact\"\n      },\n      {\n        \"name\": \"李总\",\n        \"role\": \"业务负责人\",\n        \"type\": \"explicit_fact\"\n      }\n    ],\n    \"current_stage_judgment\": \"无法可靠判断当前处于需求澄清、商务推进、试点还是交付阶段；应视为其他/不确定。\",\n    \"next_actions\": [\n      \"确认客户所说“优化空间”具体指向的业务场景。\",\n      \"确认客户内部下一步 owner 和决策角色。\",\n      \"安排一个目标明确的 follow-up，并定义本次 follow-up 要解决的单一问题。\"\n    ],\n    \"risk_level\": \"medium\",\n    \"missing_information\": [\n      \"缺少 opportunity 关联信息。\",\n      \"缺少 account baseline，例如 industry、lifecycle_stage、current_products。\",\n      \"缺少 decision_makers 与 account_owner，无法判断推进责任链。\",\n      \"缺少历史互动与承诺信息，无法判断“继续看看”是否为重复表述或延迟信号。\",\n      \"缺少对“优化空间”具体内容的定义。\"\n    ]\n  },\n  \"semantic_summary\": {\n    \"relationship_state\": \"existing relationship with unclear current motion\",\n    \"decision_pressure\": \"low and undefined; no explicit budget, procurement, pilot, or delivery trigger stated\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"weak exploratory signal without clear progression\"\n  },\n  \"key_judgments\": {\n    \"facts\": [\n      \"会议只提到近期合作感受与后续可能存在优化空间。\",\n      \"客户明确表示内部还要再看。\",\n      \"会议记录没有说明预算、采购、试点或交付问题。\"\n    ],\n    \"inferences\": [\n      \"当前不应把客户表达解读为明确推进意图。\",\n      \"本次更接近低信息密度的探索性沟通，而非明确阶段性推进会议。\"\n    ],\n    \"open_questions\": [\n      \"客户内部具体在评估什么？\",\n      \"李总是否为决策人还是业务接口人？\",\n      \"是否存在潜在商机或只是存量合作优化？\",\n      \"下一步是否会形成明确 owner 和检查点？\"\n    ]\n  },\n  \"knowhow_focus_items\": [\n    {\n      \"item\": \"不要把友好语气或模糊兴趣误判成 deal advancement。\",\n      \"source\": \"references/knowhow/common/general.md\"\n    },\n    {\n      \"item\": \"在 stakeholder ownership 不清晰时，不要假装已有确定推进判断。\",\n      \"source\": \"references/knowhow/common/general.md\"\n    },\n    {\n      \"item\": \"为安全进入下一步，需要先补齐最小关键信息，而不是扩展结论。\",\n      \"source\": \"references/knowhow/common/general.md\"\n    }\n  ],\n  \"retrieval_trace\": {\n    \"mapping_version\": \"v1\",\n    \"scenario_mode\": \"uncertain\",\n    \"allowed_request_groups\": [\n      \"stakeholder_gap\"\n    ],\n    \"requested_request_groups\": [\n      \"stakeholder_gap\"\n    ],\n    \"out_of_policy_requests\": []\n  },\n  \"retry_state\": {\n    \"revision\": 0,\n    \"status\": \"passed\",\n    \"history\": [\n      {\n        \"revision\": 0,\n        \"review_status\": \"pass\",\n        \"failed_checks\": []\n      }\n    ]\n  },\n  \"review_ready_checks\": {\n    \"scenario_self_consistency\": true,\n    \"knowhow_coverage\": true,\n    \"evidence_grounding\": true,\n    \"memory_conflict_handling\": true,\n    \"missing_information_handling\": true,\n    \"policy_boundary_handling\": true,\n    \"semantic_summary_consistency\": true,\n    \"machine_output_completeness\": true\n  },\n  \"review_result\": {\n    \"pass\": true,\n    \"review_status\": \"pass\",\n    \"failure_reasons\": [],\n    \"targeted_regeneration_instructions\": [],\n    \"check_results\": {\n      \"scenario_self_consistency\": \"pass\",\n      \"knowhow_coverage\": \"pass\",\n      \"evidence_grounding\": \"pass\",\n      \"memory_conflict_handling\": \"pass\",\n      \"missing_information_handling\": \"pass\",\n      \"policy_boundary_handling\": \"pass\",\n      \"semantic_summary_consistency\": \"pass\",\n      \"machine_output_completeness\": \"pass\"\n    },\n    \"notes\": [\n      \"当前输出采用 low-confidence fallback，未越权扩展 retrieval。\",\n      \"human summary 与 machine output 对主结论保持一致。\"\n    ]\n  }\n}\n```",
+  "extracted_machine_json": {
+    "status": "passed",
+    "base_context": {
+      "meeting_time": "2026-04-05T10:00:00+08:00",
+      "initiator": {
+        "id": null,
+        "name": "王敏"
+      },
+      "account": {
+        "id": null,
+        "name": "华东零售集团"
+      },
+      "opportunity": {
+        "id": null,
+        "name": null
+      },
+      "participants": [
+        {
+          "name": "王敏",
+          "role": "客户成功经理"
+        },
+        {
+          "name": "李总",
+          "role": "业务负责人"
+        }
+      ]
+    },
+    "scenario_result": {
+      "primary_scenario": "其他/不确定",
+      "scenario_slug": "uncertain",
+      "scenario_confidence": "low",
+      "scenario_mode": "uncertain",
+      "industry": null,
+      "secondary_tags": [
+        "risk:ambiguous-next-step",
+        "risk:weak-progression-signal"
+      ],
+      "evidence": [
+        "双方简单沟通了最近合作感受",
+        "后面可能会继续看看有没有优化空间",
+        "客户表示内部还要再看看",
+        "没有明确说是预算、采购、试点还是交付问题"
+      ]
+    },
+    "loaded_knowhow": {
+      "mapping_version": "v1",
+      "common": [
+        "references/knowhow/common/general.md"
+      ],
+      "scenario": [],
+      "industry": [],
+      "patches": [],
+      "best_cases": []
+    },
+    "crm_data_requests": [
+      {
+        "reason": "stakeholder_gap",
+        "fields": [
+          "decision_makers",
+          "account_owner"
+        ],
+        "why": "当前会议无法判定客户内部“再看看”由谁推动，也无法判断是否存在明确 owner 或决策链，需用一个最小消歧请求包补齐。",
+        "sources": [
+          "scenario-retrieval-mapping:v1 low-confidence fallback",
+          "crm-data-dictionary"
+        ]
+      }
+    ],
+    "memory_sources": [],
+    "memory_conflicts": [],
+    "summary_fields": {
+      "meeting_goal": "维持沟通并初步探查后续是否存在优化空间，但未形成明确业务目标。",
+      "relationship_state": "existing relationship with unclear current motion",
+      "decision_pressure": "low and undefined; no explicit budget, procurement, pilot, or delivery trigger stated",
+      "trust_state": "neutral",
+      "momentum_state": "weak exploratory signal without clear progression",
+      "key_participants": [
+        {
+          "name": "王敏",
+          "role": "客户成功经理",
+          "type": "explicit_fact"
+        },
+        {
+          "name": "李总",
+          "role": "业务负责人",
+          "type": "explicit_fact"
+        }
+      ],
+      "current_stage_judgment": "无法可靠判断当前处于需求澄清、商务推进、试点还是交付阶段；应视为其他/不确定。",
+      "next_actions": [
+        "确认客户所说“优化空间”具体指向的业务场景。",
+        "确认客户内部下一步 owner 和决策角色。",
+        "安排一个目标明确的 follow-up，并定义本次 follow-up 要解决的单一问题。"
+      ],
+      "risk_level": "medium",
+      "missing_information": [
+        "缺少 opportunity 关联信息。",
+        "缺少 account baseline，例如 industry、lifecycle_stage、current_products。",
+        "缺少 decision_makers 与 account_owner，无法判断推进责任链。",
+        "缺少历史互动与承诺信息，无法判断“继续看看”是否为重复表述或延迟信号。",
+        "缺少对“优化空间”具体内容的定义。"
+      ]
+    },
+    "semantic_summary": {
+      "relationship_state": "existing relationship with unclear current motion",
+      "decision_pressure": "low and undefined; no explicit budget, procurement, pilot, or delivery trigger stated",
+      "trust_state": "neutral",
+      "momentum_state": "weak exploratory signal without clear progression"
+    },
+    "key_judgments": {
+      "facts": [
+        "会议只提到近期合作感受与后续可能存在优化空间。",
+        "客户明确表示内部还要再看。",
+        "会议记录没有说明预算、采购、试点或交付问题。"
+      ],
+      "inferences": [
+        "当前不应把客户表达解读为明确推进意图。",
+        "本次更接近低信息密度的探索性沟通，而非明确阶段性推进会议。"
+      ],
+      "open_questions": [
+        "客户内部具体在评估什么？",
+        "李总是否为决策人还是业务接口人？",
+        "是否存在潜在商机或只是存量合作优化？",
+        "下一步是否会形成明确 owner 和检查点？"
+      ]
+    },
+    "knowhow_focus_items": [
+      {
+        "item": "不要把友好语气或模糊兴趣误判成 deal advancement。",
+        "source": "references/knowhow/common/general.md"
+      },
+      {
+        "item": "在 stakeholder ownership 不清晰时，不要假装已有确定推进判断。",
+        "source": "references/knowhow/common/general.md"
+      },
+      {
+        "item": "为安全进入下一步，需要先补齐最小关键信息，而不是扩展结论。",
+        "source": "references/knowhow/common/general.md"
+      }
+    ],
+    "retrieval_trace": {
+      "mapping_version": "v1",
+      "scenario_mode": "uncertain",
+      "allowed_request_groups": [
+        "stakeholder_gap"
+      ],
+      "requested_request_groups": [
+        "stakeholder_gap"
+      ],
+      "out_of_policy_requests": []
+    },
+    "retry_state": {
+      "revision": 0,
+      "status": "passed",
+      "history": [
+        {
+          "revision": 0,
+          "review_status": "pass",
+          "failed_checks": []
+        }
+      ]
+    },
+    "review_ready_checks": {
+      "scenario_self_consistency": true,
+      "knowhow_coverage": true,
+      "evidence_grounding": true,
+      "memory_conflict_handling": true,
+      "missing_information_handling": true,
+      "policy_boundary_handling": true,
+      "semantic_summary_consistency": true,
+      "machine_output_completeness": true
+    },
+    "review_result": {
+      "pass": true,
+      "review_status": "pass",
+      "failure_reasons": [],
+      "targeted_regeneration_instructions": [],
+      "check_results": {
+        "scenario_self_consistency": "pass",
+        "knowhow_coverage": "pass",
+        "evidence_grounding": "pass",
+        "memory_conflict_handling": "pass",
+        "missing_information_handling": "pass",
+        "policy_boundary_handling": "pass",
+        "semantic_summary_consistency": "pass",
+        "machine_output_completeness": "pass"
+      },
+      "notes": [
+        "当前输出采用 low-confidence fallback，未越权扩展 retrieval。",
+        "human summary 与 machine output 对主结论保持一致。"
+      ]
+    }
+  },
+  "extraction_meta": {
+    "source": "fenced_json"
+  },
+  "contract_verdict": {
+    "passed": true,
+    "errors": []
+  },
+  "case_verdict": {
+    "passed": true,
+    "errors": []
+  },
+  "passed": true
+}

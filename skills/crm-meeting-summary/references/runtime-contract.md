@@ -9,60 +9,138 @@
 
 - 为调用方提供稳定、可审计的接口。
 - 防止 SKILL.md、examples、evals 与 schema 漂移。
-- 让业务语义保持显式，而不是被藏进 prose。
+- 让业务语义保持显式，而不是被藏进自然语言表述。
 
 ## 对象模型
 
 支持四类 CRM 关联 object scopes：
 - `person`（initiator、internal owner、stakeholders）
-- `account`（customer）
+- `account`（底层对象 key；对外业务语义统一视为“客户”）
 - `opportunity`
 - `contact`
 
 关系提醒：
-- account / opportunity / contact 都可以有 owner，owner 始终是 `person`
+- 客户 / opportunity / contact 都可以有 owner，owner 始终是 `person`
 - 一条 sales record 可以同时关联多个 objects
 - meeting initiator 始终是 `person`
 
-## 语义解释层
+## 三层运行时边界
 
-runtime 在生成最终措辞前，应先把原始 meeting 与 CRM inputs 归一为紧凑的业务语义层。
-这不是 free-form prose。
-它是可复用的 semantic summary，用来提升 review、retry 与下游自动化的可靠性。
+runtime 在生成最终措辞前，必须先把输入拆成三个边界清晰的层：
+1. `semantic_normalization`
+2. `meeting_state_features`
+3. `memory`
 
-建议语义维度：
+这三层职责不同，不能混写。
+
+### 1. semantic_normalization
+
+职责：统一 CRM 对象、关系、字段别名与 lookup 口径。
+
+最少应覆盖：
+- 对象标准名：`person / account / opportunity / contact / meeting`
+- 对象别名映射，例如“客户 -> account”，“项目/商机/机会 -> opportunity”
+- mixed key lookup：优先 `*_id`，回退 `*_name`
+- 关系口径：如 `initiated_by / linked_to / belongs_to / owner`
+- 已解析对象集合 `resolved_objects`
+
+`semantic_normalization` 是对象语义归一层，不负责输出业务状态判断。
+
+### 2. meeting_state_features
+
+职责：从当前 meeting evidence + 当前 CRM context 中抽取当前会议状态特征。
+
+推荐字段：
 - `relationship_state`
 - `decision_pressure`
 - `trust_state`
 - `momentum_state`
 
-推荐表示方式：
-- 在 `summary_fields` 中复制这些语义字段，便于下游必需访问
-- 必须同时输出单独的 `semantic_summary` block，供机器直接消费
+约束：
+- 只能由当前会议证据与当前 CRM 上下文支撑
+- 不能把历史 memory 当作主证据
+- 可被 `summary_fields` 冗余复制，供下游直接消费
 
-`semantic_summary` 是必需顶层结构；`summary_fields` 中的同名字段是冗余访问层，不可替代它。
+### 3. memory
+
+职责：读取跨会议稳定背景，并显式处理与当前证据的关系。
+
+适合读取的内容：
+- relationship continuity
+- stakeholder preference
+- commitment history
+- recurring risk pattern
+- approval pattern
+
+不适合直接作为 memory 主体的内容：
+- 单次会议瞬时状态
+- 一次性 next action
+- 未被当前证据确认的当前结论
+
+`memory_sources` 和 `memory_conflicts` 是 memory 层在输出侧的最小 trace，不替代 `semantic_normalization` 或 `meeting_state_features`。
+
+## 兼容字段
+
+为兼容旧版下游，允许继续输出 `semantic_summary`，但它只是 `meeting_state_features` 的兼容映射层。
+
+约束：
+- `semantic_summary` 不能再被定义为“语义归一层”
+- `semantic_summary` 内容必须与 `meeting_state_features` 一致
+- 语义归一信息必须进入 `semantic_normalization`，不能塞回 `semantic_summary`
 
 ## 输入契约
 
 ### 必需输入
 
 runtime 至少必须提供：
-- meeting record text
-- meeting time
+- meeting record text，或可读取的 meeting record file path
 - initiator，类型为 `person`
-- account 或 opportunity association
+- 客户或商机关联
+
+推荐提供：
+- meeting time，如有
 
 ### 可选输入
 
+- `input_bundle_path`
 - meeting title
 - participants list
 - 已可用的 CRM fields
 - 预取的 memory snippets
+- `meeting.record_text_path`
+
+### 输入字段规则
+
+`meeting` 下与会议纪要相关的字段：
+- `record_text: string | null`
+- `record_text_path: string | null`
+
+顶层可选字段：
+- `input_bundle_path: string | null`
+
+归一化优先级：
+1. `record_text` 非空时，直接作为会议纪要来源
+2. 否则如果 `record_text_path` 存在，runtime 读取该文件内容并填充内部 `record_text`
+3. 否则如果 `input_bundle_path` 存在，runtime 读取目录中的 `meeting-record.txt`
+4. 三者都缺失时，按缺失关键输入处理，并在 `missing_information` 中暴露
+
+也就是执行 `record_text > record_text_path > input_bundle_path/meeting-record.txt` 的归一化优先级。
+
+读取约束：
+- 路径必须由调用方显式提供，runtime 不猜测路径
+- 只把文件当纯文本读取，不引入额外格式解析
+- 文件不存在、不可读或读取结果为空时，不得编造内容，必须显式暴露读取失败
+- 如果同时提供 `record_text` 和 `record_text_path`，始终以 `record_text` 为准
+- 如果目录输入存在对象文件，只允许读取：`AccountObj.json`、`NewOpportunityObj.json`、`PersonnelObj.json`、`ContactObj.json`
+- 对象文件映射固定为：`AccountObj.json -> crm_context.account`、`NewOpportunityObj.json -> crm_context.opportunity`、`PersonnelObj.json -> crm_context.person`、`ContactObj.json -> crm_context.contact`
+- runtime 不扫描目录中的其他文件，多余文件直接忽略
+- 显式 `crm_context.*` 优先于目录中的对象文件
 
 ### 输入示例
 
 ```json
 {
+  "input_bundle_path": "/abs/path/case-001",
   "meeting": {
     "id": "MEET-001",
     "title": "需求澄清会 - 智能客服升级",
@@ -74,7 +152,7 @@ runtime 至少必须提供：
       {"name": "王敏", "role": "客户成功经理"},
       {"name": "李总", "role": "客户运营负责人"}
     ],
-    "record_text": "..."
+    "record_text_path": "/abs/path/meeting-notes.txt"
   },
   "crm_context": {
     "account": {
@@ -118,6 +196,9 @@ runtime 至少必须提供：
 
 ### 输出示例
 
+路径表示统一使用**仓库根目录相对路径**。例如：`skills/crm-meeting-summary/references/...`。
+不要混用绝对路径、`references/...` 短路径和仓库相对路径。
+
 ```json
 {
   "status": "passed",
@@ -139,11 +220,11 @@ runtime 至少必须提供：
   },
   "loaded_knowhow": {
     "mapping_version": "v1",
-    "common": ["references/knowhow/common/general.md"],
-    "scenario": ["references/knowhow/by-scenario/needs-clarification.md"],
-    "industry": ["references/knowhow/by-industry/general-b2b.md"],
-    "patches": ["references/knowhow/patches/needs-clarification__general-b2b.md"],
-    "best_cases": []
+    "common": ["skills/crm-meeting-summary/references/knowhow/common/general.md"],
+    "scenario": ["skills/crm-meeting-summary/references/knowhow/by-scenario/needs-clarification.md"],
+    "industry": ["skills/crm-meeting-summary/references/knowhow/by-industry/general-b2b.md"],
+    "patches": ["skills/crm-meeting-summary/references/knowhow/patches/needs-clarification__general-b2b.md"],
+    "best_cases": ["skills/crm-meeting-summary/references/knowhow/best-cases/needs-clarification__general-b2b__v1.md"]
   },
   "crm_data_requests": [
     {
@@ -198,6 +279,8 @@ runtime 至少必须提供：
     "memory_conflict_handling": true,
     "missing_information_handling": true,
     "policy_boundary_handling": true,
+    "semantic_normalization_consistency": true,
+    "meeting_state_feature_evidence": true,
     "semantic_summary_consistency": true,
     "machine_output_completeness": true
   }
@@ -228,11 +311,14 @@ runtime 至少必须提供：
 ## 记忆契约使用
 
 - 对该 skill 而言，memory 是只读的。
-- scopes: person/account/opportunity/contact。
+- scopes: person/account/opportunity/contact（其中 `account` 对外业务语义为“客户”）。
 - 如果 memory 与当前 evidence 冲突，优先当前 evidence，并记录到 `memory_conflicts`。
 - 使用 mixed keys：优先 `*_id`，回退到 `*_name`。
+- 推荐把 memory 视为带时间层和状态的 memory cards，而不是无结构长文本。
+- runtime 读取 memory 时只取当前 scenario 与 object scope 需要的最小子集，不做 broad sweep。
+- `stale` memory 不得单独抬高关键 judgment 置信度；`contradicted` memory 只能用于冲突说明，不作正向支撑。
 
-## Best-case 使用规范
+## Best-cases 使用规范
 
 - best-cases 是可选 reference，不是强制 retrieval。
 - 只有在它们能提升已识别场景或行业的判断质量时才加载。
@@ -242,21 +328,21 @@ runtime 至少必须提供：
 ## 评审交接契约
 
 调用 review skill 时，只传精简包：
-- generated human summary
-- generated machine output
+- 生成人类可读总结
+- 生成的机器可读输出
 - retrieval trace
 - retry state
-- loaded knowhow identifiers
+- 已加载 knowhow 标识
 - 最小支持证据摘录
 
-review output 必须使用：
+review 输出必须使用：
 - `pass: true|false`
 - `review_status: pass|fail`
 - `failure_reasons`
 - `targeted_regeneration_instructions`
 - `check_results`
 
-review output 与 summary output status 不是同一个概念。
+review 输出与 summary 输出状态不是同一个概念。
 
 ## 失败与重试契约
 

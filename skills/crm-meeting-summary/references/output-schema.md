@@ -1,6 +1,6 @@
 # 输出 Schema
 
-使用这份 schema 作为 machine-consumable output 的结构定义。
+使用这份 schema 作为机器可读输出的结构定义。
 字段语义以 `runtime-contract.md` 为准。
 
 ```json
@@ -22,6 +22,18 @@
     "secondary_tags": [],
     "evidence": []
   },
+  "semantic_normalization": {
+    "object_aliases": {},
+    "lookup_keys": {},
+    "resolved_objects": {},
+    "relationship_map": []
+  },
+  "meeting_state_features": {
+    "relationship_state": "string",
+    "decision_pressure": "string",
+    "trust_state": "string",
+    "momentum_state": "string"
+  },
   "loaded_knowhow": {
     "mapping_version": "v1",
     "common": [],
@@ -38,8 +50,23 @@
       "sources": []
     }
   ],
-  "memory_sources": [],
-  "memory_conflicts": [],
+  "memory_sources": [
+    {
+      "scope": "person | account | opportunity | contact",
+      "lookup_key": "string",
+      "used": true,
+      "notes": []
+    }
+  ],
+  "memory_conflicts": [
+    {
+      "scope": "person | account | opportunity | contact",
+      "field": "string",
+      "memory_claim": "string",
+      "current_evidence": "string",
+      "resolution": "优先使用当前会议证据"
+    }
+  ],
   "summary_fields": {
     "meeting_goal": "string",
     "relationship_state": "string",
@@ -83,6 +110,8 @@
     "memory_conflict_handling": true,
     "missing_information_handling": true,
     "policy_boundary_handling": true,
+    "semantic_normalization_consistency": true,
+    "meeting_state_feature_evidence": true,
     "semantic_summary_consistency": true,
     "machine_output_completeness": true
   }
@@ -91,7 +120,11 @@
 
 ## 说明
 
+- `semantic_normalization` 只承载对象、关系、字段口径统一，不承载状态判断。
+- `meeting_state_features` 只承载当前会议状态特征，必须由当前会议证据与当前 CRM 支撑。
+- `semantic_summary` 是兼容字段，内容必须与 `meeting_state_features` 一致，不能代替 `semantic_normalization`。
 - `crm_data_requests[*].sources` 用于标明请求来源，例如 `knowhow:data_requirements`。
+- `memory_sources` 只记录实际读取且被使用的 memory 子集；没有使用就输出空数组。
 - 能用空数组时，优先输出空数组，不要省略字段。
 - 未知值使用 `null`，不要编造。
 - 人类可读总结与该结构分开输出。

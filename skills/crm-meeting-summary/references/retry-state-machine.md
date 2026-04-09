@@ -64,13 +64,13 @@ manual_review_required
 
 **目的**
 - meeting package 已可用
-- 基础 CRM context 已可用，或部分缺失
+- 基础 CRM 上下文已可用，或部分缺失
 - 尚未生成任何 summary
 
 **必需输入**
 - raw meeting record
 - meeting time，如有
-- 已关联的 `person` / `account` / `opportunity` / `contact` objects，如可用
+- 已关联的 `person` / `account` / `opportunity` / `contact` objects，如可用（其中 `account` 对外业务语义为“客户”）
 
 **退出条件**
 - 基础归一化后进入 `scenario_gate`
@@ -99,25 +99,25 @@ manual_review_required
 ### 3. `draft_generated`
 
 **目的**
-- 产出一份同步 summary package
+- 产出一份同步总结包
 
 **必需输出**
-- human-readable summary
-- machine-readable structure
-- trace bundle
+- 人类可读总结
+- 机器可读结构
+- 追踪包
 
 **硬性约束**
-1. human-readable 与 machine-readable outputs 必须来自同一事实底座。
-2. machine structure 是以下字段的 source of truth：
+1. 人类可读总结与机器可读输出必须来自同一事实底座。
+2. 机器结构是以下字段的权威来源：
    - `meeting_goal`
    - `current_stage_judgment`
    - `next_actions`
    - `risk_level`
    - `missing_information`
-3. human-readable prose 可以扩展措辞，但不能与 machine fields 矛盾。
+3. 人类可读表述可以扩展措辞，但不能与机器字段矛盾。
 4. 如果 `scenario_mode=uncertain`，draft 必须降低判断强度，并显式写出歧义。
 
-**Trace bundle minimum**
+**追踪包最小内容**
 - scenario evidence
 - loaded knowhow IDs 或 paths
 - CRM request reasons
@@ -137,11 +137,11 @@ manual_review_required
 使用精简 review package，不要重新发送整份原始上下文。
 
 只包含：
-- generated human summary
-- generated machine structure
-- trace bundle
+- 生成的人类可读总结
+- 生成的机器可读结构
+- 追踪包
 - 用于验证争议 claim 的最小支持证据摘录
-- loaded knowhow identifiers
+- 已加载 knowhow 标识
 
 不要包含：
 - 除非争议点需要，否则不要放完整 knowhow 正文
@@ -196,8 +196,8 @@ manual_review_required
 - 最终交付物可安全返回
 
 **必需输出**
-- final human-readable summary
-- final machine-readable structure
+- 最终人类可读总结
+- 最终机器可读结构
 - `status: passed`
 - final trace bundle
 
@@ -207,8 +207,8 @@ manual_review_required
 - 两次修复失败后停止自动化
 
 **必需输出**
-- 当前最佳 human-readable summary
-- 当前最佳 machine-readable structure
+- 当前最佳人类可读总结
+- 当前最佳机器可读结构
 - `status: manual_review_required`
 - 上一次 review 的累计 failure reasons
 - 上一次 targeted regeneration instructions
@@ -216,7 +216,7 @@ manual_review_required
 
 ## 重试历史契约
 
-发生任何 retry 时，在 machine output 中加入 retry history block。
+发生任何 retry 时，在机器输出中加入 retry history block。
 
 ```json
 {
