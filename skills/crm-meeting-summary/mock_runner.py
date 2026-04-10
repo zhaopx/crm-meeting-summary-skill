@@ -11,7 +11,7 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SKILL_DIR = Path(__file__).resolve().parent
-MOCK_DATA_DIR = SKILL_DIR / "examples" / "mock-data"
+MOCK_DATA_DIR = SKILL_DIR.parent / "mock-runtime"
 SCENARIO_KNOWHOW_DIR = SKILL_DIR / "references" / "knowhow" / "by-scenario"
 PATCH_KNOWHOW_DIR = SKILL_DIR / "references" / "knowhow" / "patches"
 INDUSTRY_KNOWHOW_DIR = SKILL_DIR / "references" / "knowhow" / "by-industry"

@@ -8,7 +8,8 @@ from typing import Any
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-EVALS_PATH = Path(__file__).resolve().parent / "evals" / "evals.json"
+SKILL_DIR = Path(__file__).resolve().parent
+EVALS_PATH = REPO_ROOT / "tests" / "crm_meeting_summary" / "evals" / "evals.json"
 DEFAULT_CONSTRAINTS = {"language": "zh-CN", "output_mode": "human_and_json"}
 CLAUDE_TIMEOUT_SECONDS = 180
 
@@ -349,9 +350,9 @@ def run_case(case_id: str) -> dict[str, Any]:
         input_bundle_path = case["input_bundle_path"]
         if not isinstance(input_bundle_path, str) or not input_bundle_path.strip():
             raise RealRunnerError("eval case 中的 input_bundle_path 必须是非空字符串")
-        bundle = build_input_bundle_from_path(Path(input_bundle_path))
+        bundle = build_input_bundle_from_path(REPO_ROOT / input_bundle_path)
     else:
-        files = [Path(__file__).parent / file for file in case["files"]]
+        files = [REPO_ROOT / file for file in case["files"]]
         bundle = build_input_bundle(files)
     result = invoke_real_skill(bundle)
     return {"case": case, **result}

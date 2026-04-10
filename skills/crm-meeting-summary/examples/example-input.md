@@ -1,7 +1,8 @@
 # 输入示例
 
-本文优先展示 **真实 skill 调用方式**。
-`mock_runner.py` 只保留为开发验证工具，不代表生产运行路径。
+本文只展示 **真实 skill 的输入方式**。
+- `mock_runner.py` 仅用于开发验证，不代表生产运行路径
+- 目标输出与完整执行链路分别见：`case-execution-example.md`
 
 ## 真实 skill 最小输入示例
 
@@ -167,32 +168,19 @@ opportunity: 智能客服升级项目（OPP-9001）
 }
 ```
 
-- `primary_scenario`: `需求澄清`
-- `industry`: `general-b2b`
-- 预期风险等级：`medium` 或 `high`，取决于证据权重
-
-## 为什么这个示例重要
-这个示例用于验证真实 skill 是否能：
-- 不把友好表述误判为采购承诺
-- 识别预算优先级风险
-- 只请求最小必要 CRM 字段
-- 把 memory 用作背景，而不是主证据
-- 在同一轮输出中同时给出人类可读总结和机器可读 JSON
-- 在最终交付前经过 review gate
-
 ## 开发验证：Mock runner 示例
 
 仅在本地做 contract regression 或 mock data 演练时，才使用：
 
 ```bash
 python3 skills/crm-meeting-summary/mock_runner.py \
-  --meeting-file skills/crm-meeting-summary/examples/mock-data/meeting-records/meeting-001.json \
+  --meeting-file skills/mock-runtime/meeting-records/meeting-001.json \
   --scenario-slug needs-clarification \
   --scenario-confidence high \
   --industry general-b2b \
-  --account-file skills/crm-meeting-summary/examples/mock-data/crm/account/CUST-001.json \
-  --opportunity-file skills/crm-meeting-summary/examples/mock-data/crm/opportunity/OPP-9001.json \
-  --person-file skills/crm-meeting-summary/examples/mock-data/crm/person/USR-101.json
+  --account-file skills/mock-runtime/crm/account/CUST-001.json \
+  --opportunity-file skills/mock-runtime/crm/opportunity/OPP-9001.json \
+  --person-file skills/mock-runtime/crm/person/USR-101.json
 ```
 
 这个 runner 输出的是开发期可回归结构，例如：
@@ -206,6 +194,6 @@ python3 skills/crm-meeting-summary/mock_runner.py \
 它不是 Claude runtime 中的真实 skill 调用路径。
 
 ## 相关文档
-- `example-output.md` - 真实 skill 的目标输出结构
-- `case-execution-example.md` - 真实 skill 的执行链路说明
+- `case-execution-example.md` - 完整执行链路与标准输出样例
 - `mock_runner.py` - 开发验证工具
+

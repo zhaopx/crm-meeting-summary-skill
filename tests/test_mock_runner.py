@@ -9,7 +9,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RUNNER = REPO_ROOT / "skills" / "crm-meeting-summary" / "mock_runner.py"
-MOCK_BASE = REPO_ROOT / "skills" / "crm-meeting-summary" / "examples" / "mock-data"
+MOCK_BASE = REPO_ROOT / "skills" / "mock-runtime"
 
 
 BASELINE_ARGS = [

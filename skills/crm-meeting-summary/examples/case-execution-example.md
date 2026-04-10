@@ -1,13 +1,13 @@
 # 案例执行示例
 
 本文展示 `crm-meeting-summary` 作为**真实 Claude skill**的一次完整执行链路。
-`examples/mock-data/` 和 `mock_runner.py` 仍可用于开发验证，但不是生产运行路径。
+`skills/mock-runtime/` 和 `mock_runner.py` 仍可用于开发验证，但不是生产运行路径。
 
 ## 案例
-- 会议输入：`examples/mock-data/meeting-records/meeting-001.json`
-- 客户 CRM：`examples/mock-data/crm/account/CUST-001.json`
-- 商机 CRM：`examples/mock-data/crm/opportunity/OPP-9001.json`
-- 人员 CRM：`examples/mock-data/crm/person/USR-101.json`
+- 会议输入：`skills/mock-runtime/meeting-records/meeting-001.json`
+- 客户 CRM：`skills/mock-runtime/crm/account/CUST-001.json`
+- 商机 CRM：`skills/mock-runtime/crm/opportunity/OPP-9001.json`
+- 人员 CRM：`skills/mock-runtime/crm/person/USR-101.json`
 
 ## 真实 skill 调用方式
 
@@ -185,9 +185,11 @@ skill 先产出 `semantic_normalization`，统一对象、关系、字段口径�
 - 当前仍是 qualification，不是采购确认
 - 客户愿意继续看，但前提是先证明效果、控制改造成本
 
-## 第 7 步：生成同源双轨输出
+## 第 7 步：生成人类可读总结，并展示最终机器输出快照
 
-skill 基于同一份事实底座，生成：
+skill 先基于同一份事实底座生成 summary draft；本节同时展示 review 通过后的**最终交付快照**，因此下面的机器可读输出已包含 `review_result`。
+
+最终交付包含：
 - 人类可读总结
 - 机器可读输出
 
@@ -219,7 +221,192 @@ skill 基于同一份事实底座，生成：
 - 待补：last_commitments
 ```
 
-## 第 7 步：调用 review skill
+对应机器可读输出示例：
+
+```json
+{
+  "status": "passed",
+  "human_summary": "会议快照\n- 场景：需求澄清\n- 模式：normal\n- 目标：确认问题根因并判断是否进入试点\n\n核心总结与判断\n- 当前阶段：qualification\n- 决策压力：budget priority depends on short-term proof\n- 风险等级：medium\n\n参考知识关注项\n- 区分真实推进与礼貌性回应\n- 缺失关键信息时只请求最小必要 CRM 字段\n- 预算优先级与短期效果证明直接相关\n- 实施复杂度会直接影响商业推进动能\n\n建议下一步\n- 一周内提交问题诊断与优化路径建议\n- 补齐试点评估负责人与预算审批链条\n\n风险与待确认问题\n- 待补：implementation_status\n- 待补：last_commitments",
+  "review_result": {
+    "pass": true,
+    "review_status": "pass",
+    "failure_reasons": [],
+    "targeted_regeneration_instructions": [],
+    "check_results": {
+      "scenario_self_consistency": "pass",
+      "knowhow_coverage": "pass",
+      "evidence_grounding": "pass",
+      "memory_conflict_handling": "pass",
+      "missing_information_handling": "pass",
+      "policy_boundary_handling": "pass",
+      "semantic_normalization_consistency": "pass",
+      "meeting_state_feature_evidence": "pass",
+      "semantic_summary_consistency": "pass",
+      "machine_output_completeness": "pass"
+    },
+    "notes": []
+  },
+  "base_context": {
+    "meeting_time": "2026-04-06T15:00:00+08:00",
+    "initiator": {"id": "USR-101", "name": "王敏"},
+    "account": {"id": "CUST-001", "name": "华东零售集团"},
+    "opportunity": {"id": "OPP-9001", "name": "智能客服升级项目"},
+    "participants": [
+      {"name": "王敏", "role": "客户成功经理"},
+      {"name": "李总", "role": "客户运营负责人"},
+      {"name": "陈经理", "role": "IT 负责人"}
+    ]
+  },
+  "scenario_result": {
+    "primary_scenario": "需求澄清",
+    "scenario_slug": "needs-clarification",
+    "scenario_confidence": "high",
+    "scenario_mode": "normal",
+    "industry": "general-b2b",
+    "secondary_tags": ["risk:budget-priority", "risk:implementation-cost"],
+    "evidence": [
+      "客户反馈当前客服机器人命中率不稳定，夜间转人工率偏高",
+      "李总明确表示，希望先确认问题是不是知识库更新机制导致，再决定是否进入新一轮采购",
+      "客户提到 6 月前内部会做一次服务质量考核，如果效果没有改善，预算优先级会下降",
+      "陈经理提到接口改造资源有限，需要尽量少改现有系统"
+    ]
+  },
+  "semantic_normalization": {
+    "object_aliases": {
+      "customer": "account",
+      "account": "account",
+      "商机": "opportunity",
+      "项目": "opportunity",
+      "机会": "opportunity",
+      "initiator": "person",
+      "owner": "person",
+      "联系人": "contact"
+    },
+    "lookup_keys": {
+      "initiator": "person_id:USR-101",
+      "account": "account_id:CUST-001",
+      "opportunity": "opportunity_id:OPP-9001"
+    },
+    "resolved_objects": {
+      "meeting": {
+        "meeting_time": "2026-04-06T15:00:00+08:00",
+        "title": null
+      },
+      "person": {
+        "initiator": {
+          "id": "USR-101",
+          "name": "王敏",
+          "role": "客户成功经理"
+        }
+      },
+      "account": {
+        "id": "CUST-001",
+        "name": "华东零售集团",
+        "owner": null
+      },
+      "opportunity": {
+        "id": "OPP-9001",
+        "name": "智能客服升级项目",
+        "owner": null
+      },
+      "contact_mentions": [
+        {"name": "李总", "role": "客户运营负责人", "mapped_scope": "contact"},
+        {"name": "陈经理", "role": "IT 负责人", "mapped_scope": "contact"}
+      ]
+    },
+    "relationship_map": [
+      "meeting initiated_by person",
+      "meeting linked_to account",
+      "meeting linked_to opportunity",
+      "account may_have_owner person",
+      "opportunity may_have_owner person"
+    ]
+  },
+  "meeting_state_features": {
+    "relationship_state": "active-account, qualification-in-progress",
+    "decision_pressure": "budget priority depends on short-term proof",
+    "trust_state": "neutral-to-cautious",
+    "momentum_state": "curious but not yet committed"
+  },
+  "loaded_knowhow": {
+    "mapping_version": "v1",
+    "common": ["skills/crm-meeting-summary/references/knowhow/common/general.md"],
+    "scenario": ["skills/crm-meeting-summary/references/knowhow/by-scenario/needs-clarification.md"],
+    "industry": ["skills/crm-meeting-summary/references/knowhow/by-industry/general-b2b.md"],
+    "patches": ["skills/crm-meeting-summary/references/knowhow/patches/needs-clarification__general-b2b.md"],
+    "best_cases": ["skills/crm-meeting-summary/references/knowhow/best-cases/needs-clarification__general-b2b__v1.md"]
+  },
+  "crm_data_requests": [
+    {
+      "reason": "risk_validation_gap",
+      "fields": ["implementation_status", "last_commitments"],
+      "why": "当 trust 或历史承诺成为风险点时，需要验证承诺是否兑现与实施状态。",
+      "sources": ["knowhow:data_requirements:needs-clarification.md"]
+    }
+  ],
+  "memory_sources": [],
+  "memory_conflicts": [],
+  "summary_fields": {
+    "meeting_goal": "确认问题根因并判断是否进入试点",
+    "relationship_state": "active-account, qualification-in-progress",
+    "decision_pressure": "budget priority depends on short-term proof",
+    "trust_state": "neutral-to-cautious",
+    "momentum_state": "curious but not yet committed",
+    "key_participants": ["王敏", "李总", "陈经理"],
+    "current_stage_judgment": "qualification",
+    "next_actions": ["一周内提交问题诊断与优化路径建议", "补齐试点评估负责人与预算审批链条"],
+    "risk_level": "medium",
+    "missing_information": ["implementation_status", "last_commitments"]
+  },
+  "semantic_summary": {
+    "relationship_state": "active-account, qualification-in-progress",
+    "decision_pressure": "budget priority depends on short-term proof",
+    "trust_state": "neutral-to-cautious",
+    "momentum_state": "curious but not yet committed"
+  },
+  "key_judgments": {
+    "facts": [
+      "会议主题：确认问题根因并判断是否进入试点",
+      "会议中已经形成了我方需要补充诊断建议的明确动作。",
+      "客户在 6 月前存在服务质量考核节点。"
+    ],
+    "inferences": ["当前阶段判断：qualification", "整体风险等级：medium"],
+    "open_questions": ["缺失信息：implementation_status", "缺失信息：last_commitments"]
+  },
+  "knowhow_focus_items": [
+    "区分真实推进与礼貌性回应",
+    "缺失关键信息时只请求最小必要 CRM 字段",
+    "预算优先级与短期效果证明直接相关",
+    "实施复杂度会直接影响商业推进动能"
+  ],
+  "retrieval_trace": {
+    "mapping_version": "v1",
+    "scenario_mode": "normal",
+    "allowed_request_groups": ["account_profile_gap", "stakeholder_gap", "risk_validation_gap"],
+    "requested_request_groups": ["risk_validation_gap"],
+    "out_of_policy_requests": []
+  },
+  "review_ready_checks": {
+    "scenario_self_consistency": true,
+    "knowhow_coverage": true,
+    "evidence_grounding": true,
+    "memory_conflict_handling": true,
+    "missing_information_handling": true,
+    "policy_boundary_handling": true,
+    "semantic_normalization_consistency": true,
+    "meeting_state_feature_evidence": true,
+    "semantic_summary_consistency": true,
+    "machine_output_completeness": true
+  },
+  "retry_state": {
+    "revision": 0,
+    "status": "passed",
+    "history": []
+  }
+}
+```
+
+## 第 8 步：调用 review skill
 
 主 skill 生成 draft 后，调用 `crm-meeting-summary-review`。
 
@@ -248,7 +435,7 @@ skill 基于同一份事实底座，生成：
 
 因为 review 通过，所以不会进入 retry。
 
-## 第 8 步：最终机器可读输出与执行面捕获
+## 第 9 步：最终机器可读输出与执行面捕获
 
 关键结果：
 - `status = passed`
@@ -262,8 +449,8 @@ skill 基于同一份事实底座，生成：
 
 为了真正确认每个 case 的最终 JSON 输出，仓库内新增了一个最薄执行面：
 - `skills/crm-meeting-summary/real_runner.py`：调用真实 skill，捕获完整最终返回值
-- `skills/crm-meeting-summary/evals/run_real_evals.py`：批量执行关键 eval case
-- `skills/crm-meeting-summary/evals/contract_validator.py`：校验机器可读 JSON 是否满足 contract
+- `tests/crm_meeting_summary/evals/run_real_evals.py`：批量执行关键 eval case
+- `skills/crm-meeting-summary/devtools/contract_validator.py`：校验机器可读 JSON 是否满足 contract
 
 执行面至少保留这些产物：
 - `raw_response`：CLI 返回的完整原始回包
@@ -271,7 +458,7 @@ skill 基于同一份事实底座，生成：
 - `extracted_machine_json`：从最终文本或 review handoff 中嵌入的 `【生成的机器可读输出】` 提取出的机器可读 JSON
 - `extraction_meta`：提取来源，例如 `fenced_json`、`embedded_machine_output`
 
-## 第 9 步：失败样例如何停止自动化
+## 第 10 步：失败样例如何停止自动化
 
 当输入像 `meeting-hard-fail.json` 一样只剩“客户不满意”这种空壳信息时，真实 skill 也应遵循同一状态机：
 - 先产出当前最佳 draft
@@ -307,13 +494,13 @@ skill 基于同一份事实底座，生成：
 
 ```bash
 python3 skills/crm-meeting-summary/mock_runner.py \
-  --meeting-file skills/crm-meeting-summary/examples/mock-data/meeting-records/meeting-001.json \
+  --meeting-file skills/mock-runtime/meeting-records/meeting-001.json \
   --scenario-slug needs-clarification \
   --scenario-confidence high \
   --industry general-b2b \
-  --account-file skills/crm-meeting-summary/examples/mock-data/crm/account/CUST-001.json \
-  --opportunity-file skills/crm-meeting-summary/examples/mock-data/crm/opportunity/OPP-9001.json \
-  --person-file skills/crm-meeting-summary/examples/mock-data/crm/person/USR-101.json
+  --account-file skills/mock-runtime/crm/account/CUST-001.json \
+  --opportunity-file skills/mock-runtime/crm/opportunity/OPP-9001.json \
+  --person-file skills/mock-runtime/crm/person/USR-101.json
 ```
 
 但这只是 dev harness，不是生产 skill 调用方式。

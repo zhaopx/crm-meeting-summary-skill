@@ -73,17 +73,19 @@ flowchart TD
   - 给出 `failure_reasons`
   - 给出 `targeted_regeneration_instructions`
   - 不重写正文，只做质量闸门
+- 评审标准以 `skills/crm-meeting-summary/references/review-rubric.md` 为准
 
 ### 3. 参考契约层
 - `skills/crm-meeting-summary/references/taxonomy.md`：定义场景分类
 - `skills/crm-meeting-summary/references/scenario-retrieval-mapping.md`：定义检索边界
 - `skills/crm-meeting-summary/references/crm-data-dictionary.md`：定义 CRM 字段语义与 request groups
 - `skills/crm-meeting-summary/references/memory-contract.md`：定义 memory 优先级
-- `skills/crm-meeting-summary/references/output-schema.md`：定义输出结构
+- `skills/crm-meeting-summary/references/output-schema.md`：只定义机器输出结构
 - `skills/crm-meeting-summary/references/retry-state-machine.md`：定义 review / retry 状态机
-- `skills/crm-meeting-summary/references/runtime-contract.md`：定义运行时输入输出契约
+- `skills/crm-meeting-summary/references/runtime-contract.md`：运行时输入输出契约与字段语义的单一事实来源
 
-### 4. Knowhow 层
+### 4. 方法论与 Knowhow 层
+- `skills/crm-meeting-summary/references/meeting-methodology.md`：解释为什么这是 CRM 总结产品，而不是通用 transcript summarizer
 - `skills/crm-meeting-summary/references/knowhow/common/`：第一层，所有 case 默认加载，提供跨场景共用的评估框架、基础判断边界与通用风险提醒，不是事实来源
 - `skills/crm-meeting-summary/references/knowhow/by-scenario/`：第二层，在场景已识别时按 `scenario_slug` 加载，补充该场景专属的关注点、风险信号、成功标准与 `data_requirements`，参与 CRM 请求决策与总结生成，不是事实来源
 - `skills/crm-meeting-summary/references/knowhow/by-industry/`：第三层，在行业有独立证据时加载，补充行业语境、行业常见约束与行业化判断边界，不是事实来源
@@ -100,17 +102,17 @@ flowchart TD
 
 ### 5. 开发辅助层
 - `skills/crm-meeting-summary/real_runner.py`
-- `skills/crm-meeting-summary/evals/run_real_evals.py`
-- `skills/crm-meeting-summary/evals/contract_validator.py`
+- `tests/crm_meeting_summary/evals/run_real_evals.py`
+- `skills/crm-meeting-summary/devtools/contract_validator.py`
 - `skills/crm-meeting-summary/mock_runner.py`
-- `skills/crm-meeting-summary/examples/mock-data/`
-- `skills/crm-meeting-summary/evals/evals.json`
+- `skills/mock-runtime/`
+- `tests/crm_meeting_summary/evals/evals.json`
 
 作用：
 - 通过 `real_runner.py` 调用真实 skill，并捕获完整最终返回值
 - 从主 skill 最终文本或 review handoff 中稳定提取最终 machine JSON
 - 通过 `run_real_evals.py` 批量跑关键 case
-- 通过 `contract_validator.py` 校验 machine JSON 与 runtime contract / output schema / retry state machine
+- 通过 `skills/crm-meeting-summary/devtools/contract_validator.py` 校验 machine JSON 与 runtime contract / output schema / retry state machine
 - 用 `mock_runner.py` 做本地回归验证
 - 用 mock data 演练输入
 - 做契约对齐
@@ -142,3 +144,12 @@ flowchart TD
 - memory 与当前会议冲突时必须写入 `memory_conflicts`
 - 弱证据输入在 revision=2 后必须进入 `manual_review_required`
 - fail 路径下 `review_ready_checks` 和 `retry_state.history` 不能伪装成全通过
+
+## 文档入口
+
+- 输入方式：`skills/crm-meeting-summary/examples/example-input.md`
+- 完整执行链路与标准输出样例：`skills/crm-meeting-summary/examples/case-execution-example.md`
+- 运行时单一事实来源：`skills/crm-meeting-summary/references/runtime-contract.md`
+- 机器输出结构：`skills/crm-meeting-summary/references/output-schema.md`
+- 评审标准：`skills/crm-meeting-summary/references/review-rubric.md`
+- 产品方法论：`skills/crm-meeting-summary/references/meeting-methodology.md`

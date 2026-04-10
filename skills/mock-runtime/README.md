@@ -1,6 +1,6 @@
-# Mock 数据示例布局
+# Mock fixtures 布局
 
-在接入真实 CRM 之前，用 mock data 模拟 runtime retrieval。
+这批数据只用于开发验证、eval 回归和 mock runner 演练，不代表真实 skill 的生产输入资产。
 
 ## 目录结构
 

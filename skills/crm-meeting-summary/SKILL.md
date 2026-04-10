@@ -427,8 +427,8 @@ meeting record:
 
 以下内容只用于开发验证，不代表真实 skill 运行方式：
 - `mock_runner.py`
-- `examples/mock-data/`
+- `skills/mock-runtime/`
 - `examples/` 中基于 Python CLI 的片段
-- `evals/evals.json` 中引用 mock data 的 case
+- `tests/crm_meeting_summary/evals/evals.json` 中引用 mock data 的 case
 
 如果引用这些文件，必须明确说明它们是 dev harness，而不是生产运行路径。

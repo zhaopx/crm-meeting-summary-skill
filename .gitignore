@@ -1,2 +1,5 @@
 .local/
 .claude/
+__pycache__/
+*.pyc
+tests/crm_meeting_summary/evals/results/*.json

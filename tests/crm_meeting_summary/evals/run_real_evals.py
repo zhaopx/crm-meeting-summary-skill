@@ -5,14 +5,16 @@ import json
 import sys
 from pathlib import Path
 
-from contract_validator import validate_case_expectations, validate_machine_output
-
 
 EVALS_DIR = Path(__file__).resolve().parent
-SKILL_DIR = EVALS_DIR.parent
-if str(SKILL_DIR) not in sys.path:
-    sys.path.insert(0, str(SKILL_DIR))
+REPO_ROOT = EVALS_DIR.parents[2]
+DEVTOOLS_DIR = REPO_ROOT / "skills" / "crm-meeting-summary" / "devtools"
+SKILL_DIR = REPO_ROOT / "skills" / "crm-meeting-summary"
+for import_path in (DEVTOOLS_DIR, SKILL_DIR):
+    if str(import_path) not in sys.path:
+        sys.path.insert(0, str(import_path))
 
+from contract_validator import validate_case_expectations, validate_machine_output
 from real_runner import run_case
 
 

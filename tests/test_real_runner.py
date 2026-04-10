@@ -10,8 +10,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REAL_RUNNER_PATH = REPO_ROOT / "skills" / "crm-meeting-summary" / "real_runner.py"
-VALIDATOR_PATH = REPO_ROOT / "skills" / "crm-meeting-summary" / "evals" / "contract_validator.py"
-MOCK_BASE = REPO_ROOT / "skills" / "crm-meeting-summary" / "examples" / "mock-data"
+VALIDATOR_PATH = REPO_ROOT / "skills" / "crm-meeting-summary" / "devtools" / "contract_validator.py"
+MOCK_BASE = REPO_ROOT / "skills" / "mock-runtime"
 
 
 def load_module(module_path: Path, module_name: str):

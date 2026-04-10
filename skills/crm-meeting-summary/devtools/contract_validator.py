@@ -89,7 +89,13 @@ def validate_machine_output(output: dict[str, Any]) -> list[str]:
     if not isinstance(retrieval_trace, dict):
         errors.append("retrieval_trace 必须是对象")
     else:
-        for key in ("mapping_version", "scenario_mode", "allowed_request_groups", "requested_request_groups", "out_of_policy_requests"):
+        for key in (
+            "mapping_version",
+            "scenario_mode",
+            "allowed_request_groups",
+            "requested_request_groups",
+            "out_of_policy_requests",
+        ):
             if key not in retrieval_trace:
                 errors.append(f"retrieval_trace 缺少字段: {key}")
 

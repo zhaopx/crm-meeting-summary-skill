@@ -7,9 +7,7 @@ import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-RUN_REAL_EVALS_PATH = (
-    REPO_ROOT / "skills" / "crm-meeting-summary" / "evals" / "run_real_evals.py"
-)
+RUN_REAL_EVALS_PATH = REPO_ROOT / "tests" / "crm_meeting_summary" / "evals" / "run_real_evals.py"
 
 
 def load_module(module_path: Path, module_name: str):
