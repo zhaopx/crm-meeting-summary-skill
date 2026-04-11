@@ -5,19 +5,25 @@ import json
 import re
 import sys
 from dataclasses import dataclass
+from json import JSONDecodeError
 from pathlib import Path
 from typing import Any
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-SKILL_DIR = Path(__file__).resolve().parent
-MOCK_DATA_DIR = SKILL_DIR.parent / "mock-runtime"
+REPO_ROOT = Path(__file__).resolve().parents[3]
+HELPERS_DIR = Path(__file__).resolve().parent
+SKILL_DIR = REPO_ROOT / "skills" / "crm-meeting-summary"
+MOCK_DATA_DIR = REPO_ROOT / "tests" / "crm_meeting_summary" / "fixtures" / "mock-runtime"
 SCENARIO_KNOWHOW_DIR = SKILL_DIR / "references" / "knowhow" / "by-scenario"
 PATCH_KNOWHOW_DIR = SKILL_DIR / "references" / "knowhow" / "patches"
 INDUSTRY_KNOWHOW_DIR = SKILL_DIR / "references" / "knowhow" / "by-industry"
 COMMON_KNOWHOW_PATH = SKILL_DIR / "references" / "knowhow" / "common" / "general.md"
 BEST_CASES_DIR = SKILL_DIR / "references" / "knowhow" / "best-cases"
-SCENARIO_MAPPING_PATH = SKILL_DIR / "references" / "scenario-retrieval-mapping.md"
+TEMPLATE_DIR = SKILL_DIR / "references" / "templates"
+TEMPLATE_COMMON_PATH = TEMPLATE_DIR / "common" / "default.md"
+TEMPLATE_PROFILE_DIR = TEMPLATE_DIR / "profiles"
+TAXONOMY_PATH = SKILL_DIR / "references" / "taxonomy.md"
+POLICY_VERSION = "taxonomy-v2-runtime-v3"
 REVIEW_CHECK_KEYS = (
     "scenario_self_consistency",
     "knowhow_coverage",
@@ -28,8 +34,30 @@ REVIEW_CHECK_KEYS = (
     "semantic_normalization_consistency",
     "meeting_state_feature_evidence",
     "semantic_summary_consistency",
+    "template_mapping_consistency",
     "machine_output_completeness",
 )
+TEMPLATE_LABEL_TO_SOURCE_PATHS: dict[str, tuple[str, ...]] = {
+    "会议目标": ("summary_fields.meeting_goal",),
+    "本次澄清目标": ("summary_fields.meeting_goal",),
+    "关键参与人": ("summary_fields.key_participants",),
+    "当前阶段判断": ("summary_fields.current_stage_judgment",),
+    "决策压力": ("summary_fields.decision_pressure",),
+    "风险等级": ("summary_fields.risk_level",),
+    "关注项": ("knowhow_focus_items",),
+    "下一步动作": ("summary_fields.next_actions",),
+    "待确认问题": ("key_judgments.open_questions", "summary_fields.missing_information"),
+    "当前关系状态": ("summary_fields.relationship_state",),
+    "推进前要先确认什么": ("summary_fields.decision_pressure",),
+    "已确认事实": ("key_judgments.facts",),
+    "当前判断": ("key_judgments.inferences",),
+    "当前信任状态": ("summary_fields.trust_state",),
+    "当前推进动能": ("summary_fields.momentum_state",),
+    "建议动作": ("summary_fields.next_actions",),
+    "当前商业风险等级": ("summary_fields.risk_level",),
+    "拍板人确认": ("summary_fields.owner_confirmation",),
+    "尚未闭合的商业问题": ("key_judgments.open_questions", "summary_fields.missing_information"),
+}
 SLUG_PATTERN = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
@@ -70,6 +98,146 @@ def read_text(path: Path) -> str:
         return path.read_text(encoding="utf-8")
     except OSError as exc:
         raise RunnerError(f"读取文本失败: {path} ({exc})") from exc
+
+
+def parse_frontmatter(markdown_text: str, source: str) -> dict[str, Any]:
+    lines = markdown_text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        raise RunnerError(f"{source} 缺少 frontmatter 起始标记")
+
+    frontmatter: dict[str, str] = {}
+    end_index = None
+    for index in range(1, len(lines)):
+        line = lines[index].strip()
+        if line == "---":
+            end_index = index
+            break
+        if not line:
+            continue
+        if ":" not in line:
+            raise RunnerError(f"{source} frontmatter 行格式非法: {lines[index]}")
+        key, value = line.split(":", 1)
+        frontmatter[key.strip()] = value.strip()
+
+    if end_index is None:
+        raise RunnerError(f"{source} 缺少 frontmatter 结束标记")
+
+    return {
+        "frontmatter": frontmatter,
+        "body": "\n".join(lines[end_index + 1 :]).strip(),
+    }
+
+
+
+def load_template_definition(path: Path) -> dict[str, Any]:
+    parsed = parse_frontmatter(read_text(path), path.name)
+    frontmatter = parsed["frontmatter"]
+    body = parsed["body"]
+    template_id = frontmatter.get("template_id")
+    version = frontmatter.get("version")
+    if not template_id or not version:
+        raise RunnerError(f"template 缺少 template_id 或 version: {path.name}")
+
+    sections: list[dict[str, Any]] = []
+    current_section: dict[str, Any] | None = None
+
+    for raw_line in body.splitlines():
+        stripped = raw_line.strip()
+        if not stripped:
+            continue
+
+        if stripped.startswith("## "):
+            if current_section is not None:
+                sections = sections + [current_section]
+            title = stripped.removeprefix("## ").strip()
+            current_section = {
+                "section_key": title_to_section_key(title),
+                "title": title,
+                "items": [],
+            }
+            continue
+
+        if stripped.startswith("- "):
+            if current_section is None:
+                raise RunnerError(f"template item 必须位于 section 下: {path.name}")
+            label = stripped.removeprefix("- ").strip()
+            if not label:
+                raise RunnerError(f"template item 不能为空: {path.name}")
+            current_section = {
+                **current_section,
+                "items": current_section["items"]
+                + [
+                    {
+                        "item_key": label_to_item_key(label),
+                        "label": label,
+                    }
+                ],
+            }
+            continue
+
+        raise RunnerError(f"template 正文只允许 section 标题和目录项: {path.name} -> {raw_line}")
+
+    if current_section is not None:
+        sections = sections + [current_section]
+
+    if not sections:
+        raise RunnerError(f"template 必须至少包含一个 section: {path.name}")
+
+    for section in sections:
+        if not section["items"]:
+            raise RunnerError(f"template section 不能为空: {path.name} -> {section['title']}")
+
+    return {
+        "template_id": template_id,
+        "version": version,
+        "sections": sections,
+    }
+
+
+def title_to_section_key(title: str) -> str:
+    normalized = re.sub(r"[^a-z0-9\u4e00-\u9fff]+", "-", title.lower()).strip("-")
+    return normalized or "section"
+
+
+def label_to_item_key(label: str) -> str:
+    normalized = re.sub(r"[^a-z0-9\u4e00-\u9fff]+", "-", label.lower()).strip("-")
+    return normalized or "item"
+
+
+def source_paths_for_label(label: str) -> tuple[str, ...]:
+    return TEMPLATE_LABEL_TO_SOURCE_PATHS.get(label, ())
+
+
+
+def resolve_source_path(source_path: str, machine_output: dict[str, Any]) -> Any:
+    current: Any = machine_output
+    for part in source_path.split("."):
+        if not isinstance(current, dict) or part not in current:
+            return None
+        current = current[part]
+    return current
+
+
+def value_presence(value: Any) -> str:
+    if value in (None, "", []):
+        return "missing"
+    return "present"
+
+
+def normalize_item_value(value: Any) -> str:
+    if value_presence(value) == "missing":
+        return "[missing]"
+    if isinstance(value, list):
+        return "；".join(str(item) for item in value)
+    return str(value)
+
+
+def merge_template_sections(templates: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    merged_sections: list[dict[str, Any]] = []
+    for template in templates:
+        for section in template.get("sections", []):
+            merged_sections = merged_sections + [section]
+    return merged_sections
 
 
 def ensure_path_exists(path: Path | None, label: str) -> None:
@@ -117,7 +285,10 @@ def extract_data_requirements(markdown_text: str, source: str) -> list[RequestIt
         raise RunnerError(f"{source} 缺少 data_requirements 结束代码块")
 
     payload = markdown_text[fence_start:fence_end].strip()
-    data = json.loads(payload)
+    try:
+        data = json.loads(payload)
+    except JSONDecodeError as exc:
+        raise RunnerError(f"{source} 的 data_requirements JSON 非法: {exc}") from exc
     return [
         RequestItem(
             request_group=item["request_group"],
@@ -132,17 +303,26 @@ def extract_data_requirements(markdown_text: str, source: str) -> list[RequestIt
 
 
 def load_allowed_request_groups(scenario_slug: str) -> list[str]:
-    lines = read_text(SCENARIO_MAPPING_PATH).splitlines()
+    lines = read_text(TAXONOMY_PATH).splitlines()
     target = scenario_slug_to_name(scenario_slug)
-    for line in lines:
-        if not line.startswith("|"):
+    in_target_section = False
+
+    for raw_line in lines:
+        line = raw_line.strip()
+        if line.startswith("### "):
+            heading = line.removeprefix("### ").strip()
+            normalized_heading = re.sub(r"^\d+[^\u4e00-\u9fffA-Za-z]+", "", heading).strip()
+            in_target_section = normalized_heading == target
             continue
-        cells = [cell.strip() for cell in line.strip().split("|")[1:-1]]
-        if len(cells) != 5:
+        if not in_target_section:
             continue
-        if cells[0] != target:
+        if "Allowed request groups" not in line:
             continue
-        return [group.strip() for group in cells[3].split(",") if group.strip()]
+
+        groups = re.findall(r"`([^`]+)`", line)
+        if groups:
+            return groups
+
     raise RunnerError(f"未找到场景 {scenario_slug} 的 request groups")
 
 
@@ -342,7 +522,7 @@ class MockRetrievalRunner:
                 "crm_data_requests": [],
                 "missing_information_candidates": [],
                 "retrieval_trace": {
-                    "mapping_version": "v1",
+                    "policy_version": POLICY_VERSION,
                     "scenario_mode": scenario_mode,
                     "allowed_request_groups": allowed_request_groups,
                     "requested_request_groups": [],
@@ -394,7 +574,7 @@ class MockRetrievalRunner:
         crm_data_requests = list(requested_items.values())
         requested_request_groups = [item["reason"] for item in crm_data_requests]
         retrieval_trace = {
-            "mapping_version": "v1",
+            "policy_version": POLICY_VERSION,
             "scenario_mode": scenario_mode,
             "allowed_request_groups": allowed_request_groups,
             "requested_request_groups": requested_request_groups,
@@ -416,7 +596,7 @@ class MockRetrievalRunner:
         )
 
         return {
-            "mapping_version": "v1",
+            "policy_version": POLICY_VERSION,
             "common": common,
             "scenario": [] if scenario_mode == "uncertain" else self._path_list(scenario_path),
             "industry": [] if scenario_mode == "uncertain" else self._path_list(industry_path),
@@ -573,6 +753,107 @@ class MockRetrievalRunner:
             ],
         }
 
+    def build_template_output(self, *, machine_output: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+        scenario_result = machine_output["scenario_result"]
+        scenario_slug = scenario_result["scenario_slug"]
+        industry = scenario_result.get("industry")
+        scenario_mode = scenario_result["scenario_mode"]
+
+        if scenario_mode == "uncertain":
+            selected_path = TEMPLATE_COMMON_PATH if TEMPLATE_COMMON_PATH.exists() else None
+            selection_mode = "fallback-common"
+        else:
+            candidate_paths = []
+            if industry:
+                candidate_paths.append(TEMPLATE_PROFILE_DIR / f"{scenario_slug}--{industry}.md")
+            candidate_paths.append(TEMPLATE_PROFILE_DIR / f"{scenario_slug}.md")
+            selected_path = next((path for path in candidate_paths if path.exists()), None)
+            selection_mode = "matched-profile"
+            if selected_path is None and TEMPLATE_COMMON_PATH.exists():
+                selected_path = TEMPLATE_COMMON_PATH
+                selection_mode = "fallback-common"
+
+        template_payloads = [load_template_definition(selected_path)] if selected_path else []
+        selected_templates = [relative_path(selected_path)] if selected_path else []
+
+        sections: list[dict[str, Any]] = []
+        mapping_records: list[dict[str, Any]] = []
+        unmapped_or_missing_items: list[dict[str, Any]] = []
+
+        for section in merge_template_sections(template_payloads):
+            mapped_items: list[dict[str, Any]] = []
+            for item in section.get("items", []):
+                resolved_source_path = None
+                resolved_value: Any = None
+                source_paths = source_paths_for_label(item["label"])
+                unresolved_reason = None
+
+                if not source_paths:
+                    unresolved_reason = "no_runtime_mapping"
+                else:
+                    for source_path in source_paths:
+                        candidate_value = resolve_source_path(source_path, machine_output)
+                        if value_presence(candidate_value) == "present":
+                            resolved_source_path = source_path
+                            resolved_value = candidate_value
+                            break
+                    if value_presence(resolved_value) == "missing":
+                        unresolved_reason = "missing_from_machine_output"
+
+                presence = value_presence(resolved_value)
+                mapping_records = mapping_records + [
+                    {
+                        "item_key": item["item_key"],
+                        "resolved_source_path": resolved_source_path if presence == "present" else None,
+                        "value_presence": presence,
+                        "unresolved_reason": unresolved_reason,
+                    }
+                ]
+                mapped_items = mapped_items + [
+                    {
+                        "item_key": item["item_key"],
+                        "label": item["label"],
+                        "resolved_source_path": resolved_source_path if presence == "present" else None,
+                        "value": resolved_value if presence == "present" else None,
+                        "value_presence": presence,
+                    }
+                ]
+                if presence == "missing":
+                    unmapped_or_missing_items = unmapped_or_missing_items + [
+                        {
+                            "item_key": item["item_key"],
+                            "label": item["label"],
+                            "reason": unresolved_reason,
+                        }
+                    ]
+            sections = sections + [
+                {
+                    "section_key": section["section_key"],
+                    "title": section["title"],
+                    "items": mapped_items,
+                }
+            ]
+
+        template_id_chain = [template["template_id"] for template in template_payloads]
+        template_output = {
+            "applied": bool(template_payloads),
+            "template_id_chain": template_id_chain,
+            "sections": sections,
+            "unmapped_or_missing_items": unmapped_or_missing_items,
+        }
+        template_trace = {
+            "selection_basis": {
+                "scenario_slug": scenario_slug,
+                "industry": industry,
+                "scenario_mode": scenario_mode,
+            },
+            "selected_templates": selected_templates,
+            "merge_order": [selection_mode] if template_payloads else [],
+            "mapping_records": mapping_records,
+            "strict_no_fabrication": True,
+        }
+        return template_output, template_trace
+
     def generate_draft(
         self,
         *,
@@ -625,6 +906,12 @@ class MockRetrievalRunner:
             "knowhow_focus_items": knowhow_focus_items,
             "retrieval_trace": runtime["retrieval"]["retrieval_trace"],
             "review_ready_checks": {key: True for key in REVIEW_CHECK_KEYS},
+        }
+        template_output, template_trace = self.build_template_output(machine_output=machine_output)
+        machine_output = {
+            **machine_output,
+            "template_output": template_output,
+            "template_trace": template_trace,
         }
         human_summary = self.render_human_summary(
             machine_output=machine_output,
@@ -707,6 +994,10 @@ class MockRetrievalRunner:
             current_stage_judgment = "qualification"
             meeting_goal = "确认问题根因并判断是否进入试点"
 
+        owner_confirmation = None
+        if contains_any(record, ("拍板人", "负责人确认", "确认负责人")):
+            owner_confirmation = "已确认"
+
         return {
             "meeting_goal": meeting_goal,
             "relationship_state": meeting_state_features["relationship_state"],
@@ -719,6 +1010,7 @@ class MockRetrievalRunner:
             "current_stage_judgment": current_stage_judgment,
             "next_actions": next_actions,
             "risk_level": risk_level,
+            "owner_confirmation": owner_confirmation,
             "missing_information": sorted(set(missing_information)),
         }
 
@@ -799,45 +1091,24 @@ class MockRetrievalRunner:
         revision: int,
         review_history: list[dict[str, Any]],
     ) -> str:
-        summary_fields = machine_output["summary_fields"]
-        scenario_result = machine_output["scenario_result"]
-        knowhow_focus = machine_output["knowhow_focus_items"]
+        template_output = machine_output["template_output"]
         retrieval_trace = machine_output["retrieval_trace"]
-        record = runtime["record_text"]
 
-        snapshot = (
-            "会议快照\n"
-            f"- 场景：{scenario_result['primary_scenario']}\n"
-            f"- 模式：{scenario_result['scenario_mode']}\n"
-            f"- 目标：{summary_fields['meeting_goal']}"
-        )
+        sections: list[str] = []
+        for section in template_output["sections"]:
+            lines = [section["title"]]
+            for item in section["items"]:
+                lines = lines + [f"- {item['label']}：{normalize_item_value(item['value'])}"]
+            sections = sections + ["\n".join(lines)]
 
-        core_lines = [
-            "核心总结与判断",
-            f"- 当前阶段：{summary_fields['current_stage_judgment']}",
-            f"- 决策压力：{summary_fields['decision_pressure']}",
-            f"- 风险等级：{summary_fields['risk_level']}",
-        ]
-        if "不会以续费作为决策背景" in record and revision > 0:
-            core_lines.append("- 当前会话证据优先于历史记忆，不能再沿用续费背景判断。")
-        elif "不会以续费作为决策背景" in record:
-            core_lines.append("- 当前判断仍混入了历史续费背景，需要下一轮修正。")
-        core = "\n".join(core_lines)
-
-        knowhow_section = "参考知识关注项\n" + "\n".join(f"- {item}" for item in knowhow_focus)
-        actions_section = "建议下一步\n" + "\n".join(
-            f"- {item}" for item in summary_fields["next_actions"]
-        )
-
-        risk_lines = ["风险与待确认问题"]
-        for item in summary_fields["missing_information"]:
-            risk_lines.append(f"- 待补：{item}")
         if retrieval_trace["out_of_policy_requests"]:
-            risk_lines.append("- 存在 policy 外请求，需要人工确认。")
+            sections = sections + ["策略边界\n- 存在 policy 外请求，需要人工确认。"]
         if review_history:
-            risk_lines.append(f"- 本次输出经过 {len(review_history)} 次定向修正。")
-        risks = "\n".join(risk_lines)
-        return "\n\n".join([snapshot, core, knowhow_section, actions_section, risks])
+            sections = sections + [f"修正记录\n- 本次输出经过 {len(review_history)} 次定向修正。"]
+        if runtime["memory"]["memory_conflicts"] and revision > 0:
+            sections = sections + ["记忆冲突处理\n- 当前会话证据优先于历史记忆。"]
+
+        return "\n\n".join(sections)
 
     def build_evidence_excerpts(self, *, runtime: dict[str, Any]) -> list[str]:
         lines = [line.strip() for line in runtime["record_text"].split("。") if line.strip()]
@@ -868,6 +1139,42 @@ class MockRetrievalRunner:
             check_results["semantic_summary_consistency"] = "fail"
             failure_reasons.append("semantic_summary 与 meeting_state_features 不一致。")
             targeted_regeneration_instructions.append("对齐 semantic_summary 与 meeting_state_features 的四个兼容映射字段。")
+
+        template_output = machine_output["template_output"]
+        template_trace = machine_output["template_trace"]
+        mapped_item_keys = [
+            item["item_key"]
+            for section in template_output["sections"]
+            for item in section["items"]
+        ]
+        trace_item_keys = [record["item_key"] for record in template_trace["mapping_records"]]
+        if mapped_item_keys != trace_item_keys:
+            check_results["template_mapping_consistency"] = "fail"
+            failure_reasons.append("template_output 与 template_trace 的 item_key 顺序不一致。")
+            targeted_regeneration_instructions.append("按模板顺序重建 mapping_records，并与 sections 中的条目一一对齐。")
+        else:
+            for section in template_output["sections"]:
+                for item in section["items"]:
+                    if item["value_presence"] == "present" and not item["resolved_source_path"]:
+                        check_results["template_mapping_consistency"] = "fail"
+                        failure_reasons.append("template 存在无来源的非空条目。")
+                        targeted_regeneration_instructions.append("所有非空模板条目都必须绑定真实 machine output source path。")
+                        break
+                    if item["value_presence"] == "missing" and item["value"] is not None:
+                        check_results["template_mapping_consistency"] = "fail"
+                        failure_reasons.append("template 缺失条目不应携带值。")
+                        targeted_regeneration_instructions.append("缺失模板项只能显式标记 missing，不能附带推断内容。")
+                        break
+                if check_results["template_mapping_consistency"] == "fail":
+                    break
+
+        unresolved_without_mapping = [
+            record for record in template_trace["mapping_records"] if record["unresolved_reason"] == "no_runtime_mapping"
+        ]
+        if unresolved_without_mapping:
+            check_results["template_mapping_consistency"] = "fail"
+            failure_reasons.append("template 目录项缺少 runtime 映射规则。")
+            targeted_regeneration_instructions.append("为所有模板目录项补齐 label 到 machine output 的运行时映射。")
 
         if machine_output["meeting_state_features"] != {
             key: machine_output["summary_fields"][key]

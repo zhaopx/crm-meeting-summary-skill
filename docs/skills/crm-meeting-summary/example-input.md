@@ -1,8 +1,9 @@
 # 输入示例
 
 本文只展示 **真实 skill 的输入方式**。
-- `mock_runner.py` 仅用于开发验证，不代表生产运行路径
-- 目标输出与完整执行链路分别见：`case-execution-example.md`
+- `tests/crm_meeting_summary/helpers/mock_runner.py` 仅用于开发验证，不代表生产运行路径
+- 详见：`docs/skills/crm-meeting-summary/case-execution-example.md`
+- 顶级总结的目标不是把会议复述完整，而是压缩出交易判断、推进门槛、动作任务单和风险/缺口
 
 ## 真实 skill 最小输入示例
 
@@ -65,7 +66,7 @@ meeting record:
   },
   "constraints": {
     "language": "zh-CN",
-    "output_mode": "human_and_json"
+    "output_mode": "human_only"
   }
 }
 ```
@@ -114,7 +115,7 @@ meeting record file: /abs/path/meeting-notes.txt
   },
   "constraints": {
     "language": "zh-CN",
-    "output_mode": "human_and_json"
+    "output_mode": "human_only"
   }
 }
 ```
@@ -163,7 +164,7 @@ opportunity: 智能客服升级项目（OPP-9001）
   },
   "constraints": {
     "language": "zh-CN",
-    "output_mode": "human_and_json"
+    "output_mode": "human_only"
   }
 }
 ```
@@ -173,14 +174,14 @@ opportunity: 智能客服升级项目（OPP-9001）
 仅在本地做 contract regression 或 mock data 演练时，才使用：
 
 ```bash
-python3 skills/crm-meeting-summary/mock_runner.py \
-  --meeting-file skills/mock-runtime/meeting-records/meeting-001.json \
+python3 tests/crm_meeting_summary/helpers/mock_runner.py \
+  --meeting-file tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-001.json \
   --scenario-slug needs-clarification \
   --scenario-confidence high \
   --industry general-b2b \
-  --account-file skills/mock-runtime/crm/account/CUST-001.json \
-  --opportunity-file skills/mock-runtime/crm/opportunity/OPP-9001.json \
-  --person-file skills/mock-runtime/crm/person/USR-101.json
+  --account-file tests/crm_meeting_summary/fixtures/mock-runtime/crm/account/CUST-001.json \
+  --opportunity-file tests/crm_meeting_summary/fixtures/mock-runtime/crm/opportunity/OPP-9001.json \
+  --person-file tests/crm_meeting_summary/fixtures/mock-runtime/crm/person/USR-101.json
 ```
 
 这个 runner 输出的是开发期可回归结构，例如：
@@ -195,5 +196,4 @@ python3 skills/crm-meeting-summary/mock_runner.py \
 
 ## 相关文档
 - `case-execution-example.md` - 完整执行链路与标准输出样例
-- `mock_runner.py` - 开发验证工具
-
+- `tests/crm_meeting_summary/helpers/mock_runner.py` - 开发验证工具

@@ -1,9 +1,9 @@
 {
   "skill_name": "crm-meeting-summary",
-  "eval_version": "v3",
+  "eval_version": "v4-human-only",
   "knowledge_versions": {
-    "taxonomy": "v1",
-    "memory_contract": "v1",
+    "taxonomy": "v2",
+    "runtime_contract": "v3-human-only",
     "common_knowhow": "v1",
     "scenario_knowhow": {
       "needs-clarification": "v1",
@@ -14,23 +14,22 @@
     },
     "patch_knowhow": {
       "needs-clarification__general-b2b": "v1"
-    },
-    "scenario_retrieval_mapping": "v1"
+    }
   },
   "evals": [
     {
       "id": "baseline-success-standard",
       "category": "baseline",
-      "prompt": "调用真实 crm-meeting-summary skill。根据提供的 CRM 会议记录、CRM context、memory 和 knowhow，生成 human summary + machine JSON，并在交付前经过 review。要求双轨输出同源、最小读取、给出 retrieval_trace。",
-      "expected_output": "识别需求澄清场景，指出预算优先级和短期效果证明风险，补拉字段最小且可解释，输出 retrieval_trace，review 通过。",
+      "prompt": "调用真实 crm-meeting-summary skill。根据提供的 CRM 会议记录、CRM context、memory 和 knowhow，生成人类可读总结，并在交付前经过 review。要求最小读取、结论有据、缺失项显式。",
+      "expected_output": "识别需求澄清场景，指出预算优先级和短期效果证明风险，补拉字段最小且可解释，最终交付的是人类总结。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-001.json",
-        "skills/mock-runtime/crm/account/CUST-001.json",
-        "skills/mock-runtime/crm/opportunity/OPP-9001.json",
-        "skills/mock-runtime/crm/person/USR-101.json",
-        "skills/mock-runtime/memory/account/CUST-001.json",
-        "skills/mock-runtime/memory/opportunity/OPP-9001.json",
-        "skills/mock-runtime/memory/person/USR-101.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/account/CUST-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/opportunity/OPP-9001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/person/USR-101.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/memory/account/CUST-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/memory/opportunity/OPP-9001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/memory/person/USR-101.json"
       ]
     },
     {
@@ -39,10 +38,10 @@
       "prompt": "调用真实 crm-meeting-summary skill。当 meeting.record_text 缺失但 meeting.record_text_path 指向可读取文件时，必须先读取文件内容，再按正常流程完成场景识别、最小检索、summary 生成和 review。",
       "expected_output": "成功读取文件输入；输出结果与内联 meeting record 路径保持同等契约；不会把读取失败伪装成正常 summary。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-001.json",
-        "skills/mock-runtime/crm/account/CUST-001.json",
-        "skills/mock-runtime/crm/opportunity/OPP-9001.json",
-        "skills/mock-runtime/crm/person/USR-101.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/account/CUST-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/opportunity/OPP-9001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/person/USR-101.json"
       ]
     },
     {
@@ -53,81 +52,114 @@
       "input_bundle_path": ".local/crm-meeting-summary-test-data/case-001"
     },
     {
+      "id": "baseline-template-apply",
+      "category": "baseline",
+      "prompt": "调用真实 crm-meeting-summary skill。场景与行业明确时，必须在 summary 生成后按 template 模板重排最终人类总结。",
+      "expected_output": "最终总结按命中的模板目录组织；缺失项不编造；template 只负责重排，不新增事实。",
+      "files": [
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/account/CUST-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/opportunity/OPP-9001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/person/USR-101.json"
+      ]
+    },
+    {
+      "id": "regression-template-uncertain-fallback",
+      "category": "failure-regression",
+      "prompt": "调用真实 crm-meeting-summary skill。当场景不确定时，template 只能使用 common 模板，不得套用 profile 模板。",
+      "expected_output": "最终总结走 common fallback 模板；不会因为模板存在就补写不确定事实。",
+      "files": [
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-ambiguous.json"
+      ]
+    },
+    {
+      "id": "adversarial-template-no-fabrication",
+      "category": "adversarial",
+      "prompt": "调用真实 crm-meeting-summary skill。当 template 模板项缺少来源时，必须显式标记 missing，不能补写新事实。",
+      "expected_output": "最终总结保留缺失项，不会凭空生成模板值。",
+      "files": [
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/account/CUST-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/opportunity/OPP-9001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/person/USR-101.json"
+      ]
+    },
+    {
       "id": "baseline-low-confidence-fallback",
       "category": "baseline",
-      "prompt": "调用真实 crm-meeting-summary skill。当会议证据不足以稳定分类时，必须进入低置信回退路径，减少补拉并输出 scenario_mode=uncertain。",
-      "expected_output": "主场景为其他/不确定或低置信保守分类；只加载 common knowhow；CRM 请求只用于消除歧义；输出 scenario_mode=uncertain。",
+      "prompt": "调用真实 crm-meeting-summary skill。当会议证据不足以稳定分类时，必须进入低置信回退路径，减少补拉并在总结中显式写出不确定边界。",
+      "expected_output": "主场景为其他/不确定或低置信保守分类；只加载 common knowhow；CRM 请求只用于消除歧义；最终总结明确写出不确定性。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-ambiguous.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-ambiguous.json"
       ]
     },
     {
       "id": "regression-memory-conflict",
       "category": "failure-regression",
-      "prompt": "调用真实 crm-meeting-summary skill。如果 memory 与当前会议事实冲突，必须以当前会议和 CRM 事实为准，并在 memory_conflicts 中记录冲突。",
-      "expected_output": "不允许旧 memory 覆盖当前会议事实；输出 memory_conflicts；必要时降低相关判断置信度。",
+      "prompt": "调用真实 crm-meeting-summary skill。如果 memory 与当前会议事实冲突，必须以当前会议和 CRM 事实为准，并在最终总结中暴露冲突和不确定边界。",
+      "expected_output": "不允许旧 memory 覆盖当前会议事实；必要时降低相关判断强度。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-memory-conflict.json",
-        "skills/mock-runtime/memory/account/CUST-001-conflict.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-memory-conflict.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/memory/account/CUST-001-conflict.json"
       ]
     },
     {
       "id": "regression-review-fail-then-pass",
       "category": "failure-regression",
-      "prompt": "调用真实 crm-meeting-summary skill。首次生成遗漏关键风险时，review 必须 fail，并给出 targeted regeneration instructions；下一轮修复后应 pass。",
-      "expected_output": "retry_state.history 记录至少一次失败；最终状态 passed；修复只针对失败维度，不得丢失原本正确字段。",
+      "prompt": "调用真实 crm-meeting-summary skill。首次生成遗漏关键风险时，review 必须 fail，并给出 targeted regeneration instructions；修复后应 pass。",
+      "expected_output": "review 反馈聚焦失败维度；修复后总结补齐关键风险，不丢失原本正确内容。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-memory-conflict.json",
-        "skills/mock-runtime/crm/account/CUST-001.json",
-        "skills/mock-runtime/crm/opportunity/OPP-9001.json",
-        "skills/mock-runtime/crm/person/USR-101.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-memory-conflict.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/account/CUST-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/opportunity/OPP-9001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/person/USR-101.json"
       ]
     },
     {
       "id": "regression-retry-exhausted",
       "category": "failure-regression",
-      "prompt": "调用真实 crm-meeting-summary skill。当两轮定向修复后仍无法通过 review，必须停止自动化并输出 manual_review_required。",
-      "expected_output": "status=manual_review_required；retry_state.revision=2；保留 failure_reasons 和最后一轮修复指令。",
+      "prompt": "调用真实 crm-meeting-summary skill。当两轮定向修复后仍无法通过 review，必须停止自动化并要求人工复核。",
+      "expected_output": "保留当前最佳总结；明确 failure_reasons 和人工复核要求。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-hard-fail.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-hard-fail.json"
       ]
     },
     {
       "id": "adversarial-overpull-trace",
       "category": "adversarial",
       "prompt": "调用真实 crm-meeting-summary skill。即使输入中混入大量无关上下文，也必须坚持最小读取策略，不得全量拉取 knowhow、CRM、memory。",
-      "expected_output": "retrieval_trace 中 requested_request_groups 不得超过当前场景默认允许范围；out_of_policy_requests 为空或有明确证据解释。",
+      "expected_output": "最终总结只建立在当前场景真正需要的上下文上，不做 broad sweep。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-overpull-bait.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-overpull-bait.json"
       ]
     },
     {
       "id": "regression-knowhow-data-requirements-within-policy",
       "category": "failure-regression",
-      "prompt": "调用真实 crm-meeting-summary skill。当已加载的 scenario knowhow 声明 data_requirements 且 meeting evidence 与 CRM 缺失共同支持时，crm_data_requests 必须补齐对应字段，但不能超出当前场景允许的 request groups。",
-      "expected_output": "crm_data_requests 包含由 knowhow data_requirements 触发的字段；requested_request_groups 仍受当前 scenario mapping 限制；retrieval_trace 可解释。",
+      "prompt": "调用真实 crm-meeting-summary skill。当已加载的 scenario knowhow 声明 data_requirements 且 meeting evidence 与 CRM 缺失共同支持时，可以补齐对应字段，但不能超出当前场景允许范围。",
+      "expected_output": "请求最小且可解释；不会因为 knowhow 扩大检索范围。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-001.json",
-        "skills/mock-runtime/crm/account/CUST-001.json",
-        "skills/mock-runtime/crm/opportunity/OPP-9001.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/account/CUST-001.json",
+        "tests/crm_meeting_summary/fixtures/mock-runtime/crm/opportunity/OPP-9001.json"
       ]
     },
     {
       "id": "regression-low-confidence-skips-data-requirements",
       "category": "failure-regression",
-      "prompt": "调用真实 crm-meeting-summary skill。当 scenario_confidence=low 并进入 uncertain 模式时，不得执行 scenario/patch knowhow 的 data_requirements，只允许一个消歧 request bundle。",
-      "expected_output": "scenario_mode=uncertain；只加载 common knowhow；requested_request_groups 限制为一个消歧 bundle；不会因为 knowhow data_requirements 扩大请求。",
+      "prompt": "调用真实 crm-meeting-summary skill。当 scenario_confidence=low 并进入 uncertain 模式时，不得执行 scenario/patch knowhow 的 data_requirements，只允许最小消歧请求。",
+      "expected_output": "只加载 common knowhow；不会因为 knowhow data_requirements 扩大请求。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-ambiguous.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-ambiguous.json"
       ]
     },
     {
-      "id": "adversarial-human-vs-machine-consistency",
+      "id": "adversarial-human-summary-consistency",
       "category": "adversarial",
-      "prompt": "调用真实 crm-meeting-summary skill。人读总结和机器结构必须同源，不能一个说高风险、一个说中风险。",
-      "expected_output": "human-readable summary 与 summary_fields、key_judgments、knowhow_focus_items 不冲突。",
+      "prompt": "调用真实 crm-meeting-summary skill。最终人类总结内部必须自洽，不能前面说高风险、后面又把下一步写成已确定成交。",
+      "expected_output": "最终总结内部事实、判断、动作三者一致。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-001.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-001.json"
       ]
     },
     {
@@ -136,7 +168,7 @@
       "prompt": "调用真实 crm-meeting-summary skill。当行业信息不清晰或多个行业信号混杂时，不得强上行业 patch；必须保守装载 knowhow。",
       "expected_output": "industry 为空或低置信；不得加载不受证据支持的 industry patch；保留缺失信息说明。",
       "files": [
-        "skills/mock-runtime/meeting-records/meeting-industry-ambiguous.json"
+        "tests/crm_meeting_summary/fixtures/mock-runtime/meeting-records/meeting-industry-ambiguous.json"
       ]
     }
   ]

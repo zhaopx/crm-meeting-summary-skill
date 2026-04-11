@@ -4,42 +4,116 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 
 EVALS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = EVALS_DIR.parents[2]
-DEVTOOLS_DIR = REPO_ROOT / "skills" / "crm-meeting-summary" / "devtools"
-SKILL_DIR = REPO_ROOT / "skills" / "crm-meeting-summary"
-for import_path in (DEVTOOLS_DIR, SKILL_DIR):
-    if str(import_path) not in sys.path:
-        sys.path.insert(0, str(import_path))
+HELPERS_DIR = REPO_ROOT / "tests" / "crm_meeting_summary" / "helpers"
+if str(HELPERS_DIR) not in sys.path:
+    sys.path.insert(0, str(HELPERS_DIR))
 
-from contract_validator import validate_case_expectations, validate_machine_output
-from real_runner import run_case
+from contract_validator import (  # noqa: E402
+    validate_case_expectations,
+    validate_human_summary,
+    validate_review_result,
+)
+from real_runner import run_case  # noqa: E402
 
 
 DEFAULT_CASE_IDS = [
     "baseline-low-confidence-fallback",
+    "baseline-template-apply",
     "regression-memory-conflict",
     "regression-retry-exhausted",
+    "regression-template-uncertain-fallback",
     "adversarial-overpull-trace",
+    "adversarial-template-no-fabrication",
 ]
 OUTPUT_DIR = EVALS_DIR / "results"
 
 
-def run_eval_case(case_id: str) -> dict:
+def safe_text(value: Any) -> str:
+    if value in (None, ""):
+        return "N/A"
+    return str(value)
+
+
+def safe_list(value: Any) -> list[Any]:
+    return list(value) if isinstance(value, list) else []
+
+
+def build_dashboard_report(eval_result: dict[str, Any]) -> dict[str, Any]:
+    final_text = safe_text(eval_result.get("final_text"))
+    review_result = eval_result.get("review_result")
+    review_status = review_result.get("review_status") if isinstance(review_result, dict) else "N/A"
+    failure_reasons = (
+        safe_list(review_result.get("failure_reasons"))
+        if isinstance(review_result, dict)
+        else []
+    )
+
+    return {
+        "report_meta": {
+            "report_version": "human-summary-from-real-evals",
+            "generated_at": "N/A",
+            "skill_name": "crm-meeting-summary",
+            "source_case": safe_text(eval_result.get("case_id")),
+            "notes": "由 run_real_evals.py 基于单 case 输出自动生成 human-summary dashboard 数据。",
+        },
+        "comparison": {
+            "source_material": {
+                "source_case": safe_text(eval_result.get("case_id")),
+                "source_note": "当前 dashboard 聚焦最终人类总结与 review 结果。",
+            },
+            "summaries": [
+                {
+                    "summary_id": "skill-current",
+                    "source_type": "skill",
+                    "source_label": "Skill 总结",
+                    "version_label": "real-eval-output",
+                    "body_sections": [
+                        {
+                            "title": "Summary",
+                            "content": final_text,
+                        }
+                    ],
+                    "review_status": review_status,
+                    "failure_reasons": failure_reasons,
+                }
+            ],
+            "evaluation": {
+                "winner_summary_id": "skill-current",
+                "reviewer_callout": "当前 report 由单 case 自动转换生成，适合诊断，不代表多来源比较结论。",
+                "ranking": ["Skill 总结：当前唯一自动接入版本。"],
+            },
+            "auxiliary": {
+                "review_result": review_result if isinstance(review_result, dict) else {},
+                "passed": bool(eval_result.get("passed")),
+            },
+        },
+    }
+
+
+def serialize_dashboard_report(report: dict[str, Any]) -> str:
+    return f"window.__REPORT_DATA__ = {json.dumps(report, ensure_ascii=False, indent=2)};\n"
+
+
+def run_eval_case(case_id: str) -> dict[str, Any]:
     captured = run_case(case_id)
-    machine_output = captured["extracted_machine_json"]
-    contract_errors = validate_machine_output(machine_output)
-    case_errors = validate_case_expectations(case_id, machine_output)
-    verdict = not contract_errors and not case_errors
+    final_text = safe_text(captured.get("final_text"))
+    review_result = captured.get("review_result")
+    summary_errors = validate_human_summary(final_text)
+    review_errors = validate_review_result(review_result)
+    case_errors = validate_case_expectations(case_id, final_text, review_result)
+    verdict = not summary_errors and not review_errors and not case_errors
     return {
         "case_id": case_id,
-        "raw_response": captured["raw_response"],
-        "final_text": captured["final_text"],
-        "extracted_machine_json": machine_output,
-        "extraction_meta": captured["extraction_meta"],
-        "contract_verdict": {"passed": not contract_errors, "errors": contract_errors},
+        "raw_response": captured.get("raw_response"),
+        "final_text": final_text,
+        "review_result": review_result,
+        "summary_verdict": {"passed": not summary_errors, "errors": summary_errors},
+        "review_verdict": {"passed": not review_errors, "errors": review_errors},
         "case_verdict": {"passed": not case_errors, "errors": case_errors},
         "passed": verdict,
     }

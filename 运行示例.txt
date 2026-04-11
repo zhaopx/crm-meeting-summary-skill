@@ -5,9 +5,3 @@ meeting time: 2026-04-06T15:00:00+08:00
 initiator: 陈小艳（USR-101）
 客户: 华东零售集团（CUST-001）
 opportunity: 智能客服升级项目（OPP-9001）
-
-要求：
-- 严格按最小 retrieval
-- 忽略与当前会议无关的历史材料
-- 输出 human summary + machine JSON
-- 最终结果先经过 review

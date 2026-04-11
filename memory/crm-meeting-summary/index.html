@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CRM Object Memory Design</title>
+  <title>CRM Memory Design</title>
   <style>
     :root {
       --color-near-black: #141413;
       --color-terracotta: #c96442;
-      --color-coral: #d97757;
       --color-parchment: #f5f4ed;
       --color-ivory: #faf9f5;
       --color-white: #ffffff;
@@ -26,7 +25,9 @@
 
     * { box-sizing: border-box; }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
@@ -83,6 +84,10 @@
       font-size: 14px;
     }
 
+    .nav-links a {
+      text-decoration: none;
+    }
+
     .page {
       max-width: 1200px;
       margin: 0 auto;
@@ -104,18 +109,19 @@
       width: 680px;
       height: 680px;
       transform: translate(-50%, -50%);
-      background: radial-gradient(circle, rgba(201, 100, 66, 0.08) 0%, rgba(217, 119, 87, 0.04) 38%, transparent 70%);
+      background: radial-gradient(circle, rgba(201, 100, 66, 0.08) 0%, rgba(201, 100, 66, 0.03) 38%, transparent 70%);
       pointer-events: none;
     }
 
     .hero-inner {
       position: relative;
-      max-width: 900px;
+      max-width: 940px;
       margin: 0 auto;
     }
 
-    .eyebrow {
-      margin-bottom: 14px;
+    .eyebrow,
+    .section-label {
+      margin-bottom: 12px;
       color: var(--color-terracotta);
       font-size: 13px;
       font-weight: 500;
@@ -123,21 +129,44 @@
       text-transform: uppercase;
     }
 
-    h1, h2, h3, h4 { margin: 0; }
+    h1, h2, h3 { margin: 0; }
 
     h1 {
       font-family: var(--font-serif);
-      font-size: 60px;
+      font-size: 58px;
       font-weight: 500;
       line-height: 1.1;
-      letter-spacing: normal;
       margin-bottom: 20px;
     }
 
-    .hero p {
-      max-width: 760px;
-      margin: 0 auto 28px;
+    h2 {
+      font-family: var(--font-serif);
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .hero p,
+    .section-head p,
+    .card p,
+    .link-card p,
+    details p,
+    details li {
       color: var(--color-olive-gray);
+    }
+
+    .hero p {
+      max-width: 820px;
+      margin: 0 auto 28px;
       font-size: 20px;
     }
 
@@ -159,47 +188,10 @@
       font-size: 13px;
     }
 
-    .section {
-      padding: 32px 0 0;
-    }
-
-    .section-head {
-      margin-bottom: 28px;
-    }
-
-    .section-label {
-      margin-bottom: 10px;
-      color: var(--color-terracotta);
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-    }
-
-    .section-head h2 {
-      font-family: var(--font-serif);
-      font-size: 38px;
-      font-weight: 500;
-      line-height: 1.2;
-      margin-bottom: 12px;
-    }
-
-    .section-head p {
-      max-width: 760px;
-      margin: 0;
-      color: var(--color-olive-gray);
-      font-size: 17px;
-    }
-
-    .divider {
-      border: 0;
-      border-top: 1px solid var(--color-border-cream);
-      margin: 0;
-    }
-
+    .hero-note,
     .card,
     .mono,
-    .hero-note {
+    details {
       background: var(--color-ivory);
       border: 1px solid var(--color-border-cream);
       border-radius: 16px;
@@ -207,11 +199,18 @@
     }
 
     .hero-note {
-      max-width: 880px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 18px 22px;
-      text-align: left;
       color: var(--color-olive-gray);
+    }
+
+    .section {
+      padding-top: 40px;
+    }
+
+    .section-head {
+      margin-bottom: 28px;
     }
 
     .grid {
@@ -220,47 +219,17 @@
     }
 
     .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
-    .card {
+    .card,
+    details {
       padding: 24px;
     }
 
-    .card h3 {
-      font-family: var(--font-serif);
-      font-size: 26px;
-      font-weight: 500;
-      line-height: 1.2;
-      margin-bottom: 10px;
-    }
-
-    .card p,
-    .sub p,
-    li {
-      color: var(--color-olive-gray);
-    }
-
-    .subgrid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .sub {
-      padding: 16px;
-      border-radius: 12px;
-      background: var(--color-white);
-      box-shadow: 0 0 0 1px var(--color-border-cream);
-    }
-
-    .sub strong {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--color-charcoal-warm);
-      font-size: 13px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+    .card strong,
+    details strong {
+      color: var(--color-near-black);
     }
 
     .mono {
@@ -273,40 +242,97 @@
       color: var(--color-charcoal-warm);
     }
 
-    .list-card ul {
-      margin: 0;
-      padding-left: 18px;
+    .divider {
+      border: 0;
+      border-top: 1px solid var(--color-border-cream);
+      margin-top: 40px;
     }
 
-    .list-card li + li {
+    .mini-list,
+    .plain-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--color-olive-gray);
+    }
+
+    .mini-list li + li,
+    .plain-list li + li {
       margin-top: 8px;
     }
 
-    .danger {
-      color: #b53333;
+    .section-kicker {
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-left: 3px solid var(--color-terracotta);
+      background: rgba(255, 255, 255, 0.45);
+      color: var(--color-charcoal-warm);
     }
 
-    .muted {
-      color: var(--color-stone-gray);
+    .card-label {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--color-warm-sand);
+      color: var(--color-charcoal-warm);
+      font-size: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    details summary {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-family: var(--font-serif);
+      font-size: 20px;
+      color: var(--color-near-black);
+      list-style: none;
+    }
+
+    details summary::after {
+      content: "+";
+      font-family: var(--font-sans);
+      font-size: 20px;
+      color: var(--color-terracotta);
+      line-height: 1;
+    }
+
+    details[open] summary::after {
+      content: "−";
+    }
+
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details[open] summary {
+      margin-bottom: 12px;
     }
 
     @media (max-width: 1100px) {
+      .grid-5,
       .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 820px) {
       .nav {
         padding: 14px 18px;
-        align-items: flex-start;
         flex-direction: column;
+        align-items: flex-start;
       }
 
       .page { padding: 0 18px 72px; }
       .hero { padding: 72px 0 56px; }
       h1 { font-size: 42px; }
+      h2 { font-size: 32px; }
       .hero p { font-size: 18px; }
-      .section-head h2 { font-size: 32px; }
-      .grid-2, .grid-4, .subgrid { grid-template-columns: 1fr; }
+      .grid-2,
+      .grid-4,
+      .grid-5 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -317,292 +343,573 @@
       <span>CRM Memory Design</span>
     </div>
     <div class="nav-links">
-      <a href="#map">总图</a>
-      <a href="#objects">对象层</a>
-      <a href="#examples">实例</a>
-      <a href="#rules">写入规则</a>
+      <a href="#definition">定义</a>
+      <a href="#direction">方向</a>
+      <a href="#layers">记忆层</a>
+      <a href="#objects">优先对象</a>
+      <a href="#structure">信息分层</a>
+      <a href="#contracts">5 个 Contract</a>
+      <a href="#flow">流程图</a>
+      <a href="#appendix">附录</a>
     </div>
   </div>
 
   <main class="page">
-    <section class="hero">
+    <section class="hero" id="definition">
       <div class="hero-inner">
-        <div class="eyebrow">Object-first memory system</div>
-        <h1>CRM Object Memory Design</h1>
-        <p>这套设计先服务 CRM 对象本身，再服务 summary、判断、检索和后续动作。重点不是给 summary 补上下文，而是给每个对象建立自己的记忆层。</p>
+        <div class="eyebrow">Single-page canonical spec</div>
+        <h1>CRM Memory Design</h1>
+        <p>这不是导览页，也不是纪要索引页。这一页直接定义 CRM memory 是什么、怎么写、怎么升级、怎么读、怎么防止噪音污染。</p>
         <div class="tag-row">
-          <span class="tag">object-first</span>
-          <span class="tag">today + long_term</span>
-          <span class="tag">profile-first</span>
-          <span class="tag">summary 只是消费方之一</span>
+          <span class="tag">card-first</span>
+          <span class="tag">short + long memory</span>
+          <span class="tag">evidence-driven</span>
+          <span class="tag">contract-based</span>
         </div>
       </div>
     </section>
 
-    <div class="hero-note">当前页面只展示 memory 设计本体：对象是谁、今天记录什么、长期沉淀什么、CRM 事实何时进入 memory。消费规则放在后面，不反过来定义 memory。</div>
+    <div class="hero-note">判断一套 CRM memory 是否顶级，不看页面漂不漂亮，只看 4 件事：能不能解释为什么这单还没动、能不能指出该找谁推进、能不能区分本次新变化和历史底座、能不能防止一次会议噪音污染长期认知。</div>
 
-    <section class="section" id="map">
+    <section class="section">
       <div class="section-head">
-        <div class="section-label">Core map</div>
-        <h2>核心总图</h2>
-        <p>先定义对象，再定义每个对象的两层 memory，最后再决定哪些内容可被消费。</p>
+        <div class="section-label">Top-level lens</div>
+        <h2>顶级 CRM memory 先回答经营问题，不先回答存储问题</h2>
+        <p>如果一个设计只能告诉你“字段怎么放”，却不能告诉你“这单为什么还没动”，那它还是数据结构，不是经营记忆系统。</p>
       </div>
-      <div class="mono">CRM Objects
-  -> account
-  -> opportunity
-  -> contact
-  -> person
-
-Each Object
-  -> today
-  -> long_term
-
-Each Layer
-  -> object-specific fields</div>
+      <div class="section-kicker">顶级设计的衡量标准不是信息收集是否完整，而是这套 memory 能否稳定支撑经营判断、行动选择和跨周期连续性。</div>
+      <div class="grid grid-2">
+        <article class="card">
+          <span class="card-label">它必须直接支持的 5 个问题</span>
+          <ul class="mini-list">
+            <li>这单现在为什么还没推进？</li>
+            <li>当前最该找谁推进，谁在影响结果？</li>
+            <li>这次会议到底带来了什么新变化？</li>
+            <li>哪些判断是历史底座，哪些只是本次波动？</li>
+            <li>下一步动作为什么是这个，而不是另一个？</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="card-label">它必须主动防止的 5 个失败模式</span>
+          <ul class="mini-list">
+            <li>把纪要堆积误当成 memory。</li>
+            <li>把一次性发言误写成长期认知。</li>
+            <li>把 Judgment 伪装成 Fact。</li>
+            <li>让旧 memory 压制当前证据。</li>
+            <li>为追求“全”而 over-pull 历史噪音。</li>
+          </ul>
+        </article>
+      </div>
     </section>
 
     <section class="section">
       <div class="section-head">
-        <div class="section-label">Time horizon</div>
-        <h2>时间层</h2>
-        <p>`today` 服务当前判断，`long_term` 服务长期解释。两层足够，不再拆 `short / mid / long`。</p>
+        <div class="section-label">Definition</div>
+        <h2>CRM memory 的定义与边界</h2>
+        <p>先把对象、边界、消费关系说硬，再谈字段和生命周期。</p>
       </div>
+      <div class="section-kicker">CRM memory = 面向经营推进的持续记忆系统。它不是 raw notes 仓库，不是 summary 缓存，也不是 CRM facts 的镜像表。</div>
       <div class="grid grid-2">
-        <div class="card">
-          <h3>today</h3>
-          <p>记录当前这次 interaction 后，对象今天的状态、信号、变化和风险。</p>
-        </div>
-        <div class="card">
-          <h3>long_term</h3>
-          <p>记录跨多次互动后稳定下来的特性、偏好、模式和结构性背景。</p>
-        </div>
+        <article class="card">
+          <span class="card-label">它要解决什么</span>
+          <ul class="mini-list">
+            <li>让对象拥有可持续积累的记忆，而不是每次会议都从零推理。</li>
+            <li>让总结、跟进、风险判断共享同一记忆底座。</li>
+            <li>在不覆盖当前证据的前提下，延续跨会议、跨会话的经营判断。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="card-label">它明确不做什么</span>
+          <ul class="mini-list">
+            <li>不把原始会议纪要全文直接塞进 memory。</li>
+            <li>不把每一条 CRM fact 自动提升成 memory。</li>
+            <li>不允许旧 memory 压过当前 meeting evidence。</li>
+          </ul>
+        </article>
       </div>
     </section>
 
-    <hr class="divider" />
+    <section class="section" id="direction">
+      <div class="section-head">
+        <div class="section-label">Direction</div>
+        <h2>为什么第一版采用 Markdown Memory Card</h2>
+        <p>当前阶段先把产品抽象做对，再反推持久化 schema。</p>
+      </div>
+      <div class="section-kicker">先设计 agent 可读、可更新、可拼装的记忆单元，再决定数据库长什么样。现在先验证“记什么最有价值”，不是先把不稳定认知写死进字段表。</div>
+      <div class="grid grid-2">
+        <article class="card">
+          <h3>为什么先做 Card，不先做表</h3>
+          <ul class="mini-list">
+            <li>CRM 里大量高价值信息不是纯字段，而是带证据约束的经营判断。</li>
+            <li>Card 更适合表达“当前状态 + 变化 + 风险 + 下一步”。</li>
+            <li>先做 Card，后面仍然可以反推 schema；先做表，容易过早固化错误抽象。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Card 与 Profile 的关系</h3>
+          <p>Card 负责承载一次观察、一次状态变化、一次承诺、一次冲突。Profile 把对象当前可用的 short / long memory 聚合成消费视图。Summary、复盘、跟进不是直接吃所有 card，而是优先吃 profile。</p>
+        </article>
+      </div>
+      <div class="mono">Card（底层记录单元）
+  -> 记录一次观察 / 判断 / 承诺 / 冲突
+  -> 可重写，可被新 evidence 替换
+
+Profile（对象消费视图）
+  -> 聚合当前有效的 short memory
+  -> 聚合稳定成立的 long memory
+  -> 面向 summary / review / follow-up 消费</div>
+    </section>
+
+    <section class="section" id="layers">
+      <div class="section-head">
+        <div class="section-label">Memory layers</div>
+        <h2>短记忆与长记忆不是时间桶，而是判断权限分层</h2>
+        <p>短记忆承载变化，长记忆承载稳定认知。两者职责不同，不能混写，也不能互相替代。</p>
+      </div>
+      <div class="section-kicker">today = short memory，long_term = long memory。当前 evidence 优先于旧 memory；旧 memory 只能补解释层，不能覆盖当前事实。</div>
+      <div class="grid grid-2">
+        <article class="card">
+          <span class="card-label">Short / today</span>
+          <ul class="mini-list">
+            <li>服务当前这次 interaction 之后的状态判断。</li>
+            <li>允许高频更新，允许被后续新 evidence 覆盖。</li>
+            <li>适合放：当前 blocker、当天推进信号、态度变化、最新承诺。</li>
+            <li>本质是运行态，回答“现在发生了什么变化”。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="card-label">Long / long_term</span>
+          <ul class="mini-list">
+            <li>服务跨周期仍成立的经营认知。</li>
+            <li>只放长期模式、偏好、结构性风险、稳定审批路径。</li>
+            <li>不能被单次噪音轻易改写。</li>
+            <li>本质是沉淀态，回答“长期上这个对象通常怎么运作”。</li>
+          </ul>
+        </article>
+      </div>
+      <div class="mono">升级最小原则
+- 单次出现：不升 long_term
+- 两次出现：只能候选，不写死
+- 多次重复且无明显反例：可升 long_term
+- 当前 evidence 明确反证：降级为 stale / contradicted
+
+关键区别
+- short 关注变化
+- long 关注模式
+- short 可频繁重写
+- long 只能谨慎升级与谨慎降级</div>
+    </section>
 
     <section class="section" id="objects">
       <div class="section-head">
-        <div class="section-label">Object scope</div>
-        <h2>四类对象</h2>
-        <p>每个对象都独立持有 today 和 long_term，两层字段由对象本身决定，不由 summary 反推。</p>
+        <div class="section-label">Priority objects</div>
+        <h2>第一版优先抓经营控制面，不先铺满所有 CRM 对象</h2>
+        <p>对象不是为了分类完整，而是为了最小经营闭环可用。先抓最影响推进结果的控制面。</p>
       </div>
       <div class="grid grid-4">
         <article class="card">
-          <h3>account</h3>
-          <p>客户作为组织，长期怎么决策、怎么合作、怎么卡住，今天又关注什么。</p>
-          <div class="subgrid">
-            <div class="sub">
-              <strong>today</strong>
-              <div class="mono">focus
-current_signal
-today_risks
-today_relationship_shift</div>
-            </div>
-            <div class="sub">
-              <strong>long_term</strong>
-              <div class="mono">relationship_baseline
-decision_style
-organization_pattern
-risk_sensitivities
-collaboration_preferences
-recurring_blockers</div>
-            </div>
-          </div>
+          <span class="card-label">P0</span>
+          <h3>Opportunity</h3>
+          <p>回答这单现在推进到哪、为什么卡住、赢单条件是什么、下一步该推进什么。</p>
         </article>
-
         <article class="card">
-          <h3>opportunity</h3>
-          <p>这笔机会长期怎么推进、通常卡在哪、今天有没有实质进展。</p>
-          <div class="subgrid">
-            <div class="sub">
-              <strong>today</strong>
-              <div class="mono">today_stage_signal
-today_blockers
-today_progress
-today_checkpoint</div>
-            </div>
-            <div class="sub">
-              <strong>long_term</strong>
-              <div class="mono">stage_pattern
-blocker_pattern
-budget_pattern
-approval_path
-competitive_pressure
-progression_style</div>
-            </div>
-          </div>
+          <span class="card-label">P0</span>
+          <h3>Stakeholder</h3>
+          <p>回答谁在推动、谁在卡、谁有否决权、谁只是参与者，以及他们真正关注什么。</p>
         </article>
-
         <article class="card">
-          <h3>contact</h3>
-          <p>这个人通常怎么影响事情，今天态度和角色有没有变化。</p>
-          <div class="subgrid">
-            <div class="sub">
-              <strong>today</strong>
-              <div class="mono">today_stance
-today_role_signal
-today_preference_signal
-today_objection_signal</div>
-            </div>
-            <div class="sub">
-              <strong>long_term</strong>
-              <div class="mono">role_in_motion
-influence_style
-communication_preference
-objection_pattern
-trust_signal</div>
-            </div>
-          </div>
+          <span class="card-label">P0</span>
+          <h3>Commitment</h3>
+          <p>回答双方承诺链是否闭环、谁欠动作、哪些逾期项已经开始伤害推进。</p>
         </article>
-
         <article class="card">
-          <h3>person</h3>
-          <p>内部角色长期怎么推进客户，今天又做了什么关键动作。</p>
-          <div class="subgrid">
-            <div class="sub">
-              <strong>today</strong>
-              <div class="mono">today_action_signal
-today_commitment
-today_followup_gap
-today_handoff_risk</div>
-            </div>
-            <div class="sub">
-              <strong>long_term</strong>
-              <div class="mono">owner_style
-commitment_reliability
-followup_pattern
-handoff_risk
-coordination_strength</div>
-            </div>
-          </div>
+          <span class="card-label">P1</span>
+          <h3>Account / 其他对象</h3>
+          <p>提供长期合作格局、组织决策风格、风险敏感点等背景，但不应在第一版取代经营主轴。</p>
         </article>
       </div>
     </section>
 
-    <hr class="divider" />
+    <section class="section" id="structure">
+      <div class="section-head">
+        <div class="section-label">Information structure</div>
+        <h2>所有 memory 都要拆成 4 层语义，不允许混写</h2>
+        <p>真正难点不在“卡片有几个字段”，而在 Fact / Judgment / Action / Evidence 的界线能不能站住。</p>
+      </div>
+      <div class="grid grid-4">
+        <article class="card">
+          <h3>Fact</h3>
+          <p>客观发生过、可被引用的事实。例：客户明确说“先解决稳定性再谈续费”。</p>
+        </article>
+        <article class="card">
+          <h3>Judgment</h3>
+          <p>基于事实的经营判断。例：当前不是价格谈判，而是适配验证。判断不能伪装成事实。</p>
+        </article>
+        <article class="card">
+          <h3>Action</h3>
+          <p>必须可执行。要明确 owner、时间约束、交付物或验收标准，不能只写“继续跟进”。</p>
+        </article>
+        <article class="card">
+          <h3>Evidence</h3>
+          <p>每条判断都要能回溯到证据来源：meeting、CRM fact、既有 memory key、历史事件。</p>
+        </article>
+      </div>
+      <div class="mono">正确表达
+Fact: 客户今天明确问“非营销人员是否必须买账号”
+Judgment: 当前客户在验证 seat 成本结构是否可接受
+Action: 输出分人群账号 / 权限 / 成本方案
+Evidence: meeting:2026-04-06 / speaker:高强 / topic:seat-cost
+
+错误表达
+- 把“客户对方案有兴趣”直接写成 Fact
+- 把“继续跟进”写成 Action
+- 只给 Judgment，不给 Evidence
+- 用历史 memory 代替本次会议新变化</div>
+    </section>
+
+    <section class="section" id="contracts">
+      <div class="section-head">
+        <div class="section-label">Contracts</div>
+        <h2>5 个 contract 决定这套 memory 是系统，还是垃圾堆</h2>
+        <p>顶级设计重点不是“能记”，而是能拒绝写、拒绝升级、拒绝过量检索、拒绝旧判断污染当前输出。</p>
+      </div>
+      <div class="grid grid-2">
+        <article class="card">
+          <h3>1. 写入 Contract</h3>
+          <ul class="mini-list">
+            <li><strong>解决的问题：</strong>什么信息有资格进入 memory，什么只能停留在 raw record / CRM。</li>
+            <li><strong>触发：</strong>出现明确新变化、当前 blocker、新承诺、态度变化、推进状态变化。</li>
+            <li><strong>规则：</strong>先写 fact，再判断是否改变对象状态。</li>
+            <li><strong>输出：</strong>只把能解释当前经营状态的内容写入 short memory。</li>
+            <li><strong>红线：</strong>原始纪要全文、无对象归属的散乱事实、不影响推进的业务流水，不进 memory。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>2. 升级 / 降级 Contract</h3>
+          <ul class="mini-list">
+            <li><strong>解决的问题：</strong>哪些短期判断有资格变成长期认知，哪些旧认知必须被降级。</li>
+            <li><strong>触发：</strong>短记忆重复出现、跨多轮仍成立、已明显影响推进结果。</li>
+            <li><strong>规则：</strong>单次不升，两次候选，多次重复且可交叉验证才升 long memory；只有 high confidence 且跨轮稳定的判断才有升级资格。</li>
+            <li><strong>输出：</strong>稳定模式进入 long_term；被新事实反证时降级为 stale / contradicted。</li>
+            <li><strong>红线：</strong>一次性情绪、单轮猜测、没证据的推断，不得升级。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>3. 冲突 Contract</h3>
+          <ul class="mini-list">
+            <li><strong>解决的问题：</strong>新旧记忆、当前会议、CRM facts 互相打架时谁赢。</li>
+            <li><strong>触发：</strong>旧 memory 与当前 meeting evidence、当前 CRM facts 或其他 memory 冲突。</li>
+            <li><strong>规则：</strong>当前 meeting evidence 优先；当前 CRM facts 次之；memory 只补解释层。</li>
+            <li><strong>输出：</strong>显式标记冲突来源、影响对象、被反证的旧判断。</li>
+            <li><strong>红线：</strong>旧 memory 不能覆盖当前证据，也不能在冲突时被静默沿用。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>4. 检索 Contract</h3>
+          <ul class="mini-list">
+            <li><strong>解决的问题：</strong>当前任务到底该拉哪些记忆，避免 over-pull 历史噪音。</li>
+            <li><strong>触发：</strong>summary、风险判断、跟进行动、管理复盘等消费任务开始前。</li>
+            <li><strong>规则：</strong>只拉与当前任务强相关的对象和时间层，默认少拉，不做全量 over-pull。</li>
+            <li><strong>输出：</strong>当前任务需要的最小记忆包，而不是历史内容全集。</li>
+            <li><strong>红线：</strong>检索过量会把历史噪音引入当前推理，必须控制 scope。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>5. 输出 Contract</h3>
+          <ul class="mini-list">
+            <li><strong>解决的问题：</strong>输出时怎么区分本次新增判断、历史底座和未确认推断。</li>
+            <li><strong>触发：</strong>生成会议总结、跟进建议、经营判断、交接材料时。</li>
+            <li><strong>规则：</strong>只有 high / medium confidence 的判断才允许进入输出；low confidence 只能保留为待验证假设。</li>
+            <li><strong>输出：</strong>人可读结论 + 机器可读字段 + 可回溯 evidence，并标明 judgment confidence。</li>
+            <li><strong>红线：</strong>不能把历史记忆包装成这次会议新结论，也不能省略判断的证据依据。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="flow">
+      <div class="section-head">
+        <div class="section-label">Flow</div>
+        <h2>端到端流程图</h2>
+        <p>从事实进入，到判断形成，到记忆升级，再到消费输出，整条链必须可解释。</p>
+      </div>
+      <div class="mono">CRM fact / meeting evidence
+  -> 识别对象归属（Opportunity / Stakeholder / Commitment / Account）
+  -> 拆成 Fact / Judgment / Action / Evidence
+  -> 给 Judgment 标注 confidence（high / medium / low）
+  -> 判断是否改变当前状态
+       -> 否：只留在 CRM / raw record
+       -> 是：写入 short memory
+  -> 判断是否形成稳定模式
+       -> 否：保留 short memory
+       -> 是：仅 high confidence + 跨轮稳定的判断才可升级为 long memory
+  -> 当前任务发起检索
+       -> 只取强相关对象 + 合适时间层
+  -> 输出 summary / risk / next step
+       -> low confidence 不进入核心结论
+       -> action 必须优先给 high leverage 动作
+       -> 显式区分本次新增判断 vs 历史记忆引用
+       -> 如有冲突，显式暴露 memory conflict
+  -> 输出后的新结果继续回写 short / long memory
+    </section>
 
     <section class="section">
       <div class="section-head">
-        <div class="section-label">Profile schema</div>
-        <h2>对象 profile 示例</h2>
-        <p>profile 是面向消费的对象 memory 视图，不是 raw notes，也不是零散事实拼接。</p>
+        <div class="section-label">Pressure test</div>
+        <h2>案例压测：一段会议内容进入 memory 后应该如何被拆解</h2>
+        <p>下面不是在做总结示范，而是在验证这套设计能否把“内容”变成“可经营的记忆”。</p>
+      </div>
+      <div class="section-kicker">测试标准只有一个：同一段会议信息，能否被拆成对象归属、事实、判断、行动、证据，并且不把一次性内容误升成长期认知。</div>
+      <div class="grid grid-2">
+        <article class="card">
+          <h3>输入片段</h3>
+          <ul class="mini-list">
+            <li>客户当前在验证：CRM、代理作业、项目管理、报销挂项目、企业微信侧边栏、外部系统集成边界。</li>
+            <li>高强持续追问企业微信侧边栏、报销挂项目、代理作业流程、项目管理、国知相关接口与账号成本问题。</li>
+            <li>分享销客方明确说明：账号按人头收费，非营销人员如果只为报销开账号，成本可能不划算。</li>
+            <li>客户认可厂商能力，愿意继续看功能清单和试用账号，但关键不确定性没有闭合。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>先拆对象归属</h3>
+          <ul class="mini-list">
+            <li><strong>Opportunity：</strong>当前阶段、阻塞、推进条件、下一步评估重点。</li>
+            <li><strong>Stakeholder：</strong>高强是关键评估者，主要影响技术可行性判断。</li>
+            <li><strong>Commitment：</strong>我方需要给能力边界与成本方案，客户需要明确内部拍板路径。</li>
+            <li><strong>Account：</strong>项目板块近八十人缺系统、代理板块依赖知易通，属于背景结构，不是本轮新增主结论。</li>
+          </ul>
+        </article>
+      </div>
+      <div class="grid grid-2">
+        <article class="card">
+          <h3>哪些应进入 short memory</h3>
+          <ul class="mini-list">
+            <li>当前不是商务谈判，而是真实业务适配验证。</li>
+            <li>当前 blocker 集中在代理作业覆盖、项目管理能力、接口边界、seat 成本结构。</li>
+            <li>高强当前是主导技术可行性判断的关键人。</li>
+            <li>下一步必须输出分人群账号 / 权限 / 成本方案，并拆清代理作业与项目管理边界。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>哪些不能直接升 long memory</h3>
+          <ul class="mini-list">
+            <li>“高强是长期阻力点”不能直接升，因为当前只证明他在本轮强势提问。</li>
+            <li>“客户对价格敏感”不能直接升，因为当前证据更准确地指向 seat 成本结构，而不是总价谈判。</li>
+            <li>“客户一定会继续推进”不能写，因为当前只有正向信号，没有闭合推进条件。</li>
+            <li>“项目管理需求是长期主诉求”也不能直接升，除非后续多轮持续出现并影响推进结果。</li>
+          </ul>
+        </article>
+      </div>
+      <div class="mono">压测结果示例
+Opportunity.short
+- 当前阶段：适配验证，不是商务谈判（confidence: high）
+- 当前 blocker：代理作业覆盖、项目管理能力、接口边界、seat 成本结构（confidence: high）
+- 下一步动作：售前 owner 输出能力边界与分人群成本方案（leverage: high；completion: 给出边界说明 + 成本方案）
+
+Stakeholder.short
+- 高强：当前主导技术可行性评估（confidence: medium）
+- 当前关注：接口、项目管理、账号成本、企业微信侧边栏（confidence: high）
+
+Commitment.short
+- 我方待补：售前与方案 owner 补能力清单、接口边界、成本方案（leverage: high；completion: 材料发出并被客户确认收到）
+- 客户待确认：客户成功 owner 追拍板路径、预算归口、替换还是集成路线（leverage: high；completion: 拿到明确反馈）
+
+不能直接写成 long memory
+- 高强长期阻力
+- 客户价格敏感
+- 客户已形成强推进意愿</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Confidence</div>
+        <h2>顶级 memory 必须区分“知道了什么”与“确信到什么程度”</h2>
+        <p>很多经营判断出错，不是因为没有信息，而是把低置信推断误当成高置信结论。</p>
+      </div>
+      <div class="section-kicker">Evidence 解决“依据是什么”，这里的 Confidence 解决“这条经营判断到底能信到什么程度”。它不是场景识别置信度，也不能替代 long memory 的升级规则。</div>
+      <div class="grid grid-3">
+        <article class="card">
+          <span class="card-label">High confidence</span>
+          <h3>高置信判断</h3>
+          <ul class="mini-list">
+            <li>有明确原话、明确行为或明确结果支撑。</li>
+            <li>能被多条证据交叉验证。</li>
+            <li>已经稳定影响推进结果。</li>
+            <li>可以进入核心结论，但只有在跨轮稳定、可反证校验通过时才可升级 long memory。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="card-label">Medium confidence</span>
+          <h3>中置信判断</h3>
+          <ul class="mini-list">
+            <li>有证据支撑，但还缺交叉验证或结果验证。</li>
+            <li>适合进入 short memory 候选判断。</li>
+            <li>可以指导下一步验证动作，但不能写成长期认知。</li>
+            <li>要么继续验证，要么等待下一轮证据补强。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="card-label">Low confidence</span>
+          <h3>低置信推断</h3>
+          <ul class="mini-list">
+            <li>主要来自语气、单次表达、未闭环线索或主观感受。</li>
+            <li>只能作为假设，不应进入核心结论。</li>
+            <li>可以形成问题清单，但不能形成 memory 定论。</li>
+            <li>默认不升级，不抬高输出语气。</li>
+          </ul>
+        </article>
+      </div>
+      <div class="mono">例子
+High: 客户明确说“先解决稳定性再谈续费”，且最近两轮都围绕稳定性展开
+Medium: 高强当前像关键评估者，但还需要看后续是否持续主导推进
+Low: 客户态度友好，因此推断成交意愿很强
+
+结论
+- high 可以进入主结论
+- medium 可以指导下一步验证
+- low 只能作为待验证假设</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Action quality</div>
+        <h2>顶级 memory 不只输出 action，还要区分动作质量</h2>
+        <p>不是所有下一步动作都能改变 deal 结果。很多动作只是“回应了问题”，但没有真正推动推进概率。</p>
+      </div>
+      <div class="section-kicker">好的 memory 输出，不是生成更多 follow-up，而是生成更有推进杠杆的 follow-up。动作质量决定 memory 是否真正服务经营。</div>
+      <div class="grid grid-3">
+        <article class="card">
+          <span class="card-label">Low leverage</span>
+          <h3>低质量动作</h3>
+          <ul class="mini-list">
+            <li>只有形式，没有推进杠杆。</li>
+            <li>例：继续跟进、再约时间、同步一下材料。</li>
+            <li>特点：任何总结都能写出来，但不改变结果。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="card-label">Medium leverage</span>
+          <h3>中质量动作</h3>
+          <ul class="mini-list">
+            <li>回应了当前问题，但还没切中最关键阻塞。</li>
+            <li>例：补一般性产品材料、补标准接口说明。</li>
+            <li>特点：有帮助，但未必推动阶段变化。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="card-label">High leverage</span>
+          <h3>高质量动作</h3>
+          <ul class="mini-list">
+            <li>直接对准当前最关键 blocker 或决策条件。</li>
+            <li>例：输出分人群账号/权限/成本方案；拆清代理作业覆盖边界；确认替换还是集成路线。</li>
+            <li>特点：动作完成后，推进概率或判断清晰度会明显变化。</li>
+          </ul>
+        </article>
+      </div>
+      <div class="mono">动作质量标准
+1. 是否直接命中当前 blocker
+2. 是否能改变阶段判断或推进概率
+3. 是否可验证完成与否
+4. 是否有明确 owner
+5. 是否能减少不确定性而不是制造更多表面动作
+
+执行映射
+- Output Contract：输出时优先给 high leverage action，而不是形式化 follow-up
+- Pressure Test：压测示例中的 action 必须满足 owner + 杠杆 + 可验证
+- Example Profile：today_checkpoint 不应只是待办项，而应是高质量动作摘要
+
+如果一个 action 不能提升判断清晰度、不能推进闭环、不能影响下一步选择，它就不算高质量动作。</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Top-level benchmark</div>
+        <h2>顶级做法对照表</h2>
+        <p>下面这张表不是补充说明，而是整页设计的最终压缩版：什么是低级做法，什么是顶级做法。</p>
+      </div>
+      <div class="mono">维度                     低级做法                                   顶级做法
+memory 写入              纪要全文入库 / CRM fact 自动升 memory      只写可复用判断，先过写入 contract
+判断表达                Judgment 混进 Fact                        Judgment 单列，并绑定 Evidence
+长期升级                单次印象直接写死                          跨轮稳定 + 可反证校验通过才升 long memory
+置信度                  不区分强弱，统一下结论                    区分 high / medium / low，low 只做假设
+对象优先级              先铺满客户画像                            先抓 Opportunity / Stakeholder / Commitment
+检索                     能拉多少拉多少                            只做最小相关检索，避免 over-pull
+冲突处理                旧记忆默认沿用                            当前 meeting evidence 优先，显式暴露冲突
+动作输出                写“继续跟进”“补材料”                     输出 high leverage action，明确 owner 与验证标准
+summary 消费            历史与本次混写                            区分本次新增判断 vs 历史底座引用
+memory 目标             让 AI 记得更多                             让 AI 持续做对经营判断与动作选择
+
+快速验收标准
+- low confidence 不进入核心结论
+- long memory 只能来自跨轮稳定的 high confidence judgment
+- 输出 action 必须至少满足 owner + leverage + completion 三项
+- 历史 memory 不得覆盖本次会议新证据
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Example</div>
+        <h2>最小合法 profile 仍然成立，但表达重点变了</h2>
+        <p>字段可以保留 today / long_term 结构；关键不是字段数量，而是字段背后的语义协议。</p>
       </div>
       <div class="mono">{
-  "scope": "account",
-  "lookup_key": "account_id:CUST-001",
+  "scope": "opportunity",
+  "lookup_key": "opportunity_id:OPP-9001",
   "today": {
-    "focus": ["服务质量异常"],
-    "current_signal": ["当前优先解决夜间稳定性，不先谈续费"],
-    "today_risks": ["预算优先级下降"],
-    "today_relationship_shift": "谨慎，但未关闭后续合作"
+    "today_stage_signal": "当前处于真实业务适配验证，不是商务谈判",
+    "today_blockers": [
+      "代理作业覆盖边界未说明清楚",
+      "seat 成本结构未被客户接受"
+    ],
+    "today_checkpoint": "需输出分人群账号/权限/成本方案"
   },
   "long_term": {
-    "relationship_baseline": "愿意试点，但对扩量谨慎",
-    "decision_style": "先业务 owner 认可，再走采购",
-    "organization_pattern": ["运营主导问题确认", "采购后置"],
-    "risk_sensitivities": ["稳定性", "服务质量考核"],
-    "collaboration_preferences": ["先看到问题归因，再看扩展方案"],
-    "recurring_blockers": ["效果验证不足会影响预算优先级"]
+    "stage_pattern": "先验证业务闭环，再考虑采购推进",
+    "blocker_pattern": ["接口边界", "项目管理能力", "账号成本"],
+    "approval_path": "先业务和 IT 共同认可，再进入预算与采购"
   },
-  "evidence_ref": ["meeting:MEET-20260408", "meeting:MEET-20260320"],
-  "observed_at": "2026-03-20T10:00:00+08:00",
-  "last_confirmed_at": "2026-04-08T11:00:00+08:00",
+  "evidence_ref": [
+    "meeting:2026-04-06",
+    "speaker:高强",
+    "topic:seat-cost"
+  ],
   "status": "active"
 }</div>
     </section>
 
-    <section class="section" id="examples">
+    <section class="section" id="appendix">
       <div class="section-head">
-        <div class="section-label">Concrete examples</div>
-        <h2>具体实例</h2>
-        <p>实例不是为了堆字段，而是为了看清什么属于对象当天状态，什么属于跨时间稳定模式。</p>
+        <div class="section-label">Appendix</div>
+        <h2>附录：速查而不是外链依赖</h2>
+        <p>这里保留术语与状态速查。其他 markdown 只作为历史参考，不再承担主说明职责。</p>
       </div>
-      <div class="grid grid-2">
-        <div class="card">
-          <h3>opportunity / today</h3>
-          <div class="mono">{
-  "today_stage_signal": ["从意向确认推进到方案评估"],
-  "today_blockers": ["客户要求补充 ROI 测算"],
-  "today_progress": ["确认了下一轮技术评审时间"],
-  "today_checkpoint": "等待客户内部财务 review"
-}</div>
-        </div>
-        <div class="card">
-          <h3>contact / long_term</h3>
-          <div class="mono">{
-  "role_in_motion": "持续扮演业务推动人",
-  "influence_style": "偏向用内部案例说服其他团队",
-  "communication_preference": ["先书面，再开会"],
-  "objection_pattern": ["每次都会先确认实施成本"],
-  "trust_signal": "对数据口径一致性要求高，满足后配合度提升"
-}</div>
-        </div>
-      </div>
-    </section>
-
-    <hr class="divider" />
-
-    <section class="section" id="rules">
-      <div class="section-head">
-        <div class="section-label">Write rules</div>
-        <h2>CRM 事实是否写入 memory</h2>
-        <p>CRM 正常运营中的事实，不自动等于 memory。先判断这条事实是否改变对象状态，是否具有复用解释价值。</p>
-      </div>
-      <div class="mono">客户创建订单                  -> 只写 CRM
-商机阶段前进一次              -> CRM + today（如果改变当前推进状态）
-新建一条销售记录              -> 只写 CRM
-客户今天明确说先解决稳定性再谈续费 -> CRM + today
-联系人多次要求先书面后开会      -> CRM + today，重复确认后可进 long_term
-销售连续多次按时跟进承诺        -> CRM + today，稳定后可进 long_term</div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="section-label">Promotion path</div>
-        <h2>升级路径</h2>
-        <p>所有信息先作为 CRM fact 存在。只有改变对象今天状态，或跨时间重复成立，才进入对象 memory。</p>
-      </div>
-      <div class="mono">CRM fact
-  -> 不改变对象状态                只保留在 CRM
-  -> 改变对象今天状态              写入 today
-  -> 多次重复并稳定成立            升级为 long_term</div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="section-label">Consumption boundary</div>
-        <h2>使用边界</h2>
-        <p>下面这些是消费规则，不是 memory 体系定义本身。memory 不覆盖当前证据，只补对象解释层。</p>
-      </div>
-      <div class="mono">1. 当前 meeting evidence 优先
-2. 当前 CRM facts 次之
-3. memory 不覆盖当前证据
-4. 冲突时输出 memory_conflicts
-5. today 服务当前状态判断
-6. long_term 服务长期解释与模式补强</div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="section-label">Red lines</div>
-        <h2>红线</h2>
-      </div>
-      <div class="grid grid-2">
-        <div class="card list-card">
-          <h3>不能做什么</h3>
-          <ul>
-            <li>memory 不是会议纪要全文仓库</li>
-            <li>long_term 不能写单次即时状态</li>
-            <li>today 不是 raw notes 复制</li>
-            <li>未确认的当前结论不能直接写死到 long_term</li>
+      <div class="grid grid-3">
+        <details>
+          <summary>术语速查</summary>
+          <ul class="plain-list">
+            <li><strong>Card：</strong>底层记录单元，记录一次观察、判断、承诺或冲突。</li>
+            <li><strong>Profile：</strong>对象消费视图，聚合 short / long memory。</li>
+            <li><strong>Short Memory：</strong>当前状态层，对应 today。</li>
+            <li><strong>Long Memory：</strong>稳定模式层，对应 long_term。</li>
           </ul>
-        </div>
-        <div class="card">
-          <h3>设计原则</h3>
-          <p><span class="danger">重点：</span>先定义对象记忆，再定义谁来消费它。</p>
-          <p class="muted">页面视觉已切到浅色、暖色、中等阴影、serif 标题层级，按 <code>design-md/claude/DESIGN.md</code> 的 light 风格重构。</p>
-        </div>
+        </details>
+        <details>
+          <summary>状态速查</summary>
+          <ul class="plain-list">
+            <li><strong>active：</strong>当前仍有效，且近期有 evidence 支撑。</li>
+            <li><strong>stale：</strong>长期未确认，但没有被明确反证。</li>
+            <li><strong>contradicted：</strong>被当前 evidence 明确反证。</li>
+            <li><strong>archived：</strong>已归档，不参与默认读取。</li>
+          </ul>
+        </details>
+        <details>
+          <summary>历史参考（仅存档，不作为当前规范来源）</summary>
+          <ul class="plain-list">
+            <li><a href="README.md">README.md</a>：早期目标、边界与阅读顺序存档。</li>
+            <li><a href="schema.md">schema.md</a>：早期字段字典与对象级 profile 结构存档。</li>
+            <li><a href="lifecycle.md">lifecycle.md</a>：早期升级路径与状态迁移细节存档。</li>
+          </ul>
+        </details>
       </div>
     </section>
   </main>

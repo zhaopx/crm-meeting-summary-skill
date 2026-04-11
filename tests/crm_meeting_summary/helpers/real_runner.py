@@ -7,10 +7,9 @@ from pathlib import Path
 from typing import Any
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-SKILL_DIR = Path(__file__).resolve().parent
+REPO_ROOT = Path(__file__).resolve().parents[3]
 EVALS_PATH = REPO_ROOT / "tests" / "crm_meeting_summary" / "evals" / "evals.json"
-DEFAULT_CONSTRAINTS = {"language": "zh-CN", "output_mode": "human_and_json"}
+DEFAULT_CONSTRAINTS = {"language": "zh-CN", "output_mode": "human_only"}
 CLAUDE_TIMEOUT_SECONDS = 180
 
 BUNDLE_FILE_MAP = {
@@ -141,7 +140,8 @@ def build_skill_prompt(input_file_path: Path) -> str:
         "输入包是 JSON 文件，不是 PDF。\n"
         "非 PDF 的 Read 调用不要传 pages 字段。\n"
         "按 skill 契约完成输出。\n"
-        "最终结果必须包含完整 machine JSON；如果同时输出人类总结，请把 machine JSON 放在最后，便于提取。"
+        "最终结果只保留人类可读总结，不要输出 machine JSON。\n"
+        "如果包含 review 结果，也不要让 review JSON 覆盖最终总结正文。"
     )
 
 
@@ -163,9 +163,42 @@ def parse_cli_payload(stdout: str) -> list[dict[str, Any]]:
     return parsed
 
 
+def extract_review_result(text: str) -> dict[str, Any] | None:
+    fenced_marker = "```json"
+    if fenced_marker not in text:
+        return None
+
+    start = text.rfind(fenced_marker) + len(fenced_marker)
+    end = text.find("```", start)
+    if end == -1:
+        return None
+
+    payload = text[start:end].strip()
+    try:
+        parsed = json.loads(payload)
+    except json.JSONDecodeError:
+        return None
+
+    if not isinstance(parsed, dict):
+        return None
+    if {"pass", "review_status", "failure_reasons"}.issubset(parsed.keys()):
+        return parsed
+    return None
+
+
+def looks_like_human_summary(text: str) -> bool:
+    summary_markers = (
+        "会议快照",
+        "核心总结与判断",
+        "Knowhow 关注点",
+        "建议的下一步动作",
+        "风险与待确认问题",
+    )
+    return any(marker in text for marker in summary_markers)
+
+
 def extract_final_text(cli_payload: list[dict[str, Any]]) -> str:
     candidate_texts: list[str] = []
-    embedded_machine_outputs: list[str] = []
     for item in reversed(cli_payload):
         if item.get("type") == "result" and isinstance(item.get("result"), str):
             candidate_texts.append(item["result"])
@@ -176,105 +209,21 @@ def extract_final_text(cli_payload: list[dict[str, Any]]) -> str:
         for content in reversed(message.get("content", [])):
             if content.get("type") == "text" and isinstance(content.get("text"), str):
                 candidate_texts.append(content["text"])
-                continue
-            if content.get("type") != "tool_use":
-                continue
-            tool_input = content.get("input", {})
-            args = tool_input.get("args")
-            if isinstance(args, str) and "【generated machine-readable output】" in args:
-                embedded_machine_outputs.append(args)
 
     for text in candidate_texts:
-        try:
-            parsed, _ = extract_machine_json(text)
-        except (RealRunnerError, json.JSONDecodeError):
+        if not looks_like_human_summary(text):
             continue
-        if isinstance(parsed, dict) and "status" in parsed:
+        review_result = extract_review_result(text)
+        if review_result is None:
             return text
-
-    for text in embedded_machine_outputs:
-        try:
-            parsed, meta = extract_machine_json(text)
-        except (RealRunnerError, json.JSONDecodeError):
-            continue
-        if isinstance(parsed, dict) and meta.get("source") == "embedded_machine_output":
+        fenced_marker = "```json"
+        review_start = text.rfind(fenced_marker)
+        if review_start == -1:
             return text
-
+        return text[:review_start].rstrip()
     if candidate_texts:
         return candidate_texts[0]
     raise RealRunnerError("未找到最终 assistant 文本")
-
-
-def extract_machine_json(final_text: str) -> tuple[dict[str, Any], dict[str, str]]:
-    machine_marker = "【generated machine-readable output】"
-    if machine_marker in final_text:
-        marker_start = final_text.find(machine_marker) + len(machine_marker)
-        tail = final_text[marker_start:]
-        start = tail.find("{")
-        if start != -1:
-            brace_depth = 0
-            in_string = False
-            escape = False
-            for index, char in enumerate(tail[start:], start=start):
-                if escape:
-                    escape = False
-                    continue
-                if char == "\\":
-                    escape = True
-                    continue
-                if char == '"':
-                    in_string = not in_string
-                    continue
-                if in_string:
-                    continue
-                if char == "{":
-                    brace_depth += 1
-                elif char == "}":
-                    brace_depth -= 1
-                    if brace_depth == 0:
-                        payload = tail[start : index + 1]
-                        return json.loads(payload), {"source": "embedded_machine_output"}
-
-    def extract_review_handoff(payload: dict[str, Any]) -> tuple[dict[str, Any], dict[str, str]] | None:
-        handoff = payload.get("generated_machine_output")
-        if isinstance(handoff, dict) and "status" in handoff:
-            return handoff, {"source": "review_handoff_json"}
-        return None
-
-    fenced_marker = "```json"
-    if fenced_marker in final_text:
-        start = final_text.rfind(fenced_marker) + len(fenced_marker)
-        end = final_text.find("```", start)
-        if end == -1:
-            raise RealRunnerError("JSON fenced block 未闭合")
-        payload = final_text[start:end].strip()
-        parsed = json.loads(payload)
-        if isinstance(parsed, dict):
-            handoff_result = extract_review_handoff(parsed)
-            if handoff_result is not None:
-                return handoff_result
-        return parsed, {"source": "fenced_json"}
-
-    stripped = final_text.strip()
-    if stripped.startswith("{"):
-        parsed = json.loads(stripped)
-        if isinstance(parsed, dict):
-            handoff_result = extract_review_handoff(parsed)
-            if handoff_result is not None:
-                return handoff_result
-        return parsed, {"source": "raw_json"}
-
-    start = final_text.find("{")
-    end = final_text.rfind("}")
-    if start != -1 and end != -1 and end > start:
-        parsed = json.loads(final_text[start : end + 1])
-        if isinstance(parsed, dict):
-            handoff_result = extract_review_handoff(parsed)
-            if handoff_result is not None:
-                return handoff_result
-        return parsed, {"source": "embedded_json"}
-
-    raise RealRunnerError("未能从最终文本中提取 machine JSON")
 
 
 def invoke_real_skill(bundle: dict[str, Any]) -> dict[str, Any]:
@@ -321,12 +270,11 @@ def invoke_real_skill(bundle: dict[str, Any]) -> dict[str, Any]:
 
         cli_payload = parse_cli_payload(result.stdout)
         final_text = extract_final_text(cli_payload)
-        extracted_machine_json, extraction_meta = extract_machine_json(final_text)
+        review_result = extract_review_result(final_text)
         return {
             "raw_response": cli_payload,
             "final_text": final_text,
-            "extracted_machine_json": extracted_machine_json,
-            "extraction_meta": extraction_meta,
+            "review_result": review_result,
         }
     finally:
         if input_file_path is not None:

@@ -1,13 +1,11 @@
 # CRM Object Memory Schema
 
-## 设计原则
+## 结构原则
 
-这版不再以“单条 card”作为第一视角，而是以“对象 profile”作为第一视角。
-
-也就是：
 - 每个对象有自己的 memory profile
-- profile 分成 `today` 和 `long_term`
-- profile 下放对象专属字段，由对象语义决定
+- 每个 profile 分成 `today` 和 `long_term`
+- 每层只放对象专属字段，由对象语义决定
+- 这个文件是唯一数据契约来源
 
 ## 推荐结构
 
@@ -57,26 +55,21 @@
 - `contradicted`
 - `archived`
 
-## today 层
+## 时间层约束
 
-`today` 记录的是当前这次 interaction 之后，这个对象今天的状态。
-
-约束：
+### `today`
+- 记录当前这次 interaction 之后，这个对象今天的状态
 - 必须站在对象视角表达
 - 不是原始 meeting notes
-- 可以更新快，但只代表“今天”
 - 可以被后续新 evidence 替换或清空
 
-## long_term 层
+### `long_term`
+- 记录跨时间稳定下来的对象特性
+- 只放长期模式、偏好、结构性背景
+- 不放单次会议即时状态
+- 被当前 evidence 反证时，应降级处理，规则见 `lifecycle.md`
 
-`long_term` 记录的是跨时间稳定下来的特性。
-
-约束：
-- 只放稳定特征、长期模式、结构性背景
-- 不把单次会议即时状态塞进 long_term
-- 如果长期特征被当前 evidence 反证，要降级为 `stale` 或 `contradicted`
-
-## 各对象建议字段
+## 各对象字段定义
 
 ### account
 #### today
@@ -138,10 +131,6 @@
 
 ## 与旧 card 模型的关系
 
-如果后面仍要做单条 card 存储，可以把 profile 看成对象当前聚合结果，而不是否定 card。
-
-也就是：
+如果后面仍要做单条 card 存储，可以把 profile 看成对象当前聚合结果：
 - card 可以是底层记录单元
 - profile 是面向消费的对象 memory 视图
-
-当前这版设计优先定义 profile 视角。

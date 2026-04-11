@@ -9,9 +9,9 @@ import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-REAL_RUNNER_PATH = REPO_ROOT / "skills" / "crm-meeting-summary" / "real_runner.py"
-VALIDATOR_PATH = REPO_ROOT / "skills" / "crm-meeting-summary" / "devtools" / "contract_validator.py"
-MOCK_BASE = REPO_ROOT / "skills" / "mock-runtime"
+REAL_RUNNER_PATH = REPO_ROOT / "tests" / "crm_meeting_summary" / "helpers" / "real_runner.py"
+VALIDATOR_PATH = REPO_ROOT / "tests" / "crm_meeting_summary" / "helpers" / "contract_validator.py"
+MOCK_BASE = REPO_ROOT / "tests" / "crm_meeting_summary" / "fixtures" / "mock-runtime"
 
 
 def load_module(module_path: Path, module_name: str):
@@ -27,6 +27,29 @@ real_runner = load_module(REAL_RUNNER_PATH, "real_runner")
 contract_validator = load_module(VALIDATOR_PATH, "contract_validator")
 
 
+HUMAN_SUMMARY = """会议快照
+- 会议目标：确认问题根因
+
+核心总结与判断
+- 当前判断：客户要先验证知识库更新机制。
+
+Knowhow 关注点
+- 关注项：先做小范围验证。
+
+建议的下一步动作
+- 动作：补齐夜间转人工率样本。
+
+风险与待确认问题
+- 待确认：最终拍板人
+"""
+
+REVIEW_RESULT = {
+    "pass": True,
+    "review_status": "pass",
+    "failure_reasons": [],
+    "targeted_regeneration_instructions": [],
+}
+
 CLI_SUCCESS_PAYLOAD = [
     {
         "type": "assistant",
@@ -34,17 +57,16 @@ CLI_SUCCESS_PAYLOAD = [
             "content": [
                 {
                     "type": "text",
-                    "text": "会议快照\n...\n\n```json\n{\n  \"status\": \"passed\",\n  \"base_context\": {},\n  \"scenario_result\": {\n    \"primary_scenario\": \"需求澄清\",\n    \"scenario_slug\": \"needs-clarification\",\n    \"scenario_confidence\": \"high\",\n    \"industry\": \"general-b2b\",\n    \"scenario_mode\": \"normal\"\n  },\n  \"semantic_normalization\": {\n    \"object_aliases\": {},\n    \"lookup_keys\": {},\n    \"resolved_objects\": {},\n    \"relationship_map\": []\n  },\n  \"meeting_state_features\": {\n    \"relationship_state\": \"active-account\",\n    \"decision_pressure\": \"short-term proof\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"curious\"\n  },\n  \"loaded_knowhow\": {},\n  \"crm_data_requests\": [],\n  \"memory_sources\": [],\n  \"memory_conflicts\": [],\n  \"summary_fields\": {\n    \"meeting_goal\": \"确认问题根因\",\n    \"relationship_state\": \"active-account\",\n    \"decision_pressure\": \"short-term proof\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"curious\",\n    \"key_participants\": [],\n    \"current_stage_judgment\": \"qualification\",\n    \"next_actions\": [],\n    \"risk_level\": \"medium\",\n    \"missing_information\": []\n  },\n  \"semantic_summary\": {\n    \"relationship_state\": \"active-account\",\n    \"decision_pressure\": \"short-term proof\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"curious\"\n  },\n  \"key_judgments\": {\n    \"facts\": [],\n    \"inferences\": [],\n    \"open_questions\": []\n  },\n  \"knowhow_focus_items\": [],\n  \"retrieval_trace\": {\n    \"mapping_version\": \"v1\",\n    \"scenario_mode\": \"normal\",\n    \"allowed_request_groups\": [],\n    \"requested_request_groups\": [],\n    \"out_of_policy_requests\": []\n  },\n  \"retry_state\": {\n    \"revision\": 0,\n    \"status\": \"passed\",\n    \"history\": []\n  },\n  \"review_ready_checks\": {\n    \"scenario_self_consistency\": true,\n    \"knowhow_coverage\": true,\n    \"evidence_grounding\": true,\n    \"memory_conflict_handling\": true,\n    \"missing_information_handling\": true,\n    \"policy_boundary_handling\": true,\n    \"semantic_normalization_consistency\": true,\n    \"meeting_state_feature_evidence\": true,\n    \"semantic_summary_consistency\": true,\n    \"machine_output_completeness\": true\n  }\n}\n```"
+                    "text": "无关中间说明",
                 }
             ]
-        }
+        },
     },
     {
         "type": "result",
-        "result": "会议快照\n...\n\n```json\n{\n  \"status\": \"passed\",\n  \"base_context\": {},\n  \"scenario_result\": {\n    \"primary_scenario\": \"需求澄清\",\n    \"scenario_slug\": \"needs-clarification\",\n    \"scenario_confidence\": \"high\",\n    \"industry\": \"general-b2b\",\n    \"scenario_mode\": \"normal\"\n  },\n  \"semantic_normalization\": {\n    \"object_aliases\": {},\n    \"lookup_keys\": {},\n    \"resolved_objects\": {},\n    \"relationship_map\": []\n  },\n  \"meeting_state_features\": {\n    \"relationship_state\": \"active-account\",\n    \"decision_pressure\": \"short-term proof\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"curious\"\n  },\n  \"loaded_knowhow\": {},\n  \"crm_data_requests\": [],\n  \"memory_sources\": [],\n  \"memory_conflicts\": [],\n  \"summary_fields\": {\n    \"meeting_goal\": \"确认问题根因\",\n    \"relationship_state\": \"active-account\",\n    \"decision_pressure\": \"short-term proof\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"curious\",\n    \"key_participants\": [],\n    \"current_stage_judgment\": \"qualification\",\n    \"next_actions\": [],\n    \"risk_level\": \"medium\",\n    \"missing_information\": []\n  },\n  \"semantic_summary\": {\n    \"relationship_state\": \"active-account\",\n    \"decision_pressure\": \"short-term proof\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"curious\"\n  },\n  \"key_judgments\": {\n    \"facts\": [],\n    \"inferences\": [],\n    \"open_questions\": []\n  },\n  \"knowhow_focus_items\": [],\n  \"retrieval_trace\": {\n    \"mapping_version\": \"v1\",\n    \"scenario_mode\": \"normal\",\n    \"allowed_request_groups\": [],\n    \"requested_request_groups\": [],\n    \"out_of_policy_requests\": []\n  },\n  \"retry_state\": {\n    \"revision\": 0,\n    \"status\": \"passed\",\n    \"history\": []\n  },\n  \"review_ready_checks\": {\n    \"scenario_self_consistency\": true,\n    \"knowhow_coverage\": true,\n    \"evidence_grounding\": true,\n    \"memory_conflict_handling\": true,\n    \"missing_information_handling\": true,\n    \"policy_boundary_handling\": true,\n    \"semantic_normalization_consistency\": true,\n    \"meeting_state_feature_evidence\": true,\n    \"semantic_summary_consistency\": true,\n    \"machine_output_completeness\": true\n  }\n}\n```"
+        "result": HUMAN_SUMMARY,
     },
 ]
-
 
 REVIEW_RESULT_PAYLOAD = [
     {
@@ -52,64 +74,61 @@ REVIEW_RESULT_PAYLOAD = [
         "message": {
             "content": [
                 {
-                    "type": "tool_use",
-                    "name": "Skill",
-                    "input": {
-                        "skill": "crm-meeting-summary-review",
-                        "args": "【generated machine-readable output】\n{\n  \"status\": \"passed\",\n  \"base_context\": {},\n  \"scenario_result\": {\n    \"primary_scenario\": \"其他/不确定\",\n    \"scenario_slug\": \"uncertain\",\n    \"scenario_confidence\": \"low\",\n    \"scenario_mode\": \"uncertain\"\n  },\n  \"semantic_normalization\": {\n    \"object_aliases\": {},\n    \"lookup_keys\": {},\n    \"resolved_objects\": {},\n    \"relationship_map\": []\n  },\n  \"meeting_state_features\": {\n    \"relationship_state\": \"active-account\",\n    \"decision_pressure\": \"low\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"weak\"\n  },\n  \"loaded_knowhow\": {\n    \"scenario\": [],\n    \"patches\": []\n  },\n  \"crm_data_requests\": [],\n  \"memory_sources\": [],\n  \"memory_conflicts\": [],\n  \"summary_fields\": {\n    \"meeting_goal\": \"确认场景\",\n    \"relationship_state\": \"active-account\",\n    \"decision_pressure\": \"low\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"weak\",\n    \"key_participants\": [],\n    \"current_stage_judgment\": \"uncertain\",\n    \"next_actions\": [],\n    \"risk_level\": \"medium\",\n    \"missing_information\": []\n  },\n  \"semantic_summary\": {\n    \"relationship_state\": \"active-account\",\n    \"decision_pressure\": \"low\",\n    \"trust_state\": \"neutral\",\n    \"momentum_state\": \"weak\"\n  },\n  \"key_judgments\": {\n    \"facts\": [],\n    \"inferences\": [],\n    \"open_questions\": []\n  },\n  \"knowhow_focus_items\": [],\n  \"retrieval_trace\": {\n    \"mapping_version\": \"v1\",\n    \"scenario_mode\": \"uncertain\",\n    \"allowed_request_groups\": [\"stakeholder_gap\"],\n    \"requested_request_groups\": [\"stakeholder_gap\"],\n    \"out_of_policy_requests\": []\n  },\n  \"retry_state\": {\n    \"revision\": 0,\n    \"status\": \"draft_generated\",\n    \"history\": []\n  },\n  \"review_ready_checks\": {\n    \"scenario_self_consistency\": true,\n    \"knowhow_coverage\": true,\n    \"evidence_grounding\": true,\n    \"memory_conflict_handling\": true,\n    \"missing_information_handling\": true,\n    \"policy_boundary_handling\": true,\n    \"semantic_normalization_consistency\": true,\n    \"meeting_state_feature_evidence\": true,\n    \"semantic_summary_consistency\": true,\n    \"machine_output_completeness\": true\n  }\n}"
-                    },
+                    "type": "text",
+                    "text": (
+                        f"{HUMAN_SUMMARY}\n```json\n"
+                        f"{json.dumps(REVIEW_RESULT, ensure_ascii=False, indent=2)}\n```"
+                    ),
                 }
             ]
         },
-    },
-    {
-        "type": "result",
-        "result": "{\n  \"pass\": true,\n  \"review_status\": \"pass\",\n  \"failure_reasons\": [],\n  \"targeted_regeneration_instructions\": [],\n  \"check_results\": {\n    \"scenario_self_consistency\": \"pass\"\n  },\n  \"notes\": []\n}",
-    },
+    }
 ]
 
-
-REVIEW_FAIL_RESULT_PAYLOAD = [
+REVIEW_ONLY_PAYLOAD = [
     {
         "type": "result",
-        "result": "```json\n{\n  \"pass\": false,\n  \"review_status\": \"fail\",\n  \"generated_machine_output\": {\n    \"status\": \"passed\",\n    \"base_context\": {},\n    \"scenario_result\": {\n      \"scenario_slug\": \"uncertain\",\n      \"scenario_mode\": \"uncertain\"\n    },\n    \"loaded_knowhow\": {},\n    \"crm_data_requests\": [],\n    \"memory_sources\": [],\n    \"memory_conflicts\": [],\n    \"summary_fields\": {},\n    \"semantic_summary\": {},\n    \"key_judgments\": {},\n    \"knowhow_focus_items\": [],\n    \"retrieval_trace\": {},\n    \"retry_state\": {},\n    \"review_ready_checks\": {}\n  }\n}\n```"
+        "result": (
+            "```json\n"
+            f"{json.dumps(REVIEW_RESULT, ensure_ascii=False, indent=2)}\n"
+            "```"
+        ),
     }
 ]
 
 
-def test_extract_final_text_prefers_result_block():
+
+def test_extract_final_text_prefers_human_summary_block():
     final_text = real_runner.extract_final_text(CLI_SUCCESS_PAYLOAD)
 
     assert final_text.startswith("会议快照")
-    assert '"status": "passed"' in final_text
+    assert "核心总结与判断" in final_text
+    assert "风险与待确认问题" in final_text
 
 
-def test_extract_machine_json_from_fenced_block():
-    final_text = real_runner.extract_final_text(CLI_SUCCESS_PAYLOAD)
-    extracted, meta = real_runner.extract_machine_json(final_text)
 
-    assert extracted["status"] == "passed"
-    assert extracted["scenario_result"]["scenario_slug"] == "needs-clarification"
-    assert meta["source"] == "fenced_json"
-
-
-def test_extract_final_text_skips_review_skill_result():
+def test_extract_review_result_from_summary_trailer():
     final_text = real_runner.extract_final_text(REVIEW_RESULT_PAYLOAD)
-    extracted, meta = real_runner.extract_machine_json(final_text)
+    review_result = real_runner.extract_review_result(REVIEW_RESULT_PAYLOAD[0]["message"]["content"][0]["text"])
 
-    assert "generated machine-readable output" in final_text
-    assert extracted["status"] == "passed"
-    assert extracted["scenario_result"]["scenario_mode"] == "uncertain"
-    assert meta["source"] == "embedded_machine_output"
+    assert final_text == HUMAN_SUMMARY.rstrip()
+    assert "```json" not in final_text
+    assert review_result == REVIEW_RESULT
 
 
-def test_extract_machine_json_from_review_handoff_result():
-    final_text = real_runner.extract_final_text(REVIEW_FAIL_RESULT_PAYLOAD)
-    extracted, meta = real_runner.extract_machine_json(final_text)
 
-    assert extracted["status"] == "passed"
-    assert extracted["scenario_result"]["scenario_mode"] == "uncertain"
-    assert meta["source"] == "review_handoff_json"
+def test_extract_final_text_falls_back_when_no_summary_exists():
+    final_text = real_runner.extract_final_text(REVIEW_ONLY_PAYLOAD)
+
+    assert "review_status" in final_text
+
+
+
+def test_extract_review_result_returns_none_for_non_review_json():
+    review_result = real_runner.extract_review_result("会议快照\n```json\n{}\n```")
+
+    assert review_result is None
+
 
 
 def test_parse_cli_payload_ignores_log_prefix():
@@ -118,10 +137,11 @@ def test_parse_cli_payload_ignores_log_prefix():
     parsed = real_runner.parse_cli_payload(stdout)
 
     assert parsed[-1]["type"] == "result"
-    assert '"status": "passed"' in parsed[-1]["result"]
+    assert parsed[-1]["result"].startswith("会议快照")
 
 
-def test_build_skill_prompt_uses_input_file_reference(tmp_path: Path):
+
+def test_build_skill_prompt_uses_human_only_contract(tmp_path: Path):
     input_path = tmp_path / "bundle.json"
     input_path.write_text("{}", encoding="utf-8")
 
@@ -129,12 +149,12 @@ def test_build_skill_prompt_uses_input_file_reference(tmp_path: Path):
 
     assert str(input_path) in prompt
     assert "按 skill 契约完成输出" in prompt
-    assert "完整 machine JSON" in prompt
-    assert "meeting_time" not in prompt
+    assert "最终结果只保留人类可读总结" in prompt
+    assert "不要输出 machine JSON" in prompt
+    assert "完整 machine JSON" not in prompt
     assert "输入包是 JSON 文件，不是 PDF" in prompt
     assert "非 PDF 的 Read 调用不要传 pages 字段" in prompt
-    assert 'pages: ""' not in prompt
-    assert '"pages": ""' not in prompt
+
 
 
 def test_invoke_real_skill_timeout_raises_clear_error(monkeypatch):
@@ -143,12 +163,9 @@ def test_invoke_real_skill_timeout_raises_clear_error(monkeypatch):
 
     monkeypatch.setattr(real_runner.subprocess, "run", fake_run)
 
-    try:
+    with pytest.raises(real_runner.RealRunnerError, match="超时"):
         real_runner.invoke_real_skill({"meeting": {"record_text": "x"}})
-    except real_runner.RealRunnerError as exc:
-        assert "超时" in str(exc)
-    else:
-        raise AssertionError("expected RealRunnerError")
+
 
 
 def test_invoke_real_skill_command_not_found_raises_clear_error(monkeypatch):
@@ -157,12 +174,9 @@ def test_invoke_real_skill_command_not_found_raises_clear_error(monkeypatch):
 
     monkeypatch.setattr(real_runner.subprocess, "run", fake_run)
 
-    try:
+    with pytest.raises(real_runner.RealRunnerError, match="未找到 claude CLI"):
         real_runner.invoke_real_skill({"meeting": {"record_text": "x"}})
-    except real_runner.RealRunnerError as exc:
-        assert "未找到 claude CLI" in str(exc)
-    else:
-        raise AssertionError("expected RealRunnerError")
+
 
 
 def test_build_input_bundle_from_eval_files():
@@ -181,7 +195,8 @@ def test_build_input_bundle_from_eval_files():
     assert bundle["crm_context"]["opportunity"]["opportunity_id"] == "OPP-9001"
     assert bundle["crm_context"]["person"]["person_id"] == "USR-101"
     assert bundle["memory_snippets"][0]["scope"] == "account"
-    assert bundle["constraints"] == {"language": "zh-CN", "output_mode": "human_and_json"}
+    assert bundle["constraints"] == {"language": "zh-CN", "output_mode": "human_only"}
+
 
 
 def test_build_input_bundle_from_input_bundle_path_success(tmp_path: Path, monkeypatch):
@@ -215,7 +230,8 @@ def test_build_input_bundle_from_input_bundle_path_success(tmp_path: Path, monke
     assert bundle["crm_context"]["opportunity"]["opportunity_id"] == "OPP-9001"
     assert bundle["crm_context"]["person"]["person_id"] == "USR-101"
     assert bundle["crm_context"]["contact"]["contact_id"] == "CNT-001"
-    assert bundle["constraints"] == {"language": "zh-CN", "output_mode": "human_and_json"}
+    assert bundle["constraints"] == {"language": "zh-CN", "output_mode": "human_only"}
+
 
 
 def test_build_input_bundle_from_input_bundle_path_missing_meeting_record(tmp_path: Path, monkeypatch):
@@ -226,6 +242,7 @@ def test_build_input_bundle_from_input_bundle_path_missing_meeting_record(tmp_pa
 
     with pytest.raises(real_runner.RealRunnerError, match="meeting-record.txt"):
         real_runner.build_input_bundle_from_path(bundle_dir)
+
 
 
 def test_build_input_bundle_from_input_bundle_path_invalid_json(tmp_path: Path, monkeypatch):
@@ -239,6 +256,7 @@ def test_build_input_bundle_from_input_bundle_path_invalid_json(tmp_path: Path, 
         real_runner.build_input_bundle_from_path(bundle_dir)
 
 
+
 def test_build_input_bundle_from_input_bundle_path_empty_meeting_record(tmp_path: Path, monkeypatch):
     bundle_dir = tmp_path / "case-001"
     bundle_dir.mkdir()
@@ -247,6 +265,7 @@ def test_build_input_bundle_from_input_bundle_path_empty_meeting_record(tmp_path
 
     with pytest.raises(real_runner.RealRunnerError, match="meeting-record.txt"):
         real_runner.build_input_bundle_from_path(bundle_dir)
+
 
 
 def test_build_input_bundle_from_input_bundle_path_rejects_file_outside_repo(tmp_path: Path, monkeypatch):
@@ -262,6 +281,7 @@ def test_build_input_bundle_from_input_bundle_path_rejects_file_outside_repo(tmp
         real_runner.build_input_bundle_from_path(bundle_dir)
 
 
+
 def test_build_input_bundle_from_input_bundle_path_rejects_non_repo_directory(tmp_path: Path):
     bundle_dir = tmp_path / "case-001"
     bundle_dir.mkdir()
@@ -271,6 +291,7 @@ def test_build_input_bundle_from_input_bundle_path_rejects_non_repo_directory(tm
         real_runner.build_input_bundle_from_path(bundle_dir)
 
 
+
 def test_run_case_rejects_invalid_input_bundle_path_value(monkeypatch):
     monkeypatch.setattr(real_runner, "load_eval_case", lambda case_id: {"id": case_id, "input_bundle_path": 123})
 
@@ -278,11 +299,13 @@ def test_run_case_rejects_invalid_input_bundle_path_value(monkeypatch):
         real_runner.run_case("bundle-path-case")
 
 
+
 def test_run_case_rejects_empty_input_bundle_path_value(monkeypatch):
     monkeypatch.setattr(real_runner, "load_eval_case", lambda case_id: {"id": case_id, "input_bundle_path": "   "})
 
     with pytest.raises(real_runner.RealRunnerError, match="input_bundle_path 必须是非空字符串"):
         real_runner.run_case("bundle-path-case")
+
 
 
 def test_run_case_supports_input_bundle_path_protocol(monkeypatch, tmp_path: Path):
@@ -303,38 +326,72 @@ def test_run_case_supports_input_bundle_path_protocol(monkeypatch, tmp_path: Pat
     monkeypatch.setattr(
         real_runner,
         "invoke_real_skill",
-        lambda bundle: {"bundle": bundle, "status": "stubbed"},
+        lambda bundle: {"bundle": bundle, "final_text": HUMAN_SUMMARY},
     )
 
     result = real_runner.run_case("bundle-path-case")
 
     assert result["case"]["id"] == "bundle-path-case"
-    assert result["status"] == "stubbed"
+    assert result["final_text"].startswith("会议快照")
     assert result["bundle"]["meeting"]["record_text"] == "客户反馈夜间转人工率偏高。"
     assert result["bundle"]["crm_context"]["account"]["account_id"] == "CUST-001"
 
 
-def test_validate_machine_output_requires_runtime_contract_fields():
-    errors = contract_validator.validate_machine_output({"status": "passed"})
+
+def test_validate_human_summary_requires_all_sections():
+    errors = contract_validator.validate_human_summary("会议快照\n- 只有一段")
 
     assert errors
-    assert any("base_context" in item for item in errors)
-    assert any("semantic_summary" in item for item in errors)
+    assert any("核心总结与判断" in item for item in errors)
+    assert any("Knowhow 关注点" in item for item in errors)
+    assert any("建议的下一步动作" in item for item in errors)
+    assert any("风险与待确认问题" in item for item in errors)
 
 
-def test_validate_case_rules_for_uncertain_mode():
-    output = {
-        "status": "passed",
-        "scenario_result": {"scenario_mode": "uncertain"},
-        "loaded_knowhow": {"scenario": [], "patches": []},
-        "retrieval_trace": {"requested_request_groups": ["stakeholder_gap"]},
-        "memory_conflicts": [],
-        "retry_state": {"revision": 0, "status": "passed", "history": []},
-    }
+
+def test_validate_human_summary_accepts_complete_sections():
+    errors = contract_validator.validate_human_summary(HUMAN_SUMMARY)
+
+    assert errors == []
+
+
+
+def test_validate_review_result_accepts_expected_shape():
+    errors = contract_validator.validate_review_result(REVIEW_RESULT)
+
+    assert errors == []
+
+
+
+def test_validate_review_result_rejects_missing_keys_and_bad_status():
+    errors = contract_validator.validate_review_result(
+        {
+            "pass": True,
+            "review_status": "ok",
+            "failure_reasons": [],
+        }
+    )
+
+    assert any("targeted_regeneration_instructions" in item for item in errors)
+    assert any("review_status 非法" in item for item in errors)
+
+
+
+def test_validate_case_rules_for_uncertain_mode_summary():
+    final_text = """会议快照
+- 场景：其他 / 不确定
+
+核心总结与判断
+- 当前判断：证据不足，待确认。
+
+风险与待确认问题
+- 待确认：客户真实优先级
+"""
 
     errors = contract_validator.validate_case_expectations(
         "baseline-low-confidence-fallback",
-        output,
+        final_text,
+        None,
     )
 
     assert errors == []

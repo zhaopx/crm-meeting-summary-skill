@@ -8,8 +8,8 @@ import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-RUNNER = REPO_ROOT / "skills" / "crm-meeting-summary" / "mock_runner.py"
-MOCK_BASE = REPO_ROOT / "skills" / "mock-runtime"
+RUNNER = REPO_ROOT / "tests" / "crm_meeting_summary" / "helpers" / "mock_runner.py"
+MOCK_BASE = REPO_ROOT / "tests" / "crm_meeting_summary" / "fixtures" / "mock-runtime"
 
 
 BASELINE_ARGS = [
@@ -76,6 +76,7 @@ REVIEW_CHECK_KEYS = {
     "semantic_normalization_consistency",
     "meeting_state_feature_evidence",
     "semantic_summary_consistency",
+    "template_mapping_consistency",
     "machine_output_completeness",
 }
 
@@ -98,7 +99,9 @@ def test_execute_returns_full_output_schema_when_review_passes():
     assert output["review_result"]["pass"] is True
     assert output["retry_state"] == {"revision": 0, "status": "passed", "history": []}
     assert output["human_summary"]
-    assert len(output["human_summary"].split("\n\n")) == 5
+    assert "会议快照" in output["human_summary"]
+    assert "核心总结与判断" in output["human_summary"]
+    assert "风险与待确认问题" in output["human_summary"]
 
     assert output["scenario_result"]["scenario_mode"] == "normal"
     assert output["scenario_result"]["scenario_slug"] == "needs-clarification"
@@ -117,9 +120,29 @@ def test_execute_returns_full_output_schema_when_review_passes():
         "momentum_state",
     }
 
+    assert output["retrieval_trace"]["policy_version"] == "taxonomy-v2-runtime-v3"
+    assert output["loaded_knowhow"]["policy_version"] == "taxonomy-v2-runtime-v3"
     assert output["crm_data_requests"], "crm_data_requests 应该非空"
     sources = output["crm_data_requests"][0].get("sources", [])
     assert any("knowhow:data_requirements" in item for item in sources)
+
+    assert output["template_output"]["applied"] is True
+    assert output["template_output"]["template_id_chain"] == [
+        "template-needs-clarification-general-b2b",
+    ]
+    section_titles = [section["title"] for section in output["template_output"]["sections"]]
+    assert section_titles == [
+        "会议快照",
+        "核心总结与判断",
+        "Knowhow 关注点",
+        "建议的下一步动作",
+        "风险与待确认问题",
+    ]
+    assert output["template_trace"]["selected_templates"] == [
+        "skills/crm-meeting-summary/references/templates/profiles/needs-clarification--general-b2b.md"
+    ]
+    assert output["template_trace"]["merge_order"] == ["matched-profile"]
+    assert output["template_trace"]["strict_no_fabrication"] is True
 
     assert set(output["review_ready_checks"].keys()) == REVIEW_CHECK_KEYS
     assert all(output["review_ready_checks"].values())
@@ -145,6 +168,11 @@ def test_execute_uses_uncertain_path_when_scenario_confidence_low():
     assert len(output["retrieval_trace"]["requested_request_groups"]) <= 1
     assert output["loaded_knowhow"]["scenario"] == []
     assert output["loaded_knowhow"]["patches"] == []
+    assert output["template_output"]["template_id_chain"] == ["template-common-default"]
+    assert output["template_trace"]["selected_templates"] == [
+        "skills/crm-meeting-summary/references/templates/common/default.md"
+    ]
+    assert output["template_trace"]["merge_order"] == ["fallback-common"]
     assert output["review_result"]["pass"] is True
 
 
@@ -163,6 +191,7 @@ def test_execute_retries_once_with_targeted_regeneration_then_passes():
         }
     ]
     assert "当前会话证据优先于历史记忆" in output["human_summary"]
+    assert output["review_result"]["check_results"]["template_mapping_consistency"] == "pass"
 
 
 @pytest.mark.unit
@@ -198,6 +227,36 @@ def test_mock_source_mapping_prefers_id():
 
     mock_sources = output["mock_sources"]
     assert mock_sources["account"].endswith("crm/account/CUST-001.json")
+
+
+
+
+@pytest.mark.unit
+def test_template_missing_content_stays_missing_without_fabrication():
+    output = run_runner(BASELINE_ARGS)
+
+    missing_items = output["template_output"]["unmapped_or_missing_items"]
+    assert missing_items
+    missing_labels = {item["label"] for item in missing_items}
+    assert "拍板人确认" in missing_labels
+    assert "拍板人确认：[missing]" in output["human_summary"]
+    assert "拍板人确认：已确认" not in output["human_summary"]
+
+
+@pytest.mark.unit
+def test_human_summary_follows_template_section_order():
+    output = run_runner(BASELINE_ARGS)
+
+    human_summary = output["human_summary"]
+    expected_order = [
+        "会议快照",
+        "核心总结与判断",
+        "Knowhow 关注点",
+        "建议的下一步动作",
+        "风险与待确认问题",
+    ]
+    positions = [human_summary.index(title) for title in expected_order]
+    assert positions == sorted(positions)
 
 
 @pytest.mark.unit
