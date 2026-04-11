@@ -1,9 +1,0 @@
-{
-  "person_id": "USR-101",
-  "person_name": "王敏",
-  "person_role": "客户成功经理",
-  "account_owner": "赵磊",
-  "decision_makers": ["李总"],
-  "procurement_owner": null,
-  "implementation_owner": "陈经理"
-}
