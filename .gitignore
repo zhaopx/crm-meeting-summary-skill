@@ -3,3 +3,5 @@
 __pycache__/
 *.pyc
 tests/crm_meeting_summary/evals/results/*.json
+memo/
+一些可参考的内容/
