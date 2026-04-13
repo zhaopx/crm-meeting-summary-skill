@@ -10,25 +10,22 @@ flowchart TD
     B1 --> B2[2. 场景识别\ntaxonomy.md]
     B2 --> G{scenario_confidence}
 
-    G -->|high / medium| B3[3. 正常路径加载 knowhow\ncommon + scenario\n按证据加载 industry / patch / best-case]
-    G -->|low| B4[3'. 保守路径加载 knowhow\nprimary_scenario=其他/不确定\n只加载 common\n最多一个消歧 request bundle]
+    G -->|high / medium| KH[3. 加载 knowhow\ncommon + scenario\n按证据加载 industry / patch / best-cases]
+    G -->|low| KHU[3'. conservative mode\n只加载 common\n不加载 scenario / patch / best-cases]
 
-    B3 --> K[4. 提取 knowhow 约束\n关注信号 / 风险边界 / data_requirements]
-    B4 --> K2[4'. uncertain 模式\n跳过 scenario/patch data_requirements\n只保留最小消歧请求]
+    KH --> R[4. 决定最小 CRM 请求\nretrieval policy + data_requirements\n=> crm_data_requests]
+    KHU --> R
 
-    K --> R[5. CRM 检索决策\ntaxonomy retrieval policy + runtime-contract request groups\nmeeting evidence + 当前 CRM 缺口\n=> crm_data_requests]
-    K2 --> R
-
-    R --> N[6. 语义归一\nsemantic_normalization\n对象 / 关系 / 字段口径统一]
-    N --> M[7. 当前会议特征提取\nmeeting_state_features\n只基于当前 meeting + CRM]
-    M --> MM[8. Memory 组装\nruntime-contract.md\n当前会议 / CRM 优先]
+    R --> N[5. 语义归一\nsemantic_normalization\n对象 / 关系 / 字段口径统一]
+    N --> M[6. 当前会议特征提取\nmeeting_state_features\n只基于当前 meeting + CRM]
+    M --> MM[7. 组装 memory 上下文\n当前会议 / CRM 优先\n冲突时保留当前证据]
     MM --> C{memory 是否冲突}
-    C -->|否| S[9. 事实底座汇合\nmeeting evidence + crm_context\nmemory + loaded_knowhow]
-    C -->|是| MC[记录 memory conflict\n必要时降低置信度]
+    C -->|否| S[8. 生成原始总结\n会议快照 / 核心判断\n下一步 / 风险待确认]
+    C -->|是| MC[记录 memory conflict\n必要时降低判断强度]
     MC --> S
 
-    S --> O[10. 生成人类总结\n先出原始 summary\n再按 template 重排]
-    O --> RV[11. crm-meeting-summary-review 子 Skill]
+    S --> T[9. 按 template 重排\ntemplate 与 knowhow 平行\n只重排结构, 不新增事实]
+    T --> RV[10. crm-meeting-summary-review 子 Skill]
     RV --> RV1[校验事实准确性]
     RV1 --> RV2[校验风险覆盖]
     RV2 --> RV3[校验业务可行动性]
@@ -36,7 +33,7 @@ flowchart TD
 
     D -->|pass| E[最终交付\n人类可读总结]
     D -->|fail,可修复| F[定向修复\n只修失败维度后重生总结]
-    F --> O
+    F --> S
     D -->|fail,仍不稳| H[人工接管\n保留当前最佳总结并标注人工复核]
 
     E --> I[输出给调用方\nhuman summary]
@@ -45,13 +42,10 @@ flowchart TD
     classDef core fill:#ffe9e9,stroke:#cf222e,stroke-width:3px,color:#cf222e;
     classDef detail fill:#eefaf1,stroke:#2da44e,stroke-width:1.5px,color:#0f2d1b;
     classDef decision fill:#fff3cd,stroke:#b7791f,stroke-width:2px,color:#4a2f00;
-    classDef risk fill:#fdecec,stroke:#cf222e,stroke-width:1.5px,color:#5a1a1a;
-    classDef output fill:#f4eefe,stroke:#8250df,stroke-width:2px,color:#2f1b55;
 
-    class B,B2,B3,N,M,MM,O,RV,E,I core;
-    class A,B1,K,B4,K2,R,S,RV1,RV2,RV3 detail;
+    class B,B2,KH,KHU,MM,S,T,RV,I core;
+    class A,N,MC,M,E,F,H,B1,R,RV1,RV2,RV3 detail;
     class G,C,D decision;
-    class MC,F,H risk;
 ```
 
 ## 组件说明
@@ -79,23 +73,20 @@ flowchart TD
 - `skills/crm-meeting-summary/references/taxonomy.md`：定义场景分类与默认 retrieval policy
 - `skills/crm-meeting-summary/references/runtime-contract.md`：运行时输入输出契约、request groups、memory 使用边界与审计规则的单一事实来源
 
-### 4. 方法论与 Knowhow 层
-- `docs/skills/crm-meeting-summary/meeting-methodology.md`：解释为什么这是 CRM 总结产品，而不是通用 transcript summarizer
-- `skills/crm-meeting-summary/references/knowhow/common/`：第一层，所有 case 默认加载，提供跨场景共用的评估框架、基础判断边界与通用风险提醒，不是事实来源
-- `skills/crm-meeting-summary/references/knowhow/by-scenario/`：第二层，在场景已识别时按 `scenario_slug` 加载，补充该场景专属的关注点、风险信号、成功标准与 `data_requirements`，参与 CRM 请求决策与总结生成，不是事实来源
-- `skills/crm-meeting-summary/references/knowhow/by-industry/`：第三层，在行业有独立证据时加载，补充行业语境、行业常见约束与行业化判断边界，不是事实来源
-- `skills/crm-meeting-summary/references/knowhow/patches/`：第四层，只在“场景 + 行业”组合有特殊规则时加载，用来修正前面三层在特定组合下不够准确的地方，相当于组合补丁，不是事实来源
-- `skills/crm-meeting-summary/references/knowhow/best-cases/`：可选层，不承担分类、检索或 policy 约束职责，只在确有帮助时加载，用来补充高质量总结框架、表达结构和 coverage checklist，所以独立于前面按规则驱动的层，不是事实来源
-- `skills/crm-meeting-summary/references/templates/`：模板层，只负责把已有 summary 按目录重排，不提供新事实
+### 4. 方法论、Knowhow 与 Template 层
+- [docs/skills/crm-meeting-summary/meeting-methodology.md](docs/skills/crm-meeting-summary/meeting-methodology.md)：解释为什么这是 CRM 总结产品，而不是通用 transcript summarizer
+- [skills/crm-meeting-summary/references/knowhow/common/](skills/crm-meeting-summary/references/knowhow/common/)：第一层，所有 case 默认加载，提供跨场景共用的评估框架、基础判断边界与通用风险提醒，不是事实来源
+- [skills/crm-meeting-summary/references/knowhow/by-scenario/](skills/crm-meeting-summary/references/knowhow/by-scenario/)：第二层，在场景已识别时按 `scenario_slug` 加载，补充该场景专属的关注点、风险信号、成功标准与 `data_requirements`，参与 CRM 请求决策与总结生成，不是事实来源
+- [skills/crm-meeting-summary/references/knowhow/by-industry/](skills/crm-meeting-summary/references/knowhow/by-industry/)：第三层，在行业有独立证据时加载，补充行业语境、行业常见约束与行业化判断边界，不是事实来源
+- [skills/crm-meeting-summary/references/knowhow/patches/](skills/crm-meeting-summary/references/knowhow/patches/)：第四层，只在“场景 + 行业”组合有特殊规则时加载，用来修正前面三层在特定组合下不够准确的地方，不是事实来源
+- [skills/crm-meeting-summary/references/knowhow/best-cases/](skills/crm-meeting-summary/references/knowhow/best-cases/)：可选层，不承担分类、检索或 policy 约束职责，只在确有帮助时加载，用来补充高质量总结框架、表达结构和 coverage checklist，不是事实来源
+- [skills/crm-meeting-summary/references/templates/](skills/crm-meeting-summary/references/templates/)：模板层，与 knowhow 平行，在原始 summary 生成后才介入，只负责目录重排，不提供新事实
 
 加载关系：
-- 基础顺序是 `common -> by-scenario -> by-industry -> patches`
-- `common` 提供底座，后续层只做细化，不替代底座
-- `by-scenario` 决定场景化判断框架，是主分支
-- `by-industry` 只补行业语境，不单独决定主场景
-- `patches` 只修正特定“场景 × 行业”组合，不单独存在
-- `best-cases` 不参与前面的规则链，它是独立的可选增强层，只补 summary 质量，不改变事实底座和检索边界
-- `templates` 在总结生成之后才介入，只重排结构，不扩充内容
+- knowhow 基础顺序是 `common -> by-scenario -> by-industry -> patches`
+- `best-cases` 是独立可选增强层，不参与前面的规则链
+- `templates` 不走 knowhow 的多层 merge 模型，只在 summary 已生成后选一份最终模板做结构重排
+- `template` 命中顺序是 `profiles/<scenario_slug>--<industry> -> profiles/<scenario_slug> -> common/default`
 
 ### 5. 开发辅助层
 - `tests/crm_meeting_summary/helpers/real_runner.py`
@@ -115,19 +106,20 @@ flowchart TD
 
 ## 当前真实运行链路
 
-真实调用时，`meeting record` 既可以直接内联到输入里，也可以通过 `meeting.record_text_path` 指向一个文本文件，也可以通过 `input_bundle_path` 指向一个目录输入包。目录输入包只允许读取 `meeting-record.txt`、`AccountObj.json`、`NewOpportunityObj.json`、`PersonnelObj.json`、`ContactObj.json`。主 skill 在归一化阶段先按 `record_text > record_text_path > input_bundle_path/meeting-record.txt` 的优先级得到最终会议纪要内容，再进入后续流程。
+真实调用时，`meeting record` 可以直接内联到输入里，也可以通过 `meeting.record_text_path` 指向文本文件，也可以通过 `input_bundle_path` 指向目录输入包。目录输入包只允许读取 `meeting-record.txt`、`AccountObj.json`、`NewOpportunityObj.json`、`PersonnelObj.json`、`ContactObj.json`。主 skill 在归一化阶段按 `record_text > record_text_path > input_bundle_path/meeting-record.txt` 的优先级得到最终会议纪要内容，再进入后续流程。
 
 1. 调用 `crm-meeting-summary`
 2. 主 skill 在 Claude runtime 内完成输入归一化与场景识别
-3. 主 skill 加载 knowhow，并从 knowhow 中提取关注点、风险边界、`data_requirements`
-4. 主 skill 按 `taxonomy.md` 的 retrieval policy + `runtime-contract.md` 的 request groups + 当前 meeting/CRM 缺口，形成最小 `crm_data_requests`
+3. 按 `scenario_confidence` 决定是否进入 conservative mode，并据此加载最小 knowhow 集合
+4. 主 skill 按 `taxonomy.md` 的 retrieval policy、`runtime-contract.md` 的 request groups，以及已加载 knowhow 的 `data_requirements`，形成最小 `crm_data_requests`
 5. 主 skill 先产出 `semantic_normalization`，统一对象、关系、字段口径
 6. 主 skill 再从当前 meeting + CRM 提取 `meeting_state_features`
-7. 主 skill 组装 memory，并把 meeting evidence、crm_context、memory、loaded knowhow 汇合成 summary generation 的事实底座
-8. 主 skill 先生成原始人类总结，再按 template 重排
-9. 主 skill 调用 `crm-meeting-summary-review`
-10. review pass 则交付最终人类总结
-11. review 连续失败且两轮定向修复后仍无法稳定支撑，则保留当前最佳总结并要求人工复核
+7. 主 skill 组装 memory 上下文；如果 memory 与当前会议或当前 CRM 冲突，优先保留当前证据，并在需要时降低判断强度
+8. 主 skill 先生成原始人类总结，覆盖会议快照、核心总结与判断、Knowhow 关注点、建议的下一步动作、风险与待确认问题
+9. 主 skill 再选择单一 template，把已有 summary 重排成最终目录格式；template 只重组已有内容，不新增事实
+10. 主 skill 调用 `crm-meeting-summary-review`
+11. review pass 则交付最终人类总结
+12. review 最多允许 2 次定向修复；若仍不稳定，则保留当前最佳总结并要求人工复核
 
 ## 本轮补强点
 
