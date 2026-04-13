@@ -343,6 +343,59 @@ const renderOverviewMetrics = () => {
   }));
 };
 
+const normalizeReadableText = (text) => String(text)
+  .replace(/\n{3,}/g, "\n\n")
+  .replace(/：(?=\S)/g, "：\n")
+  .replace(/([。！？])(?=\S)/g, "$1\n")
+  .replace(/\n([一二三四五六七八九十A-Za-z][^\n]{0,30})：/g, "\n\n$1：")
+  .replace(/\n(?=(?:必须|未确认|当前|推进风险|交易缺口|关键参与人|动作|目的|不做会卡住什么|第一阻塞点|是否值得继续推进|当前阶段判断|推进动能判断))/g, "\n\n")
+  .replace(/\n{3,}/g, "\n\n")
+  .trim();
+
+const RAW_HEADING_PATTERNS = [
+  /^(会议主题|总结|待办|智能章节)$/,
+  /^(公司与产品概况|公司发展历程与市场地位|产品技术架构与安全能力|行业解决方案蓝图|服务覆盖行业与典型客户|端到端业务流程整合|营销与线索管理|多渠道获客与线索归集|线索培育与分级转化机制|客户与商机管理|客户360°视图与组织关系管理|商机过程管控与风险评估|合同与业财协同|合同订单与回款管理|项目交付与成本挂载|运营与数据分析|自动化运营与客户激活|企业微信集成能力|数据可视化与管理驾驶舱|定制化与落地保障|灵活配置与权限管理|系统集成与账号计费模式|试用与后续支持|AI洞察)$/,
+  /^\d{2}:\d{2}\s+/,
+  /^-\s+[^：]+$/,
+  /^[一二三四五六七八九十]+、.+$/
+];
+
+const isRawHeading = (line) => {
+  const value = line.trim();
+  if (!value) {
+    return false;
+  }
+  return RAW_HEADING_PATTERNS.some((pattern) => pattern.test(value));
+};
+
+const renderRawFormattedBlock = (text) => {
+  const fragment = document.createDocumentFragment();
+  normalizeReadableText(text)
+    .split("\n")
+    .forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) {
+        fragment.append(document.createElement("br"));
+        return;
+      }
+
+      if (isRawHeading(trimmed)) {
+        const heading = document.createElement("div");
+        heading.className = "summary-raw-heading";
+        heading.textContent = trimmed;
+        fragment.append(heading);
+        return;
+      }
+
+      const textLine = document.createElement("div");
+      textLine.className = "summary-raw-line";
+      textLine.textContent = trimmed;
+      fragment.append(textLine);
+    });
+
+  return fragment;
+};
+
 const renderSummaryCards = () => {
   const container = getElement("summary-cards");
   if (!summaries.length) {
@@ -374,6 +427,16 @@ const renderSummaryCards = () => {
 
     sourceBlock.append(sourceType, title, version);
 
+    if (summary.has_architecture_link) {
+      const architectureLink = document.createElement("a");
+      architectureLink.href = "./crm-meeting-summary-architecture.html";
+      architectureLink.textContent = "查看架构图";
+      architectureLink.target = "_blank";
+      architectureLink.rel = "noopener noreferrer";
+      architectureLink.className = "summary-card-link";
+      sourceBlock.append(architectureLink);
+    }
+
     const score = document.createElement("div");
     score.className = "summary-score";
     score.textContent = `评分 ${safeText(summary.score)}`;
@@ -397,6 +460,7 @@ const renderSummaryCards = () => {
       wrapper.className = "sub";
 
       const sectionTitle = safeText(section.title);
+      const normalizedContent = normalizeReadableText(safeText(section.content));
       const numberedTitleMatch = /^(\d+\.)\s*(.+)$/.exec(sectionTitle);
       if (numberedTitleMatch) {
         wrapper.className = "sub summary-section";
@@ -420,15 +484,15 @@ const renderSummaryCards = () => {
 
       const isRawSection = summary.source_type !== "human" && safeArray(summary.body_sections).length === 1;
       if (isRawSection) {
-        const sectionText = document.createElement("pre");
+        const sectionText = document.createElement("div");
         sectionText.className = "summary-raw-block";
-        sectionText.textContent = safeText(section.content).replace(/\n{3,}/g, "\n\n");
+        sectionText.append(renderRawFormattedBlock(section.content));
         wrapper.append(sectionText);
       } else {
         const richText = document.createElement("div");
         richText.className = "summary-rich-text";
 
-        safeText(section.content)
+        normalizedContent
           .split(/\n{2,}/)
           .filter((paragraph) => paragraph.trim())
           .forEach((paragraph) => {

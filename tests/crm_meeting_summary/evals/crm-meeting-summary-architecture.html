@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>crm-meeting-summary 架构图</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%231a1a1a'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-size='30' font-family='Arial,sans-serif' fill='%23ffffff'%3EC%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --color-bg: #f3f4f6;
+      --color-surface: #ffffff;
+      --color-text: #1f1f1f;
+      --color-muted: #6b6f76;
+      --color-border: #d9dde3;
+      --color-focus: #23476b;
+      --color-focus-ring: rgba(35, 71, 107, 0.18);
+      --radius-md: 10px;
+      --space-2: 12px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 32px;
+      --container-width: 1360px;
+      --font-sans: Arial, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
+      --border: 1px solid var(--color-border);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+    }
+
+    .page {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: var(--space-5);
+    }
+
+    .card {
+      background: var(--color-surface);
+      border: var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 12px 28px rgba(17, 24, 39, 0.04);
+      padding: var(--space-4);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+
+    .eyebrow {
+      color: var(--color-muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin: 8px 0 0;
+      font-size: 34px;
+      line-height: 1.15;
+      font-weight: 400;
+    }
+
+    p {
+      margin: 0;
+      color: var(--color-muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .back-link {
+      color: var(--color-focus);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: underline;
+      white-space: nowrap;
+    }
+
+    .back-link:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 3px;
+      box-shadow: 0 0 0 4px var(--color-focus-ring);
+    }
+
+    .diagram-wrap {
+      margin-top: var(--space-4);
+      overflow: auto;
+      border: var(--border);
+      border-radius: var(--radius-md);
+      background: #fff;
+      padding: var(--space-3);
+    }
+
+    .diagram-note {
+      margin-top: var(--space-2);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .mermaid {
+      min-width: 1100px;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      .page { padding: var(--space-4); }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "default",
+      securityLevel: "strict"
+    });
+  </script>
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <div class="topbar">
+        <div>
+          <div class="eyebrow">Architecture</div>
+          <h1>crm-meeting-summary 架构图</h1>
+        </div>
+        <a class="back-link" href="./test-result-dashboard.html">返回评测页</a>
+      </div>
+      <p>图内容与 README.md 中的 Mermaid 架构图保持一致，恢复为原来的 Mermaid 版式。</p>
+      <p class="diagram-note">颜色含义：红色是核心主链，绿色是支撑细节，黄色是决策判断点。</p>
+      <div class="diagram-wrap">
+        <div class="mermaid">
+flowchart TD
+    A[用户输入\n自然语言纪要或显式输入包] --> B[crm-meeting-summary 主 Skill]
+
+    B --> B1[1. 输入归一化\nmeeting / crm_context / constraints]
+    B1 --> B2[2. 场景识别\ntaxonomy.md]
+    B2 --> G{scenario_confidence}
+
+    G -->|high / medium| KH[3. 加载 knowhow\ncommon + scenario\n按证据加载 industry / patch / best-cases]
+    G -->|low| KHU[3'. conservative mode\n只加载 common\n不加载 scenario / patch / best-cases]
+
+    KH --> R[4. 决定最小 CRM 请求\nretrieval policy + data_requirements\n=> crm_data_requests]
+    KHU --> R
+
+    R --> N[5. 语义归一\nsemantic_normalization\n对象 / 关系 / 字段口径统一]
+    N --> M[6. 当前会议特征提取\nmeeting_state_features\n只基于当前 meeting + CRM]
+    M --> MM[7. 组装 memory 上下文\n当前会议 / CRM 优先\n冲突时保留当前证据]
+    MM --> C{memory 是否冲突}
+    C -->|否| S[8. 生成原始总结\n会议快照 / 核心判断\n下一步 / 风险待确认]
+    C -->|是| MC[记录 memory conflict\n必要时降低判断强度]
+    MC --> S
+
+    S --> T[9. 按 template 重排\ntemplate 与 knowhow 平行\n只重排结构, 不新增事实]
+    T --> RV[10. crm-meeting-summary-review 子 Skill]
+    RV --> RV1[校验事实准确性]
+    RV1 --> RV2[校验风险覆盖]
+    RV2 --> RV3[校验业务可行动性]
+    RV3 --> D{review 是否通过}
+
+    D -->|pass| E[最终交付\n人类可读总结]
+    D -->|fail,可修复| F[定向修复\n只修失败维度后重生总结]
+    F --> S
+    D -->|fail,仍不稳| H[人工接管\n保留当前最佳总结并标注人工复核]
+
+    E --> I[输出给调用方\nhuman summary]
+    H --> I
+
+    classDef core fill:#ffe9e9,stroke:#cf222e,stroke-width:3px,color:#cf222e;
+    classDef detail fill:#eefaf1,stroke:#2da44e,stroke-width:1.5px,color:#0f2d1b;
+    classDef decision fill:#fff3cd,stroke:#b7791f,stroke-width:2px,color:#4a2f00;
+
+    class B,B2,KH,KHU,MM,S,T,RV,I core;
+    class A,N,MC,M,E,F,H,B1,R,RV1,RV2,RV3 detail;
+    class G,C,D decision;
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -6,3 +6,4 @@ tests/crm_meeting_summary/evals/results/*.json
 memo/
 一些可参考的内容/
 .playwright-mcp/
+index-snapshot.md

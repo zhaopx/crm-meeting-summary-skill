@@ -71,10 +71,11 @@ window.__REPORT_DATA__ = {
         summary_id: "human-summary",
         source_type: "human",
         source_label: "new-summay",
-        version_label: "baseline",
+        version_label: "GPT-5.4",
         score: 9.4,
-        verdict: "当前最适合作为评测基准。判断密度最高，最贴近销售推进所需的决策信息。",
-        focus_tags: ["基准版本", "风险判断完整", "业务语义清楚"],
+        verdict: "当前最适合作为评测基准。判断密度最高，最贴近销售推进所需的决策信息，但效果优劣和底层模型强相关。",
+        focus_tags: ["基准版本", "GPT-5.4", "模型强相关", "风险判断完整", "业务语义清楚"],
+        has_architecture_link: true,
         body_sections: [
           {
             title: "1. 会议快照",
@@ -100,7 +101,8 @@ window.__REPORT_DATA__ = {
         strengths: [
           "结构最完整，能把会议背景、阶段判断、推进门槛、下一步动作和风险放进同一框架里。",
           "信息压缩度最高，读者能快速抓到这次会议的主问题、当前阶段和后续要补的内容。",
-          "销售语境贴合度最好，像可直接用于跟进和复盘的会议总结，而不是原始纪要整理。"
+          "销售语境贴合度最好，像可直接用于跟进和复盘的会议总结，而不是原始纪要整理。",
+          "当前版本显式基于 GPT-5.4，输出质量与所用模型能力强相关，横向对比时不能忽略模型差异。"
         ],
         weaknesses: [
           "概括密度高，保留的会议原话和过程细节比平台原文少，追溯发言上下文不如原始纪要方便。",
@@ -112,7 +114,8 @@ window.__REPORT_DATA__ = {
         ],
         risks: [
           "如果后续版本为了压缩篇幅继续删减，容易损失部分原始语境支撑。",
-          "高度依赖总结者判断质量，若判断失准，会比流水纪要更容易带偏读者。"
+          "高度依赖总结者判断质量，若判断失准，会比流水纪要更容易带偏读者。",
+          "当前版本效果和 GPT-5.4 强相关，后续若更换模型，不应直接把分数变化归因到 prompt 或结构本身。"
         ]
       },
       {
@@ -185,7 +188,7 @@ window.__REPORT_DATA__ = {
     ],
     evaluation: {
       winner_summary_id: "human-summary",
-      reviewer_callout: "当前 new-summay 仍是最像销售会议总结的版本。钉钉总结的结构最好，已经接近成稿；飞书总结最完整，但更像原始纪要，不适合直接当最终销售总结使用。",
+      reviewer_callout: "当前 new-summay 仍是最像销售会议总结的版本。钉钉总结的结构最好，已经接近成稿；飞书总结最完整，但更像原始纪要，不适合直接当最终销售总结使用。另一个前提是，new-summay 当前基于 GPT-5.4，效果优劣和模型能力强相关。",
       overview: {
         primary_goal: "比较同一语料下 new-summay 与平台总结的质量，不再回放单次执行过程。",
         best_current_version: "new-summay",
