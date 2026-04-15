@@ -27,87 +27,91 @@ def load_validator(module_name: str):
     return load_module(VALIDATOR_PATH, module_name)
 
 
-def test_validate_human_summary_rejects_internal_process_markers():
-    validator = load_validator("contract_validator_internal_process_markers")
-    final_text = """会议快照
-- 会议目标：确认问题根因
+def test_validate_human_summary_rejects_template_outside_heading():
+    validator = load_validator("contract_validator_template_outside_heading")
+    final_text = """## 会议快照
+- 会议目标：澄清方案覆盖范围
 
-核心总结与判断
-- 当前判断：客户要先验证知识库更新机制。
+## 核心总结与判断
+- 当前阶段判断：客户先看短期验证结果。
 
-Knowhow 关注点
-- retrieval_trace: 不应出现在正文
+### 人工复核提示
+- 这段不该出现
 
-建议的下一步动作
+## Knowhow 关注点
+- 当前信任状态：中性
+
+## 建议的下一步动作
 - 动作：补齐夜间转人工率样本。
 
-风险与待确认问题
+## 风险与待确认问题
 - 待确认：最终拍板人
 """
 
     errors = validator.validate_human_summary(final_text)
 
-    assert errors == ["最终总结混入内部过程字段: retrieval_trace"]
+    assert errors == ["最终总结出现模板外结构: ### 人工复核提示"]
 
 
 
-def test_validate_review_presence_accepts_embedded_review_json_block():
+def test_validate_review_presence_no_longer_requires_embedded_json():
     validator = load_validator("contract_validator_review_embedded")
-    final_text = """# 会议快照\n- 已输出总结\n\n```json\n{\"pass\": true, \"review_status\": \"pass\", \"failure_reasons\": [], \"targeted_regeneration_instructions\": []}\n```"""
 
-    errors = validator.validate_review_presence(final_text, None)
+    errors = validator.validate_review_presence(HUMAN_SUMMARY, None)
 
     assert errors == []
 
 
 
-def test_validate_audit_presence_rejects_missing_audit_payload():
+def test_validate_audit_presence_no_longer_requires_embedded_json():
     validator = load_validator("contract_validator_audit_presence_missing")
 
     errors = validator.validate_audit_presence(HUMAN_SUMMARY, None)
 
-    assert errors == ["真实 skill 输出缺少 audit JSON 结果"]
-
-
-
-def test_validate_audit_presence_accepts_embedded_audit_json_block():
-    validator = load_validator("contract_validator_audit_presence_embedded")
-    final_text = (
-        HUMAN_SUMMARY
-        + "\n```json\n"
-        + json.dumps(AUDIT_PAYLOAD, ensure_ascii=False, indent=2)
-        + "\n```"
-    )
-
-    errors = validator.validate_audit_presence(final_text, None)
-
     assert errors == []
 
 
-HUMAN_SUMMARY = """会议快照
+HUMAN_SUMMARY = """## 会议快照
 - 会议目标：澄清方案覆盖范围
 
-核心总结与判断
+## 核心总结与判断
 - 当前判断：客户先看短期验证结果。
 
-风险与待确认问题
+## Knowhow 关注点
+- 当前推进动能：中等。
+
+## 建议的下一步动作
+- 动作：补齐夜间转人工率样本。
+
+## 风险与待确认问题
 - 待确认：最终拍板人
 """
 
-CASE002_SUMMARY = """会议快照
-- 会议目标：澄清酒店客户经营与高层推进范围
+CASE002_SUMMARY = """## 会议快照
+- 本次澄清目标：澄清酒店客户经营与高层推进范围
+- 当前关系状态：业务负责人持续推进，但仍待高层决策闭环。
+- 关键参与人：曹荣涛、CEO（待入场确认）。
 
-核心总结与判断
-- 当前判断：客户经营推进已进入关键识别阶段，CEO 关注是否具备立项条件，但正式立项时间待确认。
+## 核心总结与判断
+- 当前阶段判断：客户经营推进已进入关键识别阶段，但仍处于需求澄清。
+- 推进动能判断：中等偏正向。
+- 第一阻塞点：CEO 尚未完成正式评估，项目未正式立项。
+- 是否值得继续推进：值得，但需先补齐高层视角方案。
 
-Knowhow 关注点
-- 关注项：围绕联系人经营、拜访动作、评分模型与预警机制收敛高层推进路径。
+## Knowhow 关注点
+- 当前信任状态：中性偏正向。
+- 当前推进动能：围绕联系人经营、拜访动作、评分模型与预警机制继续收敛。
+- 交易推进门槛：需要高层确认立项条件与业务价值表达。
 
-建议的下一步动作
+## 建议的下一步动作
 - 动作：结合 CEO 关注点补齐联系人经营现状、拜访计划和评分模型预警方案，支撑后续立项讨论。
+- 目的：把业务认可推进到高层可决策状态。
+- 不做会卡住什么：会停留在业务负责人认可、但无法正式立项的状态。
 
-风险与待确认问题
-- 待确认：正式立项时间与最终拍板节奏。
+## 风险与待确认问题
+- 推进风险：高层尚未入场，立项路径未闭环。
+- 拍板人确认：CEO 是最终拍板人，但介入时间未确认。
+- 交易缺口：正式立项时间与最终拍板节奏待确认。
 """
 
 REVIEW_RESULT = {
@@ -195,7 +199,7 @@ def test_run_eval_case_keeps_final_text_and_review_result(monkeypatch):
 
     result = run_real_evals.run_eval_case("baseline-low-confidence-fallback")
 
-    assert result["final_text"].startswith("会议快照")
+    assert result["final_text"].startswith("## 会议快照")
     assert result["review_result"] == REVIEW_RESULT
     assert result["audit_payload"] == AUDIT_PAYLOAD
     assert result["summary_verdict"] == {"passed": True, "errors": []}
@@ -371,12 +375,14 @@ def test_run_eval_case_keeps_case_specific_verdict_for_case002(monkeypatch):
             "raw_response": [],
             "final_text": CASE002_SUMMARY,
             "review_result": REVIEW_RESULT,
+            "audit_payload": AUDIT_PAYLOAD,
         },
     )
 
     result = run_real_evals.run_eval_case("baseline-case002-hotel-operations")
 
     assert result["case_verdict"] == {"passed": True, "errors": []}
+    assert result["audit_verdict"] == {"passed": True, "errors": []}
     assert result["passed"] is True
 
 

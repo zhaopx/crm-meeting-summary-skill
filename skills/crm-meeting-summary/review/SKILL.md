@@ -39,12 +39,12 @@ review handoff 边界见 `../references/runtime-contract.md`。
 3. 业务价值
 
 评审判定口径以下列规则为准：
-- `scenario_self_consistency`：summary 必须能清楚回答当前阶段、推进动能、第一阻塞点，且内部判断不能互相冲突。
-- `knowhow_coverage`：summary 必须压缩出真正影响交易推进的门槛、qualification 信号与边界，不能只复述内部分析框架。
+- `scenario_self_consistency`：summary 必须能清楚回答当前会议处于什么状态、当前核心阻塞点是什么、主要判断是否彼此自洽，且内部结论不能互相冲突。
+- `knowhow_coverage`：summary 必须压缩出当前场景真正重要的门槛、边界、风险与关注点，不能只复述内部分析框架。
 - `evidence_grounding`：主要结论都必须能回溯到最小证据摘录，不能把条件性能力、客户兴趣或历史记忆写成已确认事实。
 - `memory_conflict_handling`：存在 memory 冲突时，必须优先信任当前 meeting / CRM evidence，并在关键判断受影响时暴露不确定边界。
 - `missing_information_handling`：缺失信息必须显式暴露，不能把拍板人、预算、时间线、接口结论等未确认项写成确定性陈述。
-- `policy_boundary_handling`：summary 必须显式呈现交付、合规、接口或升级边界，不能低估真实推进风险。
+- `policy_boundary_handling`：summary 必须显式呈现交付、合规、接口、升级、协作等关键边界，不能低估真实执行风险。
 - `template_no_fabrication`：套模板后只能重组已有内容，缺失项必须 missing / 留空 / 待确认，不能补写新事实。
 - `next_action_quality`：动作必须贴着当前阻塞点，至少说明动作本身、动作目的，以及不做会卡住什么。
 
@@ -63,8 +63,8 @@ review handoff 边界见 `../references/runtime-contract.md`。
 说明：
 - 没有使用 memory 时，`memory_conflict_handling` 可以 pass，但不能编造 memory 结论。
 - 没有使用 template 时，`template_no_fabrication` 可以 pass，但不能因为没套模板就降低事实要求。
-- `next_action_quality` 要重点检查动作是否真正贴着阻塞点，是否说明动作目的，以及不做会卡住什么。
-- `knowhow_coverage` 不要求复述内部分析框架，而要检查 summary 是否把真正影响交易推进的门槛和 qualification 信号压缩出来。
+- `next_action_quality` 要重点检查动作是否真正贴着当前阻塞点，是否说明动作目的，以及不做会卡住什么。
+- `knowhow_coverage` 不要求复述内部分析框架，而要检查 summary 是否把当前场景真正重要的门槛、边界、风险与关注点压缩出来。
 
 ## 输出格式
 

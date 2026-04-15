@@ -27,19 +27,19 @@ real_runner = load_module(REAL_RUNNER_PATH, "real_runner")
 contract_validator = load_module(VALIDATOR_PATH, "contract_validator")
 
 
-HUMAN_SUMMARY = """会议快照
+HUMAN_SUMMARY = """## 会议快照
 - 会议目标：确认问题根因
 
-核心总结与判断
+## 核心总结与判断
 - 当前判断：客户要先验证知识库更新机制。
 
-Knowhow 关注点
+## Knowhow 关注点
 - 关注项：先做小范围验证。
 
-建议的下一步动作
+## 建议的下一步动作
 - 动作：补齐夜间转人工率样本。
 
-风险与待确认问题
+## 风险与待确认问题
 - 待确认：最终拍板人
 """
 
@@ -206,11 +206,29 @@ REVIEW_AND_AUDIT_WITH_TAIL_TEXT_PAYLOAD = [
 ]
 
 
+TAIL_HINT_ONLY_PAYLOAD = [
+    {
+        "type": "assistant",
+        "message": {
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        f"{HUMAN_SUMMARY}\n"
+                        "### 结构化审计载荷（供 runner / review / eval 消费，不属于正文）"
+                    ),
+                }
+            ]
+        },
+    }
+]
+
+
 
 def test_extract_final_text_prefers_human_summary_block():
     final_text = real_runner.extract_final_text(CLI_SUCCESS_PAYLOAD)
 
-    assert final_text.startswith("会议快照")
+    assert final_text.startswith("## 会议快照")
     assert "核心总结与判断" in final_text
     assert "风险与待确认问题" in final_text
 
@@ -249,10 +267,30 @@ def test_extract_final_text_cuts_at_first_structured_block_even_with_tail_text()
 
 
 
-def test_extract_review_result_from_payload_prefers_review_over_audit_payload():
-    final_text = real_runner.extract_final_text(REVIEW_ONLY_PAYLOAD)
+def test_validate_human_summary_rejects_tail_hint_text():
+    final_text = real_runner.extract_final_text(TAIL_HINT_ONLY_PAYLOAD)
+    errors = contract_validator.validate_human_summary(final_text)
 
-    assert "review_status" in final_text
+    assert any("最终总结混入内部过程字段" in item for item in errors)
+
+
+
+def test_extract_review_result_from_payload_prefers_review_over_audit_payload():
+    with pytest.raises(real_runner.RealRunnerError, match="未找到人类可读总结正文"):
+        real_runner.extract_final_text(REVIEW_ONLY_PAYLOAD)
+
+
+
+def test_extract_final_text_raises_for_review_only_payload():
+    with pytest.raises(real_runner.RealRunnerError, match="未找到人类可读总结正文"):
+        real_runner.extract_final_text(REVIEW_ONLY_PAYLOAD)
+
+
+
+def test_extract_review_and_audit_payloads_still_work_without_summary_body():
+    review_result = real_runner.extract_review_result_from_payload(REVIEW_ONLY_PAYLOAD)
+
+    assert review_result == REVIEW_RESULT
 
 
 
@@ -269,11 +307,11 @@ def test_parse_cli_payload_ignores_log_prefix():
     parsed = real_runner.parse_cli_payload(stdout)
 
     assert parsed[-1]["type"] == "result"
-    assert parsed[-1]["result"].startswith("会议快照")
+    assert parsed[-1]["result"].startswith("## 会议快照")
 
 
 
-def test_build_skill_prompt_uses_human_only_contract(tmp_path: Path):
+def test_build_skill_prompt_uses_template_first_contract(tmp_path: Path):
     input_path = tmp_path / "bundle.json"
     input_path.write_text("{}", encoding="utf-8")
 
@@ -281,10 +319,11 @@ def test_build_skill_prompt_uses_human_only_contract(tmp_path: Path):
 
     assert str(input_path) in prompt
     assert "按 skill 契约完成输出" in prompt
-    assert "最终用户可见结果只保留人类可读总结" in prompt
-    assert "audit_payload" in prompt
-    assert "不要把 machine JSON 混进最终总结正文" in prompt
-    assert "完整 machine JSON" not in prompt
+    assert "最终正文必须以命中的 template 为准" in prompt
+    assert "不要自行追加 template 之外的结构" in prompt
+    assert "review_result 或 audit_payload" in prompt
+    assert "固定五章节" not in prompt
+    assert "两个 JSON fenced block" not in prompt
     assert "输入包是 JSON 文件，不是 PDF" in prompt
     assert "非 PDF 的 Read 调用不要传 pages 字段" in prompt
 
@@ -323,23 +362,35 @@ def test_invoke_real_skill_command_not_found_raises_clear_error(monkeypatch):
 
 
 
-def test_build_input_bundle_from_eval_files():
-    bundle = real_runner.build_input_bundle(
-        [
-            MOCK_BASE / "meeting-records" / "meeting-001.json",
-            MOCK_BASE / "crm" / "account" / "CUST-001.json",
-            MOCK_BASE / "crm" / "opportunity" / "OPP-9001.json",
-            MOCK_BASE / "crm" / "person" / "USR-101.json",
-            MOCK_BASE / "memory" / "account" / "CUST-001-conflict.json",
-        ]
+def test_run_case_appends_real_run_log(monkeypatch, tmp_path: Path):
+    case = {
+        "id": "baseline-input-bundle-path",
+        "input_bundle_path": ".local/crm-meeting-summary-test-data/case-001",
+    }
+    monkeypatch.setattr(real_runner, "load_eval_case", lambda case_id: case)
+    monkeypatch.setattr(real_runner, "build_input_bundle_from_path", lambda bundle_path: {"meeting": {"record_text": "纪要"}})
+    monkeypatch.setattr(
+        real_runner,
+        "invoke_real_skill",
+        lambda bundle: {
+            "raw_response": [{"type": "result", "result": "raw"}],
+            "final_text": "## 会议快照\n- x",
+            "review_result": {"review_status": "pass"},
+            "audit_payload": {"schema_version": "crm-meeting-summary-audit-v1"},
+        },
     )
+    monkeypatch.setattr(real_runner, "LOGS_DIR", tmp_path)
+    monkeypatch.setattr(real_runner, "REAL_RUN_LOG_PATH", tmp_path / "real-runs.jsonl")
 
-    assert bundle["meeting"]["account"]["id"] == "CUST-001"
-    assert bundle["crm_context"]["account"]["account_id"] == "CUST-001"
-    assert bundle["crm_context"]["opportunity"]["opportunity_id"] == "OPP-9001"
-    assert bundle["crm_context"]["person"]["person_id"] == "USR-101"
-    assert bundle["memory_snippets"][0]["scope"] == "account"
-    assert bundle["constraints"] == {"language": "zh-CN", "output_mode": "human_only"}
+    result = real_runner.run_case("baseline-input-bundle-path")
+
+    log_lines = (tmp_path / "real-runs.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    assert result["case"] == case
+    assert len(log_lines) == 1
+    payload = json.loads(log_lines[0])
+    assert payload["case_id"] == "baseline-input-bundle-path"
+    assert payload["input_bundle_path"] == ".local/crm-meeting-summary-test-data/case-001"
+    assert payload["final_text"] == "## 会议快照\n- x"
 
 
 
@@ -556,7 +607,7 @@ def test_run_case_supports_input_bundle_path_protocol(monkeypatch, tmp_path: Pat
     result = real_runner.run_case("bundle-path-case")
 
     assert result["case"]["id"] == "bundle-path-case"
-    assert result["final_text"].startswith("会议快照")
+    assert result["final_text"].startswith("## 会议快照")
     assert result["bundle"]["meeting"]["record_text"] == "客户反馈夜间转人工率偏高。"
     assert result["bundle"]["crm_context"]["account"]["account_id"] == "CUST-001"
 

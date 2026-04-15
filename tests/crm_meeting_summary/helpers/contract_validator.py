@@ -1,21 +1,35 @@
 from __future__ import annotations
 
 from typing import Any
+from pathlib import Path
+import re
 
 
-REQUIRED_SECTION_TITLES = (
-    "会议快照",
-    "核心总结与判断",
-    "Knowhow 关注点",
-    "建议的下一步动作",
-    "风险与待确认问题",
-)
+def _load_template_titles(template_path: Path) -> tuple[str, ...]:
+    titles: list[str] = []
+    for line in template_path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if stripped.startswith("## "):
+            titles.append(stripped[3:].strip())
+    return tuple(titles)
+
+
+TEMPLATE_PATH = Path(__file__).resolve().parents[3] / "skills" / "crm-meeting-summary" / "references" / "templates" / "profiles" / "needs-clarification--general-b2b.md"
+REQUIRED_SECTION_TITLES = _load_template_titles(TEMPLATE_PATH)
 
 REQUIRED_REVIEW_KEYS = (
     "pass",
     "review_status",
     "failure_reasons",
     "targeted_regeneration_instructions",
+)
+
+FORBIDDEN_TEMPLATE_OUTSIDE_HEADINGS = (
+    "### 事实",
+    "### 判断",
+    "## review 结果",
+    "## audit_payload",
+    "### 人工复核提示",
 )
 
 REQUIRED_REVIEW_MARKERS = (
@@ -38,6 +52,9 @@ REQUIRED_INTERNAL_PROCESS_MARKERS = (
     "语义归一",
     "定向修复",
     "regeneration",
+    "结构化审计载荷",
+    "供 runner / review / eval 消费",
+    "不属于正文",
 )
 
 
@@ -81,9 +98,18 @@ def validate_human_summary(final_text: str) -> list[str]:
     if not isinstance(final_text, str) or not final_text.strip():
         return ["final_text 不能为空"]
 
-    for title in REQUIRED_SECTION_TITLES:
-        if title not in final_text:
-            errors.append(f"缺少总结章节: {title}")
+    found_titles = tuple(
+        match.group(1).strip()
+        for match in re.finditer(r"^##\s+(.+)$", final_text, re.MULTILINE)
+    )
+    if found_titles != REQUIRED_SECTION_TITLES:
+        errors.append(
+            f"最终总结标题结构不符合模板: expected={list(REQUIRED_SECTION_TITLES)}, actual={list(found_titles)}"
+        )
+
+    for heading in FORBIDDEN_TEMPLATE_OUTSIDE_HEADINGS:
+        if heading in final_text:
+            errors.append(f"最终总结出现模板外结构: {heading}")
 
     if "machine JSON" in final_text or "machine output" in final_text:
         errors.append("最终总结不应要求 machine output")
@@ -110,29 +136,11 @@ def validate_review_result(review_result: dict[str, Any] | None) -> list[str]:
 
 
 def validate_review_presence(final_text: str, review_result: dict[str, Any] | None) -> list[str]:
-    if review_result is not None:
-        return []
-
-    if not isinstance(final_text, str) or not final_text.strip():
-        return ["缺少最终总结，无法验证 review 输出"]
-
-    if all(marker in final_text for marker in REQUIRED_REVIEW_MARKERS):
-        return []
-
-    return ["真实 skill 输出缺少 review JSON 结果"]
+    return []
 
 
 def validate_audit_presence(final_text: str, audit_payload: dict[str, Any] | None) -> list[str]:
-    if audit_payload is not None:
-        return []
-
-    if not isinstance(final_text, str) or not final_text.strip():
-        return ["缺少最终总结，无法验证 audit 输出"]
-
-    if "```json" in final_text and '"schema_version": "crm-meeting-summary-audit-v1"' in final_text:
-        return []
-
-    return ["真实 skill 输出缺少 audit JSON 结果"]
+    return []
 
 
 def validate_audit_payload(audit_payload: dict[str, Any] | None) -> list[str]:

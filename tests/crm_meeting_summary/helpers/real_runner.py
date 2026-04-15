@@ -5,6 +5,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any
+from datetime import datetime, timezone
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -12,6 +13,9 @@ EVALS_PATH = REPO_ROOT / "tests" / "crm_meeting_summary" / "evals" / "evals.json
 CRM_SKILL_DIR = Path.home() / ".claude" / "skills" / "crm-meeting-summary"
 DEFAULT_CONSTRAINTS = {"language": "zh-CN", "output_mode": "human_only"}
 CLAUDE_TIMEOUT_SECONDS = 300
+
+LOGS_DIR = REPO_ROOT / "tests" / "crm_meeting_summary" / "evals" / "logs"
+REAL_RUN_LOG_PATH = LOGS_DIR / "real-runs.jsonl"
 
 BUNDLE_FILE_MAP = {
     "AccountObj.json": "account",
@@ -150,9 +154,13 @@ def build_skill_prompt(input_file_path: Path) -> str:
         "输入包是 JSON 文件，不是 PDF。\n"
         "非 PDF 的 Read 调用不要传 pages 字段。\n"
         "按 skill 契约完成输出。\n"
-        "最终用户可见结果只保留人类可读总结，不要把 machine JSON 混进最终总结正文。\n"
-        "同时按 runtime-contract 保留结构化 audit_payload，供 runner / review / eval 消费。\n"
-        "如果包含 review 结果，也不要让 review JSON 覆盖最终总结正文。"
+        "最终用户可见结果只保留一份人类可读总结正文。\n"
+        "最终正文必须以命中的 template 为准：标题、顺序、栏目命名、缺项占位都服从 template，不要自行追加 template 之外的结构。\n"
+        "禁止在正文中输出 template 外的附加结构，例如：### 事实、### 判断、## review 结果、## audit_payload、### 人工复核提示。\n"
+        "禁止把 review/audit/内部过程字段混入最终总结正文。\n"
+        "如果需要生成 review_result 或 audit_payload，只能作为内部可解析调试信息存在，不要拼进最终用户正文。\n"
+        "最终正文里不要出现 semantic_normalization、retrieval_trace、template_trace、review_trace、audit_payload、review loop 等内部字段或过程说明。\n"
+        "输入包中的对象名称若与 CRM 对象有冲突，可以在正文相关模板栏目中标注待确认，但不要额外创建模板外标题。"
     )
 
 
@@ -319,9 +327,15 @@ def extract_final_text(cli_payload: list[dict[str, Any]]) -> str:
                 return summary_text
 
         return text.rstrip()
-    if candidate_texts:
-        return candidate_texts[0]
-    raise RealRunnerError("未找到最终 assistant 文本")
+
+    raise RealRunnerError("未找到人类可读总结正文")
+
+
+def append_real_run_log(entry: dict[str, Any]) -> Path:
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+    with REAL_RUN_LOG_PATH.open("a", encoding="utf-8") as file:
+        file.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    return REAL_RUN_LOG_PATH
 
 
 def invoke_real_skill(bundle: dict[str, Any]) -> dict[str, Any]:
@@ -407,4 +421,16 @@ def run_case(case_id: str) -> dict[str, Any]:
         files = [REPO_ROOT / file for file in case["files"]]
         bundle = build_input_bundle(files)
     result = invoke_real_skill(bundle)
-    return {"case": case, **result}
+    result_with_case = {"case": case, **result}
+    append_real_run_log(
+        {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "case_id": case_id,
+            "input_bundle_path": case.get("input_bundle_path"),
+            "final_text": result.get("final_text"),
+            "review_result": result.get("review_result"),
+            "audit_payload": result.get("audit_payload"),
+            "raw_response_excerpt": result.get("raw_response", [])[-3:],
+        }
+    )
+    return result_with_case
