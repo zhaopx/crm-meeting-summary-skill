@@ -1,6 +1,12 @@
 # summay-skill
 
-## crm-meeting-summary 架构图
+## crm-meeting-summary skill 可视化图集
+
+- 浏览器入口：[visual-diagrams.md](./docs/crm-meeting-summary/visual-diagrams.md)
+- 仓库相对路径：`docs/crm-meeting-summary/visual-diagrams.md`
+- 内容包含：总架构图、skill 关键流程图、主执行时序图、工程分层结构图、eval 执行链路图
+
+## crm-meeting-summary skill 关键流程图
 
 ```mermaid
 flowchart TD
@@ -67,14 +73,14 @@ flowchart TD
   - 给出 `failure_reasons`
   - 给出 `targeted_regeneration_instructions`
   - 不重写正文，只做质量闸门
-- 运行时判定口径以 `skills/crm-meeting-summary/review/SKILL.md` 为准；`docs/skills/crm-meeting-summary/review-rubric.md` 只作为人工阅读说明，不是 runtime 依赖
+- 运行时判定口径以 `skills/crm-meeting-summary/review/SKILL.md` 为准；`docs/crm-meeting-summary/review-rubric.md` 只作为人工阅读说明，不是 runtime 依赖
 
 ### 3. 参考契约层
 - `skills/crm-meeting-summary/references/taxonomy.md`：定义场景分类与默认 retrieval policy
 - `skills/crm-meeting-summary/references/runtime-contract.md`：运行时输入输出契约、request groups、memory 使用边界与审计规则的单一事实来源
 
 ### 4. 方法论、Knowhow 与 Template 层
-- [docs/skills/crm-meeting-summary/meeting-methodology.md](docs/skills/crm-meeting-summary/meeting-methodology.md)：解释为什么这是 CRM 总结产品，而不是通用 transcript summarizer
+- [docs/crm-meeting-summary/meeting-methodology.md](docs/crm-meeting-summary/meeting-methodology.md)：解释为什么这是 CRM 总结产品，而不是通用 transcript summarizer
 - [skills/crm-meeting-summary/references/knowhow/common/](skills/crm-meeting-summary/references/knowhow/common/)：第一层，所有 case 默认加载，提供跨场景共用的评估框架、基础判断边界与通用风险提醒，不是事实来源
 - [skills/crm-meeting-summary/references/knowhow/by-scenario/](skills/crm-meeting-summary/references/knowhow/by-scenario/)：第二层，在场景已识别时按 `scenario_slug` 加载，补充该场景专属的关注点、风险信号、成功标准与 `data_requirements`，参与 CRM 请求决策与总结生成，不是事实来源
 - [skills/crm-meeting-summary/references/knowhow/by-industry/](skills/crm-meeting-summary/references/knowhow/by-industry/)：第三层，在行业有独立证据时加载，补充行业语境、行业常见约束与行业化判断边界，不是事实来源
@@ -133,9 +139,9 @@ flowchart TD
 
 ## 文档入口
 
-- 输入方式：`docs/skills/crm-meeting-summary/example-input.md`
-- 完整执行链路与标准输出样例：`docs/skills/crm-meeting-summary/case-execution-example.md`
+- 输入方式：`docs/crm-meeting-summary/example-input.md`
+- 完整执行链路与标准输出样例：`docs/crm-meeting-summary/case-execution-example.md`
 - 运行时单一事实来源：`skills/crm-meeting-summary/references/runtime-contract.md`
 - 运行时评审规则：`skills/crm-meeting-summary/review/SKILL.md`
-- 评审说明文档：`docs/skills/crm-meeting-summary/review-rubric.md`
-- 产品方法论：`docs/skills/crm-meeting-summary/meeting-methodology.md`
+- 评审说明文档：`docs/crm-meeting-summary/review-rubric.md`
+- 产品方法论：`docs/crm-meeting-summary/meeting-methodology.md`

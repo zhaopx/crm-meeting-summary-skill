@@ -303,18 +303,75 @@ Conservative mode 规则：
 - 因为 review 失败而扩大无关 retrieval scope
 - 引入 evidence 中不存在的新事实
 
+### 第 11 步：组装最终输出
+
+最终输出不是自由发挥，必须按下面的固定骨架一次性产出，不能改标题、不能改顺序、不能省略结构化块。
+
+先在内部准备 3 个对象：
+- `final_summary_markdown`
+- `review_result`
+- `audit_payload`
+
+其中：
+- `final_summary_markdown` 必须已经完成 template 重排与 review 定向修复
+- `review_result` 无论 pass / fail 都必须是完整 JSON 对象
+- `audit_payload` 无论 pass / fail 都必须是完整 JSON 对象
+- 如果 review 两次后仍失败，`review_result.review_status` 必须为 `fail`
+- 如果 review 未正常执行，也必须构造可解析的失败 `review_result`，不能留空
+- `audit_payload.review_trace.review_status` 必须与 `review_result.review_status` 一致
+
+`final_summary_markdown` 的标题必须严格固定为以下 5 段，不允许写成别名：
+- `## 会议快照`
+- `## 核心总结与判断`
+- `## Knowhow 关注点`
+- `## 建议的下一步动作`
+- `## 风险与待确认问题`
+
+禁止替换成：
+- `会议概览`
+- `核心结论`
+- `建议下一步动作`
+- 其他任意近义标题
+
+最终响应必须严格等于下面的拼接结果，除这三段外不允许出现任何额外文本：
+
+```text
+{final_summary_markdown}
+```json
+{review_result}
+```
+```json
+{audit_payload}
+```
+```
+
+额外约束：
+- 两个 json block 前后都不允许出现解释句
+- 不允许写“下面是 review 结果”之类过渡语
+- 不允许把 review / audit 字段散写回正文
+- 不允许只返回正文
+- 不允许只返回 review_result
+- 不允许只返回 audit_payload
+- 不允许在两个 json block 之后再追加尾注
+
 ## 输出契约
 
 必须遵守：
 - `references/runtime-contract.md`
 - `review/SKILL.md`
 
-最终交付给用户的只有一份人类可读总结。
+真实运行时的最终响应采用**双通道输出**，顺序固定，不能漂移：
 
-运行时依赖只来自当前 skill 契约、taxonomy、templates、knowhow 与 review 规则。
-`README.md`、examples、evals 都不是运行时依赖，不参与真实 skill 判断。
+1. 第一段必须是最终交付给用户的人类可读总结
+2. 正文之后必须追加一个 `review_result` 的 fenced json block
+3. `review_result` 之后必须追加一个 `audit_payload` 的 fenced json block
+4. 除这三部分外，不允许输出任何额外自然语言说明、过程备注、解释性过渡文本或调试信息
 
-这份总结必须：
+### 1. 人类可读总结正文
+
+最终交付给用户的正文只有一份，且只能包含最终总结内容。
+
+正文必须：
 - 清楚给出主要业务结论
 - 区分事实与推断
 - 标出最重要的风险信号
@@ -323,6 +380,40 @@ Conservative mode 规则：
 - 明确覆盖最相关的 knowhow focus items
 - 如果应用了 template，最终展示必须按模板目录组织
 - 任何缺失项都不得编造成确定性陈述
+
+正文禁止出现：
+- semantic normalization / 语义归一 / object mapping 过程说明
+- meeting_state_features / retrieval_trace / template_trace / review_trace 等内部字段名
+- review loop、定向修复、regeneration 次数、审查过程解释
+- “下面是 review JSON / audit JSON / machine output” 之类过渡文本
+- 任何 review JSON 或 audit_payload 的字段散写进正文段落
+
+### 2. review_result 结构化块
+
+正文之后必须紧跟一个 fenced json block，内容是 `review_result`。
+
+要求：
+- 必须是合法 JSON 对象
+- 不允许在 json block 前后插入自然语言说明
+- 无论评审 pass / fail，都必须稳定产出
+- 最小字段至少包括：`pass`、`review_status`、`failure_reasons`、`targeted_regeneration_instructions`
+
+### 3. audit_payload 结构化块
+
+`review_result` 之后必须紧跟一个 fenced json block，内容是 `audit_payload`。
+
+要求：
+- 必须是合法 JSON 对象
+- `schema_version` 必须为 `crm-meeting-summary-audit-v1`
+- 无论 review pass / fail，都必须稳定产出
+- `audit_payload.review_trace.review_status` 必须与 `review_result.review_status` 保持一致
+
+### 4. 稳定性要求
+
+- 不得把 review_result 或 audit_payload 省略为“已在内部完成”
+- 不得只输出人类总结而缺少结构化块
+- 不得把 review / audit 结果混入正文代替结构化块
+- 如果 review 无法正常完成，也要输出可解析的失败结果，而不是直接缺失
 
 ## 真实调用示例
 
@@ -377,7 +468,7 @@ meeting record:
 以下内容只用于开发验证，不代表真实 skill 运行方式：
 - `tests/crm_meeting_summary/helpers/mock_runner.py`
 - `tests/crm_meeting_summary/fixtures/mock-runtime/`
-- `docs/skills/crm-meeting-summary/` 中的示例文档
+- `docs/crm-meeting-summary/` 中的示例文档
 - `tests/crm_meeting_summary/evals/evals.json` 中引用 mock data 的 case
 
 如果引用这些文件，必须明确说明它们是 dev harness，而不是生产运行路径。

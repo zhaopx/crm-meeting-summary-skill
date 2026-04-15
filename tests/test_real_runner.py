@@ -50,6 +50,58 @@ REVIEW_RESULT = {
     "targeted_regeneration_instructions": [],
 }
 
+AUDIT_PAYLOAD = {
+    "schema_version": "crm-meeting-summary-audit-v1",
+    "scenario_decision": {
+        "primary_scenario": "知识库优化",
+        "scenario_slug": "knowledge-base-refresh",
+        "scenario_confidence": "medium",
+        "secondary_tags": [],
+        "industry": None,
+        "reasoning_signals": {
+            "supporting": ["知识库", "转人工率"],
+            "conflicting": [],
+            "rejected_candidates": ["客户经营"],
+        },
+    },
+    "meeting_state_features": {
+        "relationship_state": "neutral",
+        "decision_pressure": "medium",
+        "trust_state": "neutral",
+        "momentum_state": "forward",
+    },
+    "retrieval_trace": {
+        "policy_version": "taxonomy-v2-runtime-v3",
+        "scenario_mode": "normal",
+        "allowed_request_groups": ["opportunity_progress_gap"],
+        "requested_request_groups": ["opportunity_progress_gap"],
+        "out_of_policy_requests": [],
+    },
+    "loaded_knowhow": ["common"],
+    "claim_evidence_map": [
+        {
+            "claim_type": "judgment",
+            "claim_text": "客户要先验证知识库更新机制",
+            "evidence": [
+                {
+                    "source_type": "meeting",
+                    "source_ref": "meeting-record.txt:1",
+                    "excerpt": "客户要先验证知识库更新机制。",
+                }
+            ],
+        }
+    ],
+    "missing_information": ["最终拍板人"],
+    "memory_conflicts": [],
+    "template_trace": {"template_path": None, "mapping_gaps": []},
+    "review_trace": {
+        "review_status": "pass",
+        "failure_reasons": [],
+        "targeted_regeneration_instructions": [],
+        "regeneration_count": 0,
+    },
+}
+
 CLI_SUCCESS_PAYLOAD = [
     {
         "type": "assistant",
@@ -97,6 +149,63 @@ REVIEW_ONLY_PAYLOAD = [
 ]
 
 
+REVIEW_RESULT_IN_MIDDLE_PAYLOAD = [
+    {
+        "type": "assistant",
+        "message": {
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "中间说明\n```json\n"
+                        f"{json.dumps(REVIEW_RESULT, ensure_ascii=False, indent=2)}\n```\n"
+                        f"{HUMAN_SUMMARY}"
+                    ),
+                }
+            ]
+        },
+    }
+]
+
+
+AUDIT_PAYLOAD_BLOCK = [
+    {
+        "type": "assistant",
+        "message": {
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        f"{HUMAN_SUMMARY}\n```json\n"
+                        f"{json.dumps(AUDIT_PAYLOAD, ensure_ascii=False, indent=2)}\n```"
+                    ),
+                }
+            ]
+        },
+    }
+]
+
+
+REVIEW_AND_AUDIT_WITH_TAIL_TEXT_PAYLOAD = [
+    {
+        "type": "assistant",
+        "message": {
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        f"{HUMAN_SUMMARY}\n```json\n"
+                        f"{json.dumps(REVIEW_RESULT, ensure_ascii=False, indent=2)}\n```\n"
+                        f"```json\n{json.dumps(AUDIT_PAYLOAD, ensure_ascii=False, indent=2)}\n```\n"
+                        "review loop: 已完成"
+                    ),
+                }
+            ]
+        },
+    }
+]
+
+
 
 def test_extract_final_text_prefers_human_summary_block():
     final_text = real_runner.extract_final_text(CLI_SUCCESS_PAYLOAD)
@@ -117,7 +226,30 @@ def test_extract_review_result_from_summary_trailer():
 
 
 
-def test_extract_final_text_falls_back_when_no_summary_exists():
+def test_extract_review_result_from_payload_falls_back_to_non_trailing_json():
+    review_result = real_runner.extract_review_result_from_payload(REVIEW_RESULT_IN_MIDDLE_PAYLOAD)
+
+    assert review_result == REVIEW_RESULT
+
+
+
+def test_extract_audit_payload_from_payload_reads_structured_audit_block():
+    audit_payload = real_runner.extract_audit_payload_from_payload(AUDIT_PAYLOAD_BLOCK)
+
+    assert audit_payload == AUDIT_PAYLOAD
+
+
+
+def test_extract_final_text_cuts_at_first_structured_block_even_with_tail_text():
+    final_text = real_runner.extract_final_text(REVIEW_AND_AUDIT_WITH_TAIL_TEXT_PAYLOAD)
+
+    assert final_text == HUMAN_SUMMARY.rstrip()
+    assert "review loop" not in final_text
+    assert "review_status" not in final_text
+
+
+
+def test_extract_review_result_from_payload_prefers_review_over_audit_payload():
     final_text = real_runner.extract_final_text(REVIEW_ONLY_PAYLOAD)
 
     assert "review_status" in final_text
@@ -149,11 +281,23 @@ def test_build_skill_prompt_uses_human_only_contract(tmp_path: Path):
 
     assert str(input_path) in prompt
     assert "按 skill 契约完成输出" in prompt
-    assert "最终结果只保留人类可读总结" in prompt
-    assert "不要输出 machine JSON" in prompt
+    assert "最终用户可见结果只保留人类可读总结" in prompt
+    assert "audit_payload" in prompt
+    assert "不要把 machine JSON 混进最终总结正文" in prompt
     assert "完整 machine JSON" not in prompt
     assert "输入包是 JSON 文件，不是 PDF" in prompt
     assert "非 PDF 的 Read 调用不要传 pages 字段" in prompt
+
+
+
+def test_build_allowed_tools_includes_repo_and_skill_paths():
+    allowed_tools = real_runner.build_allowed_tools()
+
+    assert f"Read(//{str(real_runner.REPO_ROOT).lstrip('/')}/**)" in allowed_tools
+    assert f"Read(//{str(real_runner.CRM_SKILL_DIR).lstrip('/')}/**)" in allowed_tools
+    assert f"Read(//{str(real_runner.CRM_SKILL_DIR / 'references').lstrip('/')}/**)" in allowed_tools
+    assert f"Read(//{str(real_runner.CRM_SKILL_DIR / 'review').lstrip('/')}/**)" in allowed_tools
+    assert "Skill(crm-meeting-summary)" in allowed_tools
 
 
 
@@ -219,6 +363,28 @@ def test_build_input_bundle_from_input_bundle_path_success(tmp_path: Path, monke
         json.dumps({"contact_id": "CNT-001", "contact_name": "李总"}, ensure_ascii=False),
         encoding="utf-8",
     )
+    (bundle_dir / "account-memory.json").write_text(
+        json.dumps(
+            {
+                "scope": "account",
+                "lookup_key": "account_id:CUST-001",
+                "memory": ["客户过去两次续费前都要求先看到量化效果改善。"],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    (bundle_dir / "person-memory.json").write_text(
+        json.dumps(
+            {
+                "scope": "person",
+                "lookup_key": "person_id:USR-101",
+                "memory": ["王敏过去在该客户沟通中偏向先稳定关系，再推进商业动作。"],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
     (bundle_dir / "ignored.json").write_text("{}", encoding="utf-8")
     monkeypatch.setattr(real_runner, "ensure_repo_path", lambda path: None)
 
@@ -230,7 +396,65 @@ def test_build_input_bundle_from_input_bundle_path_success(tmp_path: Path, monke
     assert bundle["crm_context"]["opportunity"]["opportunity_id"] == "OPP-9001"
     assert bundle["crm_context"]["person"]["person_id"] == "USR-101"
     assert bundle["crm_context"]["contact"]["contact_id"] == "CNT-001"
+    assert bundle["memory_snippets"] == [
+        {
+            "scope": "account",
+            "lookup_key": "account_id:CUST-001",
+            "memory": ["客户过去两次续费前都要求先看到量化效果改善。"],
+        },
+        {
+            "scope": "person",
+            "lookup_key": "person_id:USR-101",
+            "memory": ["王敏过去在该客户沟通中偏向先稳定关系，再推进商业动作。"],
+        },
+    ]
     assert bundle["constraints"] == {"language": "zh-CN", "output_mode": "human_only"}
+
+
+
+def test_build_input_bundle_from_input_bundle_path_allows_missing_contact(tmp_path: Path, monkeypatch):
+    bundle_dir = tmp_path / "case-002"
+    bundle_dir.mkdir()
+    (bundle_dir / "meeting-record.txt").write_text("客户更关注联系人管理、拜访计划和评分预警。", encoding="utf-8")
+    (bundle_dir / "AccountObj.json").write_text(
+        json.dumps({"account_id": "CUST-002", "account_name": "某酒店数字化运营集团"}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    (bundle_dir / "NewOpportunityObj.json").write_text(
+        json.dumps({"opportunity_id": "OPP-9002", "opportunity_name": "酒店客户经营与项目管理一体化评估项目"}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    (bundle_dir / "PersonnelObj.json").write_text(
+        json.dumps({"person_id": "USR-101", "person_name": "陈小艳"}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    (bundle_dir / "opportunity-memory.json").write_text(
+        json.dumps(
+            {
+                "scope": "opportunity",
+                "lookup_key": "opportunity_id:OPP-9002",
+                "memory": ["该项目核心不是新客获客，而是提升酒店私域经营效果。"],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(real_runner, "ensure_repo_path", lambda path: None)
+
+    bundle = real_runner.build_input_bundle_from_path(bundle_dir)
+
+    assert bundle["meeting"]["record_text"] == "客户更关注联系人管理、拜访计划和评分预警。"
+    assert bundle["crm_context"]["account"]["account_id"] == "CUST-002"
+    assert bundle["crm_context"]["opportunity"]["opportunity_id"] == "OPP-9002"
+    assert bundle["crm_context"]["person"]["person_id"] == "USR-101"
+    assert "contact" not in bundle["crm_context"]
+    assert bundle["memory_snippets"] == [
+        {
+            "scope": "opportunity",
+            "lookup_key": "opportunity_id:OPP-9002",
+            "memory": ["该项目核心不是新客获客，而是提升酒店私域经营效果。"],
+        }
+    ]
 
 
 
@@ -374,6 +598,36 @@ def test_validate_review_result_rejects_missing_keys_and_bad_status():
 
     assert any("targeted_regeneration_instructions" in item for item in errors)
     assert any("review_status 非法" in item for item in errors)
+
+
+
+def test_validate_audit_payload_accepts_expected_shape():
+    errors = contract_validator.validate_audit_payload(AUDIT_PAYLOAD)
+
+    assert errors == []
+
+
+
+def test_validate_audit_payload_rejects_missing_keys_and_bad_values():
+    errors = contract_validator.validate_audit_payload(
+        {
+            "schema_version": "bad-version",
+            "scenario_decision": {"scenario_confidence": "certain"},
+            "meeting_state_features": {},
+            "retrieval_trace": {},
+            "loaded_knowhow": [],
+            "claim_evidence_map": [{"claim_type": "judgment", "claim_text": "结论", "evidence": []}],
+            "missing_information": [],
+            "memory_conflicts": [],
+            "template_trace": {},
+            "review_trace": {"review_status": "maybe"},
+        }
+    )
+
+    assert any("schema_version 非法" in item for item in errors)
+    assert any("scenario_confidence 非法" in item for item in errors)
+    assert any("高价值结论必须有 evidence" in item for item in errors)
+    assert any("review_trace.review_status 非法" in item for item in errors)
 
 
 

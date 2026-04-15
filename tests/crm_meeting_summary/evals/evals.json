@@ -52,6 +52,13 @@
       "input_bundle_path": ".local/crm-meeting-summary-test-data/case-001"
     },
     {
+      "id": "baseline-case002-hotel-operations",
+      "category": "baseline",
+      "prompt": "调用真实 crm-meeting-summary skill。对酒店客户经营与项目管理场景的目录输入包生成总结，要求保留真实业务语境，避免复用客服机器人、知识库诊断、夜间转人工率等旧 case 话术。",
+      "expected_output": "成功读取 case002 的目录输入包；总结围绕客户经营、联系人管理、拜访计划、项目推进、评分模型与预警；明确 CEO 才是最终拍板人且尚未正式立项。",
+      "input_bundle_path": ".local/crm-meeting-summary-test-data/case002"
+    },
+    {
       "id": "baseline-template-apply",
       "category": "baseline",
       "prompt": "调用真实 crm-meeting-summary skill。场景与行业明确时，必须在 summary 生成后按 template 模板重排最终人类总结。",

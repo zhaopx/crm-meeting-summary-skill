@@ -2,7 +2,7 @@
 
 本文只展示 **真实 skill 的输入方式**。
 - `tests/crm_meeting_summary/helpers/mock_runner.py` 仅用于开发验证，不代表生产运行路径
-- 详见：`docs/skills/crm-meeting-summary/case-execution-example.md`
+- 详见：`docs/crm-meeting-summary/case-execution-example.md`
 - 顶级总结的目标不是把会议复述完整，而是压缩出交易判断、推进门槛、动作任务单和风险/缺口
 
 ## 真实 skill 最小输入示例

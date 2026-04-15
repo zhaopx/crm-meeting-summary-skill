@@ -31,11 +31,8 @@ REVIEW_CHECK_KEYS = (
     "memory_conflict_handling",
     "missing_information_handling",
     "policy_boundary_handling",
-    "semantic_normalization_consistency",
-    "meeting_state_feature_evidence",
-    "semantic_summary_consistency",
-    "template_mapping_consistency",
-    "machine_output_completeness",
+    "template_no_fabrication",
+    "next_action_quality",
 )
 TEMPLATE_LABEL_TO_SOURCE_PATHS: dict[str, tuple[str, ...]] = {
     "会议目标": ("summary_fields.meeting_goal",),
@@ -45,6 +42,9 @@ TEMPLATE_LABEL_TO_SOURCE_PATHS: dict[str, tuple[str, ...]] = {
     "决策压力": ("summary_fields.decision_pressure",),
     "风险等级": ("summary_fields.risk_level",),
     "关注项": ("knowhow_focus_items",),
+    "动作": ("summary_fields.next_action_task",),
+    "目的": ("summary_fields.next_action_purpose",),
+    "不做会卡住什么": ("summary_fields.next_action_blocker",),
     "下一步动作": ("summary_fields.next_actions",),
     "待确认问题": ("key_judgments.open_questions", "summary_fields.missing_information"),
     "当前关系状态": ("summary_fields.relationship_state",),
@@ -390,10 +390,6 @@ def condition_matches(record_text: str, condition: str) -> bool:
 
 def contains_any(text: str, tokens: tuple[str, ...]) -> bool:
     return any(token in text for token in tokens)
-
-
-def build_review_ready_checks(check_results: dict[str, str]) -> dict[str, bool]:
-    return {key: check_results[key] == "pass" for key in REVIEW_CHECK_KEYS}
 
 
 class MockRetrievalRunner:
@@ -905,7 +901,6 @@ class MockRetrievalRunner:
             "key_judgments": key_judgments,
             "knowhow_focus_items": knowhow_focus_items,
             "retrieval_trace": runtime["retrieval"]["retrieval_trace"],
-            "review_ready_checks": {key: True for key in REVIEW_CHECK_KEYS},
         }
         template_output, template_trace = self.build_template_output(machine_output=machine_output)
         machine_output = {
@@ -955,40 +950,61 @@ class MockRetrievalRunner:
                     ]
                 )
             )
+            next_action_task = "补齐客户明确问题、责任方、时间线和下一步 owner"
+            next_action_purpose = "让总结重新建立在可验证事实上，而不是围绕一句“客户不满意”做猜测。"
+            next_action_blocker = "不先补齐这些最小上下文，自动总结会继续卡在人工复核，无法形成可靠判断。"
             next_actions = [
-                "补齐客户明确问题、责任方、时间线和下一步 owner 后再重新生成总结",
+                next_action_task,
+                next_action_purpose,
+                next_action_blocker,
             ]
             risk_level = "high"
             current_stage_judgment = "manual-triage"
             meeting_goal = "确认客户不满的具体问题、责任边界和下一步处理方式"
         elif runtime["scenario_mode"] == "uncertain":
+            next_action_task = "先确认当前讨论到底属于预算、试点、交付还是采购问题"
+            next_action_purpose = "先把会议主题消歧，避免后续摘要和跟进动作建立在错误场景上。"
+            next_action_blocker = "如果场景还没分清，后续 retrieval、判断和跟进动作都会继续跑偏。"
             next_actions = [
-                "先确认当前讨论到底属于预算、试点、交付还是采购问题",
-                "补一个最小消歧问题清单，避免在错误场景上继续推进",
+                next_action_task,
+                next_action_purpose,
+                next_action_blocker,
             ]
             risk_level = "medium"
             current_stage_judgment = "ambiguous"
             meeting_goal = "判断当前沟通的真实主题与下一步是否值得继续"
         elif "不会以续费作为决策背景" in record and revision == 0:
+            next_action_task = "先给出夜间服务质量异常的诊断路径"
+            next_action_purpose = "先判断问题根因和可修复性，再决定是否值得继续试点。"
+            next_action_blocker = "不先把服务问题拆清，团队会继续被历史续费叙事带偏，无法对当前试点价值做准判断。"
             next_actions = [
-                "先给出夜间服务质量异常的诊断路径，再决定是否值得继续试点",
-                "同时回看历史续费背景，确认是否仍影响当前判断",
+                next_action_task,
+                next_action_purpose,
+                next_action_blocker,
             ]
             risk_level = "medium"
             current_stage_judgment = "service-recovery-evaluation"
             meeting_goal = "澄清当前服务问题是否影响续费与后续试点判断"
         elif "不会以续费作为决策背景" in record:
+            next_action_task = "先给出夜间服务质量异常的诊断路径和短期修复方案"
+            next_action_purpose = "把当前试点评估建立在可验证的修复标准上，而不是继续泛化讨论。"
+            next_action_blocker = "如果没有诊断路径和修复方案，客户无法判断问题是否可控，试点也不会进入下一步。"
             next_actions = [
-                "先给出夜间服务质量异常的诊断路径和短期修复方案",
-                "明确当前评估标准，再决定是否继续试点",
+                next_action_task,
+                next_action_purpose,
+                next_action_blocker,
             ]
             risk_level = "medium"
             current_stage_judgment = "service-recovery-evaluation"
             meeting_goal = "围绕当前服务质量异常做问题诊断与试点价值判断"
         else:
+            next_action_task = "一周内提交问题诊断与优化路径建议"
+            next_action_purpose = "先回应客户对效果不稳定和夜间转人工率偏高的核心疑问。"
+            next_action_blocker = "如果没有这版诊断与优化路径，客户内部就无法判断是否进入试点，预算审批也不会往前走。"
             next_actions = [
-                "一周内提交问题诊断与优化路径建议",
-                "补齐试点评估负责人与预算审批链条",
+                next_action_task,
+                next_action_purpose,
+                next_action_blocker,
             ]
             risk_level = "medium"
             current_stage_judgment = "qualification"
@@ -1008,6 +1024,9 @@ class MockRetrievalRunner:
                 item.get("name") for item in meeting.get("participants", []) if item.get("name")
             ],
             "current_stage_judgment": current_stage_judgment,
+            "next_action_task": next_action_task,
+            "next_action_purpose": next_action_purpose,
+            "next_action_blocker": next_action_blocker,
             "next_actions": next_actions,
             "risk_level": risk_level,
             "owner_confirmation": owner_confirmation,
@@ -1132,14 +1151,6 @@ class MockRetrievalRunner:
                 failure_reasons.append("uncertain 模式下请求组超过一个，超出最小消歧范围。")
                 targeted_regeneration_instructions.append("uncertain 模式下只保留一个消歧 request bundle。")
 
-        if machine_output["semantic_summary"] != {
-            key: machine_output["meeting_state_features"][key]
-            for key in ("relationship_state", "decision_pressure", "trust_state", "momentum_state")
-        }:
-            check_results["semantic_summary_consistency"] = "fail"
-            failure_reasons.append("semantic_summary 与 meeting_state_features 不一致。")
-            targeted_regeneration_instructions.append("对齐 semantic_summary 与 meeting_state_features 的四个兼容映射字段。")
-
         template_output = machine_output["template_output"]
         template_trace = machine_output["template_trace"]
         mapped_item_keys = [
@@ -1149,40 +1160,39 @@ class MockRetrievalRunner:
         ]
         trace_item_keys = [record["item_key"] for record in template_trace["mapping_records"]]
         if mapped_item_keys != trace_item_keys:
-            check_results["template_mapping_consistency"] = "fail"
+            check_results["template_no_fabrication"] = "fail"
             failure_reasons.append("template_output 与 template_trace 的 item_key 顺序不一致。")
             targeted_regeneration_instructions.append("按模板顺序重建 mapping_records，并与 sections 中的条目一一对齐。")
         else:
             for section in template_output["sections"]:
                 for item in section["items"]:
                     if item["value_presence"] == "present" and not item["resolved_source_path"]:
-                        check_results["template_mapping_consistency"] = "fail"
+                        check_results["template_no_fabrication"] = "fail"
                         failure_reasons.append("template 存在无来源的非空条目。")
                         targeted_regeneration_instructions.append("所有非空模板条目都必须绑定真实 machine output source path。")
                         break
                     if item["value_presence"] == "missing" and item["value"] is not None:
-                        check_results["template_mapping_consistency"] = "fail"
+                        check_results["template_no_fabrication"] = "fail"
                         failure_reasons.append("template 缺失条目不应携带值。")
                         targeted_regeneration_instructions.append("缺失模板项只能显式标记 missing，不能附带推断内容。")
                         break
-                if check_results["template_mapping_consistency"] == "fail":
+                if check_results["template_no_fabrication"] == "fail":
                     break
 
         unresolved_without_mapping = [
             record for record in template_trace["mapping_records"] if record["unresolved_reason"] == "no_runtime_mapping"
         ]
-        if unresolved_without_mapping:
-            check_results["template_mapping_consistency"] = "fail"
-            failure_reasons.append("template 目录项缺少 runtime 映射规则。")
-            targeted_regeneration_instructions.append("为所有模板目录项补齐 label 到 machine output 的运行时映射。")
-
-        if machine_output["meeting_state_features"] != {
-            key: machine_output["summary_fields"][key]
-            for key in ("relationship_state", "decision_pressure", "trust_state", "momentum_state")
-        }:
-            check_results["meeting_state_feature_evidence"] = "fail"
-            failure_reasons.append("meeting_state_features 与 summary_fields 的状态特征字段不一致。")
-            targeted_regeneration_instructions.append("用同一组状态特征同时驱动 meeting_state_features 和 summary_fields。")
+        unmapped_labels = {item["label"] for item in template_output["unmapped_or_missing_items"]}
+        unresolved_labels = {
+            item["label"]
+            for section in template_output["sections"]
+            for item in section["items"]
+            if item["value_presence"] == "missing" and item["resolved_source_path"] is None
+        }
+        if unresolved_without_mapping and not (unmapped_labels or unresolved_labels):
+            check_results["template_no_fabrication"] = "fail"
+            failure_reasons.append("template 缺失项没有被显式暴露为 missing 或待确认。")
+            targeted_regeneration_instructions.append("把所有无映射模板项显式写成 missing、留空或待确认，不要静默吞掉。")
 
         if not machine_output["scenario_result"]["evidence"]:
             check_results["evidence_grounding"] = "fail"
@@ -1199,15 +1209,36 @@ class MockRetrievalRunner:
             failure_reasons.append("缺失信息为空，无法暴露当前判断边界。")
             targeted_regeneration_instructions.append("列出仍未确认的关键缺口。")
 
+        if not machine_output["summary_fields"]["next_actions"]:
+            check_results["next_action_quality"] = "fail"
+            failure_reasons.append("缺少下一步动作，无法指导后续推进。")
+            targeted_regeneration_instructions.append("补齐贴着当前阻塞点的下一步动作。")
+        else:
+            summary_fields = machine_output["summary_fields"]
+            action_task = summary_fields.get("next_action_task")
+            action_purpose = summary_fields.get("next_action_purpose")
+            action_blocker = summary_fields.get("next_action_blocker")
+            if value_presence(action_task) == "missing":
+                check_results["next_action_quality"] = "fail"
+                failure_reasons.append("下一步动作缺少具体任务本身。")
+                targeted_regeneration_instructions.append("把下一步动作写成可直接执行的任务单。")
+            if value_presence(action_purpose) == "missing":
+                check_results["next_action_quality"] = "fail"
+                failure_reasons.append("下一步动作缺少动作目的。")
+                targeted_regeneration_instructions.append("补充这一步动作要关闭什么不确定性或验证什么判断。")
+            if value_presence(action_blocker) == "missing":
+                check_results["next_action_quality"] = "fail"
+                failure_reasons.append("下一步动作没有说明不做会卡住什么。")
+                targeted_regeneration_instructions.append("写清楚如果不执行这一步，推进会卡在哪个阻塞点。")
+
         if runtime["record_text"].find("严重缺失") != -1:
             check_results["evidence_grounding"] = "fail"
-            check_results["machine_output_completeness"] = "fail"
             check_results["knowhow_coverage"] = "fail"
             check_results["missing_information_handling"] = "fail"
             failure_reasons.extend(
                 [
                     "会议原始证据过弱，无法支持可靠主结论。",
-                    "关键上下文缺失过多，machine output 仍不可安全下游消费。",
+                    "关键上下文缺失过多，当前总结仍不可安全交付。",
                 ]
             )
             targeted_regeneration_instructions.extend(
@@ -1240,7 +1271,6 @@ class MockRetrievalRunner:
         status: str,
     ) -> dict[str, Any]:
         machine_output = draft["machine_output"]
-        review_ready_checks = build_review_ready_checks(review_result.check_results)
         return {
             "status": status,
             "human_summary": draft["human_summary"],
@@ -1256,7 +1286,6 @@ class MockRetrievalRunner:
             },
             **machine_output,
             "retry_state": retry_state,
-            "review_ready_checks": review_ready_checks,
             "mock_sources": draft["mock_sources"],
             "missing_information_candidates": draft["missing_information_candidates"],
         }

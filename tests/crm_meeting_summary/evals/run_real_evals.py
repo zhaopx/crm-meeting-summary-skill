@@ -14,8 +14,11 @@ if str(HELPERS_DIR) not in sys.path:
     sys.path.insert(0, str(HELPERS_DIR))
 
 from contract_validator import (  # noqa: E402
+    validate_audit_payload,
+    validate_audit_presence,
     validate_case_expectations,
     validate_human_summary,
+    validate_review_presence,
     validate_review_result,
 )
 from real_runner import run_case  # noqa: E402
@@ -99,22 +102,67 @@ def serialize_dashboard_report(report: dict[str, Any]) -> str:
     return f"window.__REPORT_DATA__ = {json.dumps(report, ensure_ascii=False, indent=2)};\n"
 
 
+def build_accuracy_report(
+    summary_errors: list[str],
+    review_errors: list[str],
+    case_errors: list[str],
+    audit_errors: list[str],
+) -> dict[str, Any]:
+    checks = {
+        "summary_accuracy": not summary_errors,
+        "review_accuracy": not review_errors,
+        "case_accuracy": not case_errors,
+        "audit_accuracy": not audit_errors,
+    }
+    passed_checks = sum(1 for passed in checks.values() if passed)
+    total_checks = len(checks)
+    return {
+        **checks,
+        "overall_accuracy": passed_checks == total_checks,
+        "passed_checks": passed_checks,
+        "total_checks": total_checks,
+        "accuracy_breakdown": {
+            "summary_errors": summary_errors,
+            "review_errors": review_errors,
+            "case_errors": case_errors,
+            "audit_errors": audit_errors,
+        },
+    }
+
+
 def run_eval_case(case_id: str) -> dict[str, Any]:
     captured = run_case(case_id)
     final_text = safe_text(captured.get("final_text"))
     review_result = captured.get("review_result")
+    audit_payload = captured.get("audit_payload")
     summary_errors = validate_human_summary(final_text)
-    review_errors = validate_review_result(review_result)
-    case_errors = validate_case_expectations(case_id, final_text, review_result)
-    verdict = not summary_errors and not review_errors and not case_errors
+    review_presence_errors = validate_review_presence(final_text, review_result)
+    review_errors = [
+        *review_presence_errors,
+        *validate_review_result(review_result),
+    ]
+    audit_presence_errors = validate_audit_presence(final_text, audit_payload)
+    audit_errors = [
+        *audit_presence_errors,
+        *validate_audit_payload(audit_payload),
+    ]
+    try:
+        case_errors = validate_case_expectations(case_id, final_text, review_result, audit_payload)
+    except TypeError:
+        case_errors = validate_case_expectations(case_id, final_text, review_result)
+    accuracy = build_accuracy_report(summary_errors, review_errors, case_errors, audit_errors)
+    verdict = accuracy["overall_accuracy"]
     return {
         "case_id": case_id,
         "raw_response": captured.get("raw_response"),
         "final_text": final_text,
         "review_result": review_result,
+        "audit_payload": audit_payload,
         "summary_verdict": {"passed": not summary_errors, "errors": summary_errors},
         "review_verdict": {"passed": not review_errors, "errors": review_errors},
+        "audit_verdict": {"passed": not audit_errors, "errors": audit_errors},
         "case_verdict": {"passed": not case_errors, "errors": case_errors},
+        "accuracy": accuracy,
         "passed": verdict,
     }
 

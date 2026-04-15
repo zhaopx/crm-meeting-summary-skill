@@ -9,8 +9,9 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 EVALS_PATH = REPO_ROOT / "tests" / "crm_meeting_summary" / "evals" / "evals.json"
+CRM_SKILL_DIR = Path.home() / ".claude" / "skills" / "crm-meeting-summary"
 DEFAULT_CONSTRAINTS = {"language": "zh-CN", "output_mode": "human_only"}
-CLAUDE_TIMEOUT_SECONDS = 180
+CLAUDE_TIMEOUT_SECONDS = 300
 
 BUNDLE_FILE_MAP = {
     "AccountObj.json": "account",
@@ -18,6 +19,7 @@ BUNDLE_FILE_MAP = {
     "PersonnelObj.json": "person",
     "ContactObj.json": "contact",
 }
+MEMORY_FILE_GLOB = "*-memory.json"
 
 
 class RealRunnerError(RuntimeError):
@@ -116,6 +118,14 @@ def build_input_bundle_from_path(bundle_dir: Path) -> dict[str, Any]:
         ensure_repo_path(resolved_file_path)
         crm_context = {**crm_context, scope: read_bundle_json(resolved_file_path)}
 
+    memory_snippets: list[dict[str, Any]] = []
+    for memory_path in sorted(resolved_dir.glob(MEMORY_FILE_GLOB)):
+        if not memory_path.is_file():
+            continue
+        resolved_memory_path = resolve_bundle_file(memory_path)
+        ensure_repo_path(resolved_memory_path)
+        memory_snippets = [*memory_snippets, read_bundle_json(resolved_memory_path)]
+
     return {
         "meeting": {
             "title": None,
@@ -128,7 +138,7 @@ def build_input_bundle_from_path(bundle_dir: Path) -> dict[str, Any]:
             "record_text_path": None,
         },
         "crm_context": crm_context,
-        "memory_snippets": [],
+        "memory_snippets": memory_snippets,
         "constraints": dict(DEFAULT_CONSTRAINTS),
     }
 
@@ -140,9 +150,27 @@ def build_skill_prompt(input_file_path: Path) -> str:
         "输入包是 JSON 文件，不是 PDF。\n"
         "非 PDF 的 Read 调用不要传 pages 字段。\n"
         "按 skill 契约完成输出。\n"
-        "最终结果只保留人类可读总结，不要输出 machine JSON。\n"
+        "最终用户可见结果只保留人类可读总结，不要把 machine JSON 混进最终总结正文。\n"
+        "同时按 runtime-contract 保留结构化 audit_payload，供 runner / review / eval 消费。\n"
         "如果包含 review 结果，也不要让 review JSON 覆盖最终总结正文。"
     )
+
+
+def build_allowed_tools() -> list[str]:
+    resolved_repo_root = REPO_ROOT.resolve()
+    resolved_skill_dir = CRM_SKILL_DIR.resolve()
+    read_roots = [
+        resolved_repo_root,
+        resolved_skill_dir,
+        (resolved_skill_dir / "references").resolve(),
+        (resolved_skill_dir / "review").resolve(),
+    ]
+    read_patterns = [f'Read(//{str(root).lstrip("/")}/**)' for root in read_roots]
+    return [
+        *read_patterns,
+        'Skill(crm-meeting-summary)',
+        'Skill(crm-meeting-summary:*)',
+    ]
 
 
 def parse_cli_payload(stdout: str) -> list[dict[str, Any]]:
@@ -163,26 +191,94 @@ def parse_cli_payload(stdout: str) -> list[dict[str, Any]]:
     return parsed
 
 
-def extract_review_result(text: str) -> dict[str, Any] | None:
+def extract_structured_blocks(text: str) -> tuple[list[tuple[int, int, dict[str, Any]]], list[tuple[int, int, dict[str, Any]]]]:
+    review_blocks: list[tuple[int, int, dict[str, Any]]] = []
+    audit_blocks: list[tuple[int, int, dict[str, Any]]] = []
     fenced_marker = "```json"
-    if fenced_marker not in text:
-        return None
+    search_start = 0
 
-    start = text.rfind(fenced_marker) + len(fenced_marker)
-    end = text.find("```", start)
-    if end == -1:
-        return None
+    while True:
+        marker_position = text.find(fenced_marker, search_start)
+        if marker_position == -1:
+            break
 
-    payload = text[start:end].strip()
-    try:
-        parsed = json.loads(payload)
-    except json.JSONDecodeError:
-        return None
+        payload_start = marker_position + len(fenced_marker)
+        payload_end = text.find("```", payload_start)
+        if payload_end == -1:
+            break
 
-    if not isinstance(parsed, dict):
+        payload = text[payload_start:payload_end].strip()
+        block_end = payload_end + 3
+        search_start = block_end
+
+        try:
+            parsed = json.loads(payload)
+        except json.JSONDecodeError:
+            continue
+
+        if not isinstance(parsed, dict):
+            continue
+
+        if {"pass", "review_status", "failure_reasons"}.issubset(parsed.keys()):
+            review_blocks.append((marker_position, block_end, parsed))
+            continue
+        if parsed.get("schema_version") == "crm-meeting-summary-audit-v1":
+            audit_blocks.append((marker_position, block_end, parsed))
+
+    return review_blocks, audit_blocks
+
+
+def extract_review_result(text: str) -> dict[str, Any] | None:
+    review_blocks, _ = extract_structured_blocks(text)
+    if not review_blocks:
         return None
-    if {"pass", "review_status", "failure_reasons"}.issubset(parsed.keys()):
-        return parsed
+    return review_blocks[-1][2]
+
+
+def extract_review_result_from_payload(cli_payload: list[dict[str, Any]]) -> dict[str, Any] | None:
+    candidate_texts: list[str] = []
+    for item in reversed(cli_payload):
+        if item.get("type") == "result" and isinstance(item.get("result"), str):
+            candidate_texts.append(item["result"])
+    for item in reversed(cli_payload):
+        if item.get("type") != "assistant":
+            continue
+        message = item.get("message", {})
+        for content in reversed(message.get("content", [])):
+            if content.get("type") == "text" and isinstance(content.get("text"), str):
+                candidate_texts.append(content["text"])
+
+    for text in candidate_texts:
+        review_result = extract_review_result(text)
+        if review_result is not None:
+            return review_result
+    return None
+
+
+def extract_audit_payload(text: str) -> dict[str, Any] | None:
+    _, audit_blocks = extract_structured_blocks(text)
+    if not audit_blocks:
+        return None
+    return audit_blocks[-1][2]
+
+
+def extract_audit_payload_from_payload(cli_payload: list[dict[str, Any]]) -> dict[str, Any] | None:
+    candidate_texts: list[str] = []
+    for item in reversed(cli_payload):
+        if item.get("type") == "result" and isinstance(item.get("result"), str):
+            candidate_texts.append(item["result"])
+    for item in reversed(cli_payload):
+        if item.get("type") != "assistant":
+            continue
+        message = item.get("message", {})
+        for content in reversed(message.get("content", [])):
+            if content.get("type") == "text" and isinstance(content.get("text"), str):
+                candidate_texts.append(content["text"])
+
+    for text in candidate_texts:
+        audit_payload = extract_audit_payload(text)
+        if audit_payload is not None:
+            return audit_payload
     return None
 
 
@@ -213,14 +309,16 @@ def extract_final_text(cli_payload: list[dict[str, Any]]) -> str:
     for text in candidate_texts:
         if not looks_like_human_summary(text):
             continue
-        review_result = extract_review_result(text)
-        if review_result is None:
-            return text
-        fenced_marker = "```json"
-        review_start = text.rfind(fenced_marker)
-        if review_start == -1:
-            return text
-        return text[:review_start].rstrip()
+
+        review_blocks, audit_blocks = extract_structured_blocks(text)
+        structured_blocks = sorted([*review_blocks, *audit_blocks], key=lambda block: block[0])
+        if structured_blocks:
+            first_block_start = structured_blocks[0][0]
+            summary_text = text[:first_block_start].rstrip()
+            if looks_like_human_summary(summary_text):
+                return summary_text
+
+        return text.rstrip()
     if candidate_texts:
         return candidate_texts[0]
     raise RealRunnerError("未找到最终 assistant 文本")
@@ -248,6 +346,8 @@ def invoke_real_skill(bundle: dict[str, Any]) -> dict[str, Any]:
             "json",
             "--permission-mode",
             "dontAsk",
+            "--allowedTools",
+            *build_allowed_tools(),
         ]
         try:
             result = subprocess.run(
@@ -271,10 +371,14 @@ def invoke_real_skill(bundle: dict[str, Any]) -> dict[str, Any]:
         cli_payload = parse_cli_payload(result.stdout)
         final_text = extract_final_text(cli_payload)
         review_result = extract_review_result(final_text)
+        if review_result is None:
+            review_result = extract_review_result_from_payload(cli_payload)
+        audit_payload = extract_audit_payload_from_payload(cli_payload)
         return {
             "raw_response": cli_payload,
             "final_text": final_text,
             "review_result": review_result,
+            "audit_payload": audit_payload,
         }
     finally:
         if input_file_path is not None:

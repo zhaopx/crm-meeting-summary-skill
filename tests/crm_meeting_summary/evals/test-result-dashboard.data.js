@@ -38,7 +38,8 @@ window.__REPORT_DATA__ = {
       "key_judgments",
       "retrieval_trace",
       "retry_state.history",
-      "review_ready_checks.template_mapping_consistency",
+      "review_result.check_results.template_no_fabrication",
+      "review_result.check_results.next_action_quality",
       "template_output",
       "template_trace"
     ],

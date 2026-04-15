@@ -73,11 +73,8 @@ REVIEW_CHECK_KEYS = {
     "memory_conflict_handling",
     "missing_information_handling",
     "policy_boundary_handling",
-    "semantic_normalization_consistency",
-    "meeting_state_feature_evidence",
-    "semantic_summary_consistency",
-    "template_mapping_consistency",
-    "machine_output_completeness",
+    "template_no_fabrication",
+    "next_action_quality",
 }
 
 
@@ -92,7 +89,7 @@ def run_runner(args: list[str]) -> dict:
 
 
 @pytest.mark.unit
-def test_execute_returns_full_output_schema_when_review_passes():
+def test_execute_returns_review_checked_runtime_output_when_review_passes():
     output = run_runner(BASELINE_ARGS)
 
     assert output["status"] == "passed"
@@ -144,9 +141,8 @@ def test_execute_returns_full_output_schema_when_review_passes():
     assert output["template_trace"]["merge_order"] == ["matched-profile"]
     assert output["template_trace"]["strict_no_fabrication"] is True
 
-    assert set(output["review_ready_checks"].keys()) == REVIEW_CHECK_KEYS
-    assert all(output["review_ready_checks"].values())
     assert set(output["review_result"]["check_results"].keys()) == REVIEW_CHECK_KEYS
+    assert all(value == "pass" for value in output["review_result"]["check_results"].values())
     assert set(output["semantic_summary"].keys()) == {
         "relationship_state",
         "decision_pressure",
@@ -191,7 +187,7 @@ def test_execute_retries_once_with_targeted_regeneration_then_passes():
         }
     ]
     assert "当前会话证据优先于历史记忆" in output["human_summary"]
-    assert output["review_result"]["check_results"]["template_mapping_consistency"] == "pass"
+    assert output["review_result"]["check_results"]["template_no_fabrication"] == "pass"
 
 
 @pytest.mark.unit
@@ -241,6 +237,40 @@ def test_template_missing_content_stays_missing_without_fabrication():
     assert "拍板人确认" in missing_labels
     assert "拍板人确认：[missing]" in output["human_summary"]
     assert "拍板人确认：已确认" not in output["human_summary"]
+
+
+@pytest.mark.unit
+def test_next_action_quality_exposes_task_purpose_and_blocker_in_summary_fields():
+    output = run_runner(BASELINE_ARGS)
+
+    summary_fields = output["summary_fields"]
+    assert summary_fields["next_action_task"] == "一周内提交问题诊断与优化路径建议"
+    assert "效果不稳定" in summary_fields["next_action_purpose"]
+    assert "无法判断是否进入试点" in summary_fields["next_action_blocker"]
+
+    mapping_by_label = {
+        item["label"]: item
+        for section in output["template_output"]["sections"]
+        for item in section["items"]
+    }
+    assert mapping_by_label["动作"]["resolved_source_path"] == "summary_fields.next_action_task"
+    assert mapping_by_label["目的"]["resolved_source_path"] == "summary_fields.next_action_purpose"
+    assert mapping_by_label["不做会卡住什么"]["resolved_source_path"] == "summary_fields.next_action_blocker"
+    assert "动作：[missing]" not in output["human_summary"]
+    assert "目的：[missing]" not in output["human_summary"]
+    assert "不做会卡住什么：[missing]" not in output["human_summary"]
+    assert output["review_result"]["check_results"]["next_action_quality"] == "pass"
+
+
+@pytest.mark.unit
+def test_uncertain_path_still_provides_structured_next_action_triplet():
+    output = run_runner(UNCERTAIN_ARGS)
+
+    summary_fields = output["summary_fields"]
+    assert summary_fields["next_action_task"] == "先确认当前讨论到底属于预算、试点、交付还是采购问题"
+    assert "会议主题消歧" in summary_fields["next_action_purpose"]
+    assert "retrieval、判断和跟进动作都会继续跑偏" in summary_fields["next_action_blocker"]
+    assert output["review_result"]["check_results"]["next_action_quality"] == "pass"
 
 
 @pytest.mark.unit
