@@ -113,15 +113,14 @@ mapping 允许的 request groups：
 - `risk_validation_gap` 命中，因为当前 record 提到了效果、预算优先级、历史承诺风险
 - 最终只请求缺失字段：`implementation_status`、`last_commitments`
 
-`template` 只选一份最终模板，不做多模板叠加。
-
+模板命中规则：
 - 当 `scenario_mode=uncertain` 时，直接回退到 `skills/crm-meeting-summary/references/templates/common/default.md`
 - 否则按顺序命中：
   - `skills/crm-meeting-summary/references/templates/profiles/<scenario_slug>--<industry>.md`
   - `skills/crm-meeting-summary/references/templates/profiles/<scenario_slug>.md`
   - `skills/crm-meeting-summary/references/templates/common/default.md`
-- 模板文件本身只写目录，字段映射由 runtime 内置规则承担
-- 主 skill 最后按模板目录把已有 summary 内容整合成最终文档，有则填，没有不编造
+- 模板只负责重排已有 summary 内容，不新增事实
+
 
 ## 第 5 步：语义归一
 
@@ -184,29 +183,29 @@ skill 基于同一份事实底座先生成原始 summary，再按 template 目�
 人类可读总结示例：
 
 ```text
-会议快照
+## 会议快照
 - 场景：需求澄清
 - 模式：normal
 - 目标：确认问题根因并判断是否进入试点
 
-核心总结与判断
+## 核心总结与判断
 - 已确认事实：客户当前最关注的是效果不稳定和夜间转人工率偏高。
 - 当前判断：客户愿意继续推进，但前提是先验证根因并看到短期效果改善。
 - 当前阶段：qualification
 - 决策压力：budget priority depends on short-term proof
 - 风险等级：medium
 
-Knowhow 关注点
+## Knowhow 关注点
 - 区分真实推进与礼貌性回应
 - 缺失关键信息时只请求最小必要 CRM 字段
 - 预算优先级与短期效果证明直接相关
 - 实施复杂度会直接影响商业推进动能
 
-建议的下一步动作
+## 建议的下一步动作
 - 一周内提交问题诊断与优化路径建议
 - 补齐试点评估负责人与预算审批链条
 
-风险与待确认问题
+## 风险与待确认问题
 - 待补：implementation_status
 - 待补：last_commitments
 - 拍板人确认：[missing]
@@ -216,29 +215,7 @@ Knowhow 关注点
 
 主 skill 生成 draft 后，调用 `crm-meeting-summary-review`。
 
-这条 baseline case 的 review 结果：
-
-```json
-{
-  "pass": true,
-  "review_status": "pass",
-  "failure_reasons": [],
-  "targeted_regeneration_instructions": [],
-  "check_results": {
-    "scenario_self_consistency": "pass",
-    "knowhow_coverage": "pass",
-    "evidence_grounding": "pass",
-    "memory_conflict_handling": "pass",
-    "missing_information_handling": "pass",
-    "policy_boundary_handling": "pass",
-    "template_no_fabrication": "pass",
-    "next_action_quality": "pass"
-  },
-  "notes": []
-}
-```
-
-因为 review 通过，所以可以直接交付最终总结。
+这条 baseline case 的 review 结果会作为内部校验对象存在，用于决定是否继续定向修复；最终用户可见结果仍然只交付人类可读总结，不直接拼接 review JSON。
 
 ## 第 9 步：执行面捕获
 
@@ -246,10 +223,12 @@ Knowhow 关注点
 - `tests/crm_meeting_summary/helpers/real_runner.py`：调用真实 skill，捕获完整最终返回值
 - `tests/crm_meeting_summary/evals/run_real_evals.py`：批量执行关键 eval case
 
-执行面至少保留这些产物：
+执行面可以捕获调试对象，例如：
 - `raw_response`：CLI 返回的完整原始回包
-- `final_text`：经筛选后的最终主 skill 文本，不取 review skill 的 pass/fail JSON
-- `review_result`：如果能从结果中提取，则保留 review 结论供调试
+- `final_text`：经筛选后的最终主 skill 文本
+- `review_result` / `audit_payload`：仅在测试与调试链路中作为内部校验对象使用，不属于最终用户正文
+
+这些对象属于验证链路，不代表最终用户可见交付格式。
 
 ## 第 10 步：失败样例如何停止自动化
 

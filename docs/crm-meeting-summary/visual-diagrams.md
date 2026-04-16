@@ -1,7 +1,6 @@
-# crm-meeting-summary 
+# crm-meeting-summary
 
 ## 1. 总架构图
-
 
 ![总架构图参考草图](../../whiteboard_exported_image.png)
 
@@ -38,7 +37,7 @@ if (memory 与当前 meeting / CRM\n证据冲突?) then (是)
   :优先保留当前证据；\n暴露冲突边界，必要时降低判断强度;
 else (否)
 endif
-:生成通用原始 summary\n只写已确认内容，不强绑固定章节;
+:生成原始 summary\n只写已确认内容;
 :按单一 template 重排结构\n只重组已有内容，不新增事实;
 :调用 review 子 skill\n提交 summary / loaded knowhow\n最小证据摘录 / 缺失信息\n必要的 template / memory conflict 说明;
 :按固定顺序评审\n事实准确性 -> 风险覆盖 -> 业务价值;
@@ -86,7 +85,7 @@ end
 Skill -> Skill: 语义归一
 Skill -> Skill: 提取通用会议状态
 Skill -> Skill: 组装最小 memory 上下文\n冲突时优先当前 meeting / CRM 证据
-Skill -> Skill: 生成通用原始 summary\n只写已确认内容，不强绑固定章节
+Skill -> Skill: 生成原始 summary\n只写已确认内容
 Skill -> Skill: 按 template 重排最终目录\n只重组已有内容，不新增事实
 Skill -> Review: 提交 summary / loaded knowhow\n最小证据摘录 / 缺失信息\n必要的 template / memory conflict 说明
 Review -> Review: 按固定顺序评审\n事实准确性 -> 风险覆盖 -> 业务价值
@@ -113,7 +112,8 @@ Claude --> User: 展示结果
 @enduml
 ```
 
-## 4. 当前风险
-- 与纷享 agent体系适配度如何
-- 耗时和 token 消耗都会大幅增加
-- 对于模型依赖比较强，目前是用 gpt 5.4 效果较优
+## 4. 说明
+
+- 本页只做结构示意，不作为运行时契约来源
+- 正式口径以 `skills/crm-meeting-summary/references/runtime-contract.md`、`skills/crm-meeting-summary/SKILL.md`、`skills/crm-meeting-summary/review/SKILL.md` 为准
+- 图中使用的 `semantic_normalization`、`meeting_state_features`、review loop 等词，仅表示内部流程阶段，不代表最终用户可见输出结构
