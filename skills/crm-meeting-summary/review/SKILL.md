@@ -1,81 +1,74 @@
 ---
 name: crm-meeting-summary-review
-description: 当需要校验 crm-meeting-summary skill 的输出，判断一份 CRM 会议总结是否事实有据、风险充分、符合 knowhow 覆盖要求，并且可以安全交付时，应使用此 skill；凡是生成的 CRM meeting summary 需要 pass/fail 审核与定向再生成反馈，都应调用它。
+description: 当需要校验 crm-meeting-summary skill 的输出，判断一份 CRM 会议总结是否事实有据、风险覆盖充分、符合 knowhow 覆盖要求，并且可以安全交付时，应使用此 skill；凡是生成的 CRM meeting summary 需要 pass/fail 审核与定向修复反馈，都应调用它。
 ---
 
 # CRM 会议总结评审
 
-按严格优先级顺序审查 CRM meeting summary：
+把这份 review skill 当成 `crm-meeting-summary` 的真实运行时质量闸门。
+它只做三件事：
+1. 判断 pass / fail
+2. 输出具体 `failure_reasons`
+3. 只对失败维度给出 `targeted_regeneration_instructions`
+
+除非用户明确要求，不要重写 summary 正文。
+
+## 输入要求
+
+调用方至少应传入：
+- 生成人类可读总结
+- 已加载 knowhow 标识
+- 用于验证 claim 的最小支持证据摘录
+- 缺失信息清单
+
+如已使用 template 或 memory，还应补充：
+- 模板选择结果与明显映射缺口说明
+- 必要的 memory conflict 简述
+
+review handoff 边界见 `../references/runtime-contract.md`。
+如果输入不满足最小评审条件：
+- 直接 fail
+- 明确指出缺失了哪些必需输入
+- 不要假装可以完整评审
+
+## 评审顺序
+
+按固定优先级审查：
 1. 事实准确性
 2. 风险覆盖
 3. 业务价值
 
-除非用户明确要求，不要重写 summary。只输出 pass/fail 判断和聚焦的修复指导。
-
-## 评审输入
-
-期望输入至少包含：
-- generated human-readable summary
-- generated machine-readable output
-- loaded knowhow identifiers
-- retrieval trace
-- retry state
-- 用于验证 claim 的最小支持证据摘录
-
-review handoff 边界和状态分离见 `../references/runtime-contract.md`。
-
-## 评审规则
-
-### 优先级 1：事实准确性
-
-出现以下任一情况立即 fail：
-- claim 无法被 meeting notes、CRM data 或 memory 支撑
-- fabricated account state、opportunity state、participant role 或 next step
-- 混淆事实与推断
-- 用 stale memory 覆盖当前 evidence
-- machine-readable fields 与 human-readable summary 不一致
-- `semantic_summary` labels 无证据支撑
-
-### 优先级 2：风险覆盖
-
-检查 summary 是否遗漏或弱化了 knowhow 或 source evidence 已支持的重要风险信号，包括：
-- deal progression risk
-- stakeholder risk
-- commitment risk
-- delivery or implementation risk
-- compliance or policy boundary risk
-- escalation, dissatisfaction, or churn risk
-
-高显著性风险被遗漏、模糊化或错误标注时必须 fail。
-
-### 优先级 3：业务价值
-
-检查输出是否真正可用于行动：
-- 主结论是否清楚
-- next actions 是否 evidence-based
-- knowhow focus items 是否被覆盖
-- open questions 是否明确
-- recommendations 是否足够具体、可以直接使用
-
-如果输出技术上准确，但业务上空洞，也必须 fail。
+评审判定口径以下列规则为准：
+- `scenario_self_consistency`：summary 必须能清楚回答当前会议处于什么状态、当前核心阻塞点是什么、主要判断是否彼此自洽，且内部结论不能互相冲突。
+- `knowhow_coverage`：summary 必须压缩出当前场景真正重要的门槛、边界、风险与关注点，不能只复述内部分析框架。
+- `evidence_grounding`：主要结论都必须能回溯到最小证据摘录，不能把条件性能力、客户兴趣或历史记忆写成已确认事实。
+- `memory_conflict_handling`：存在 memory 冲突时，必须优先信任当前 meeting / CRM evidence，并在关键判断受影响时暴露不确定边界。
+- `missing_information_handling`：缺失信息必须显式暴露，不能把拍板人、预算、时间线、接口结论等未确认项写成确定性陈述。
+- `policy_boundary_handling`：summary 必须显式呈现交付、合规、接口、升级、协作等关键边界，不能低估真实执行风险。
+- `template_no_fabrication`：套模板后只能重组已有内容，缺失项必须 missing / 留空 / 待确认，不能补写新事实。
+- `next_action_quality`：动作必须贴着当前阻塞点，至少说明动作本身、动作目的，以及不做会卡住什么。
 
 ## 必需检查项
 
 至少返回以下检查项：
-- scenario_self_consistency
-- knowhow_coverage
-- evidence_grounding
-- memory_conflict_handling
-- missing_information_handling
-- policy_boundary_handling
-- semantic_summary_consistency
-- machine_output_completeness
+- `scenario_self_consistency`
+- `knowhow_coverage`
+- `evidence_grounding`
+- `memory_conflict_handling`
+- `missing_information_handling`
+- `policy_boundary_handling`
+- `template_no_fabrication`
+- `next_action_quality`
 
-summary machine output 中的 `review_ready_checks` 必须保持 boolean，并与 `references/output-schema.md` 一致。
+说明：
+- 没有使用 memory 时，`memory_conflict_handling` 可以 pass，但不能编造 memory 结论。
+- 没有使用 template 时，`template_no_fabrication` 可以 pass，但不能因为没套模板就降低事实要求。
+- `next_action_quality` 要重点检查动作是否真正贴着当前阻塞点，是否说明动作目的，以及不做会卡住什么。
+- `knowhow_coverage` 不要求复述内部分析框架，而要检查 summary 是否把当前场景真正重要的门槛、边界、风险与关注点压缩出来。
 
 ## 输出格式
 
-返回以下结构化结果：
+始终返回以下结构化结果：
 
 ```json
 {
@@ -90,32 +83,50 @@ summary machine output 中的 `review_ready_checks` 必须保持 boolean，并�
     "memory_conflict_handling": "pass",
     "missing_information_handling": "pass",
     "policy_boundary_handling": "pass",
-    "semantic_summary_consistency": "pass",
-    "machine_output_completeness": "pass"
+    "template_no_fabrication": "pass",
+    "next_action_quality": "pass"
   },
   "notes": []
 }
 ```
 
 review 失败时：
-- 将 `pass` 设为 `false`
-- 将 `review_status` 设为 `fail`
-- 列出具体 failure reasons
-- 只针对失败维度提供 targeted regeneration instructions
+- `pass = false`
+- `review_status = fail`
+- 列出具体 `failure_reasons`
+- 只针对失败维度给出 `targeted_regeneration_instructions`
 - 除非整份输出都不可用，否则不要要求 full rewrite
 
-## 评审方法
+## 真实运行时约束
 
-1. 将每个 major claim 与 evidence excerpts 和 machine fields 对照。
-2. 验证 scenario classification 是否有依据，必要时是否使用了 low-confidence fallback。
-3. 验证 knowhow-derived focus items 是否进入最终输出。
-4. 验证 missing information 是否被显式暴露，而不是被隐藏。
-5. 验证风险没有在缺乏证据时被降级。
-6. 验证 `semantic_summary` 与 `summary_fields` 中的语义字段是否对齐且有证据支撑。
-7. 验证 machine output 是否可被下游步骤消费。
-8. 验证 human-readable summary 与 machine-readable output 在决策层表达的是同一件事。
-9. 验证 contract 要求时，`retrieval_trace` 和 `retry_state` 是否存在。
+当这份 review skill 被主 skill 调用时，必须遵守：
+1. 只审查传入包，不主动扩大上下文范围
+2. 当最小证据摘录已足够时，不要求完整 CRM dump 或完整 knowhow 正文
+3. 不生成新的业务事实
+4. 不把“风格不喜欢”当作 fail 原因
+5. 如果存在 template，必须重点检查缺失项是否被硬编成确定性陈述
 
 ## 升级规则
 
-如果证据太弱，无法判断 summary 是否正确，应 fail，并明确请求所缺的具体上下文，而不是放过一份模糊输出。
+如果证据太弱，无法判断 summary 是否正确：
+- 必须 fail
+- 明确请求所缺的具体上下文
+- 不要放过一份模糊输出
+
+如果已经做过 2 次定向修复且仍失败：
+- 保持 fail
+- 输出最后一轮最关键的 failure reasons
+- 不要再建议无限重试
+- 明确说明需要人工复核
+
+## Template 专项检查
+
+如果主 skill 输出按模板重排，review 必须额外检查：
+- human-readable summary 的目录顺序是否与所选模板一致
+- 模板缺失项是否被标记为 missing、留空或显式写成待确认
+- 是否因为模板目录存在，就补写了 summary 里本来没有的新事实
+
+以下情况直接 fail：
+- 模板项无证据却有确定性内容
+- 缺失项被硬编成确定性陈述
+- 模板目录顺序与最终总结冲突，导致关键信息错位

@@ -10,27 +10,27 @@
 3. 哪些风险被明确说出、被暗示，或被回避？
 4. 谁做了什么承诺，截止何时？
 5. 为了安全进入下一步，还缺什么信息？
-6. 哪些 account-stage 或 opportunity-stage 事实会影响这次会议的解读？
+6. 哪些客户阶段或商机阶段事实会影响这次会议的解读？
 7. 是否有参与者重复了历史上已知的关注点，应该被抬高优先级？
 
 ## CRM 原生上下文规则
 在做最终判断前，要把会议与以下上下文交叉核对：
-- account profile
-- relationship 或 opportunity stage
+- 客户画像
+- 当前关系或商机阶段
 - 当前影响评分的风险或进展项
-- 相关 person/account/opportunity/contact memory
+- 相关人员 / 客户 / 商机 / 联系人 memory（其中底层 `account` 对外业务语义为“客户”）
 
-如果这些信息缺失且确实重要，就请求最小缺失 CRM fields，不要猜。
+如果这些信息缺失且确实重要，就请求最小缺失 CRM 字段，不要猜。
 
 ## 通用总结边界
 - 区分事实与解释
 - 显式标记不确定性
-- 不要过度声称 customer intent
-- stakeholder ownership 不清晰时，不要假装内部已有确定判断
-- 不要把友好语气误判成 deal advancement
+- 不要过度声称客户意图
+- 干系人 owner 不清晰时，不要假装内部已有确定判断
+- 不要把友好语气误判成商业推进
 
 ## 通用动作规则
-Recommended next actions 必须绑定到本次会议证据或已验证 CRM context。
+建议的下一步动作必须绑定到本次会议证据或已验证 CRM 上下文。
 
 ## 重复提及规则
 如果 stakeholder 或 object memory 显示同一关注点跨多次会议重复出现，要在 summary 中显式指出这种重复，并把它视为比一次性提及更强的信号。

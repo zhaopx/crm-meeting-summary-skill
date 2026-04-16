@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM Meeting Summary 项目结构页</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%231a1a1a'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-size='30' font-family='Arial,sans-serif' fill='%23ffffff'%3EC%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --color-bg: #f3f4f6;
+      --color-surface: #ffffff;
+      --color-surface-soft: #f8f9fb;
+      --color-text: #1f1f1f;
+      --color-muted: #5f6772;
+      --color-border: #d9dde3;
+      --color-link: #23476b;
+      --color-focus-ring: rgba(35, 71, 107, 0.18);
+      --color-layer-1: #eef4fb;
+      --color-layer-2: #f6f7fa;
+      --color-node-1: #d9e8f7;
+      --color-node-2: #eceef2;
+      --color-node-2-sub: #f3f4f6;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --space-1: 8px;
+      --space-2: 12px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 32px;
+      --space-6: 40px;
+      --space-7: 56px;
+      --container-width: 1400px;
+      --border: 1px solid var(--color-border);
+      --shadow-card: 0 14px 30px rgba(17, 24, 39, 0.06);
+      --font-sans: Arial, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #f7f8fa 0%, #eef1f5 100%);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--space-5);
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: var(--border);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 24px rgba(17, 24, 39, 0.04);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-width: 0;
+    }
+
+    .nav-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--color-text);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      flex: none;
+    }
+
+    .nav-title {
+      font-size: 18px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .nav-subtitle {
+      margin-top: 2px;
+      color: var(--color-muted);
+      font-size: 12px;
+      line-height: 1.2;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: var(--space-3);
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links a {
+      color: var(--color-muted);
+      text-decoration: none;
+      border-radius: 6px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible,
+    .cta-link:hover,
+    .cta-link:focus-visible,
+    .inline-link:hover,
+    .inline-link:focus-visible {
+      color: var(--color-link);
+    }
+
+    .nav-links a:focus-visible,
+    .cta-link:focus-visible,
+    .inline-link:focus-visible {
+      outline: 2px solid var(--color-link);
+      outline-offset: 3px;
+      box-shadow: 0 0 0 4px var(--color-focus-ring);
+    }
+
+    .page {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: var(--space-6) var(--space-5) 96px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+      gap: var(--space-4);
+      align-items: stretch;
+      margin-bottom: var(--space-7);
+    }
+
+    .eyebrow,
+    .section-label,
+    .node-label,
+    .summary-label,
+    .legend-chip,
+    .group-label {
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow,
+    .section-label,
+    .node-label,
+    .summary-label,
+    .group-label {
+      color: #55606d;
+    }
+
+    h1, h2, h3, p, ul, li {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 860px;
+      font-size: 46px;
+      line-height: 1.06;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    .hero-copy,
+    .hero-panel,
+    .section-head,
+    .diagram-stack,
+    .diagram-layer,
+    .diagram-lane,
+    .node-grid,
+    .legend,
+    .summary-grid,
+    .summary-card,
+    .summary-list,
+    .summary-item,
+    .subsource-group,
+    .subsource-grid {
+      display: grid;
+      gap: var(--space-3);
+    }
+
+    .hero-copy p,
+    .hero-note,
+    .section-head p,
+    .node-copy,
+    .node-meta,
+    .summary-item,
+    .support-text,
+    .group-copy {
+      color: var(--color-muted);
+    }
+
+    .hero-copy p {
+      max-width: 760px;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+
+    .cta-link,
+    .inline-link {
+      width: fit-content;
+      color: var(--color-link);
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .hero-panel,
+    .diagram-layer,
+    .summary-card {
+      background: var(--color-surface);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+    }
+
+    .hero-panel,
+    .summary-card {
+      padding: var(--space-4);
+    }
+
+    .hero-panel {
+      align-content: start;
+      background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
+    }
+
+    .hero-value {
+      font-size: 34px;
+      line-height: 1.05;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      color: #21384f;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-2);
+      margin-top: var(--space-1);
+    }
+
+    .metric-card {
+      padding: var(--space-2);
+      border-radius: var(--radius-md);
+      border: var(--border);
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .metric-value {
+      margin-top: 6px;
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .metric-copy {
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--color-muted);
+    }
+
+    .section {
+      padding-top: var(--space-7);
+    }
+
+    .section-head {
+      margin-bottom: var(--space-4);
+    }
+
+    .section-head h2 {
+      margin-top: var(--space-1);
+      font-size: 32px;
+      line-height: 1.12;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .section-head p {
+      max-width: 840px;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .diagram-stack {
+      gap: var(--space-4);
+    }
+
+    .diagram-layer {
+      padding: var(--space-4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diagram-layer.layer-1 { background: linear-gradient(180deg, #ffffff 0%, var(--color-layer-1) 100%); }
+    .diagram-layer.layer-2 { background: linear-gradient(180deg, #ffffff 0%, var(--color-layer-2) 100%); }
+
+    .diagram-layer::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -30px;
+      width: 2px;
+      height: 30px;
+      background: linear-gradient(180deg, rgba(95, 103, 114, 0.4) 0%, rgba(95, 103, 114, 0) 100%);
+      transform: translateX(-50%);
+    }
+
+    .diagram-layer:last-child::after {
+      display: none;
+    }
+
+    .diagram-head {
+      display: grid;
+      gap: 10px;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: var(--border);
+    }
+
+    .diagram-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .diagram-title {
+      font-size: 30px;
+      line-height: 1.08;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .diagram-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: var(--border);
+      background: rgba(255, 255, 255, 0.86);
+      color: #44515f;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .diagram-copy {
+      max-width: 980px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--color-muted);
+    }
+
+    .diagram-lane {
+      gap: var(--space-3);
+    }
+
+    .node-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      align-items: stretch;
+    }
+
+    .node-grid.three-col {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .node-grid.one-col {
+      grid-template-columns: minmax(0, 620px);
+      justify-content: center;
+    }
+
+    .diagram-node {
+      display: grid;
+      gap: 10px;
+      min-height: 100%;
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      border: var(--border);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.24);
+    }
+
+    .diagram-node.node-layer-1 { background: linear-gradient(180deg, #ffffff 0%, var(--color-node-1) 100%); }
+    .diagram-node.node-layer-2 { background: linear-gradient(180deg, #ffffff 0%, var(--color-node-2) 100%); }
+    .diagram-node.node-layer-2-sub { background: linear-gradient(180deg, #ffffff 0%, var(--color-node-2-sub) 100%); }
+
+    .node-title {
+      font-size: 24px;
+      line-height: 1.12;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .node-copy,
+    .group-copy {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .node-meta {
+      display: grid;
+      gap: 8px;
+      margin-top: var(--space-1);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .node-meta span {
+      display: block;
+      padding-top: 8px;
+      border-top: var(--border);
+    }
+
+    .arrow-divider {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: var(--space-2);
+      color: #6a7280;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 0.08em;
+    }
+
+    .subsource-group {
+      margin-top: var(--space-2);
+      padding-top: var(--space-3);
+      border-top: var(--border);
+      gap: var(--space-3);
+    }
+
+    .group-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .subsource-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+
+    .legend {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+
+    .legend-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      border: var(--border);
+      background: rgba(255, 255, 255, 0.88);
+      color: #44515f;
+      letter-spacing: 0.04em;
+    }
+
+    .legend-chip::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: 0.85;
+    }
+
+    .legend-chip.layer-1 { color: #53759b; }
+    .legend-chip.layer-2 { color: #727986; }
+
+    .summary-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+
+    .summary-card h3 {
+      margin-top: var(--space-1);
+      font-size: 26px;
+      line-height: 1.15;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .summary-list {
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+
+    .summary-item {
+      display: grid;
+      gap: 6px;
+      padding-top: var(--space-2);
+      border-top: var(--border);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .summary-item:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .summary-item strong {
+      color: var(--color-text);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .support-text {
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 1220px) {
+      .hero,
+      .summary-grid,
+      .node-grid,
+      .node-grid.three-col,
+      .subsource-grid,
+      .legend {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--space-3) var(--space-4);
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+
+      .page {
+        padding: var(--space-5) var(--space-4) 72px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .section-head h2,
+      .diagram-title {
+        font-size: 28px;
+      }
+
+      .hero-metrics,
+      .node-grid,
+      .node-grid.three-col,
+      .subsource-grid,
+      .legend,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .node-grid.one-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: var(--space-4) var(--space-3) 56px;
+      }
+
+      .nav {
+        padding: var(--space-3);
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .hero-panel,
+      .diagram-layer,
+      .summary-card {
+        padding: var(--space-3);
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-brand">
+      <span class="nav-mark">C</span>
+      <div>
+        <div class="nav-title">CRM Meeting Summary</div>
+        <div class="nav-subtitle">项目结构页</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#diagram">架构图</a>
+      <a href="#positioning">页面定位</a>
+      <a href="./test-result-dashboard.html">进入对比页</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header class="hero">
+      <section class="hero-copy">
+        <div class="eyebrow">项目结构页</div>
+        <h1>这页表达的是一个互动入口，下挂多个 skill，再统一落到 memory</h1>
+        <p>顶层不是一排平级模块，而是互动 agent 先接任务。总结 skill、待办 skill、其他 skill 都挂在它下面。再往下是统一的 memory 体系，内部再分对象 memory、用户 memory、agent memory。</p>
+        <div class="cta-row">
+          <a class="cta-link" href="./test-result-dashboard.html">进入总结对比页</a>
+        </div>
+      </section>
+
+      <aside class="hero-panel">
+        <div class="summary-label">系统总览</div>
+        <div class="hero-value">1 个互动入口，N 个挂载 skill，1 套 memory 底座</div>
+        <p class="hero-note">重点不是列全模块名，而是把谁调度谁、谁依赖谁、memory 内部再怎么分层说清楚。这个结构里，skill 是能力挂件，memory 是共享底座。</p>
+        <div class="hero-metrics">
+          <article class="metric-card">
+            <div class="summary-label">顶层入口</div>
+            <div class="metric-value">互动 agent</div>
+            <div class="metric-copy">先接任务，再决定本轮启用哪个 skill。</div>
+          </article>
+          <article class="metric-card">
+            <div class="summary-label">底层共享</div>
+            <div class="metric-value">memory</div>
+            <div class="metric-copy">给总结、待办和其他 skill 提供统一记忆支撑。</div>
+          </article>
+        </div>
+      </aside>
+    </header>
+
+    <section class="section" id="diagram">
+      <div class="section-head">
+        <div class="section-label">架构图</div>
+        <h2>互动 agent 在上面编排 skill，memory 在下面承接长期支撑</h2>
+        <p>上半部分表达调度关系，下半部分表达共享依赖。总结 skill 是当前最核心的一条链，它会继续加载模板、knowhow 和 memory；其他 skill 也走同样模式，只是加载内容不同。</p>
+      </div>
+
+      <div class="diagram-stack">
+        <section class="diagram-layer layer-1">
+          <div class="diagram-head">
+            <div class="diagram-title-row">
+              <div>
+                <div class="section-label">上半层</div>
+                <h3 class="diagram-title">互动 agent + 挂载 skill</h3>
+              </div>
+              <div class="diagram-badge">调度层</div>
+            </div>
+            <p class="diagram-copy">互动 agent 是唯一入口。它不自己吞掉全部业务逻辑，而是把不同任务分发给对应 skill。当前重点是总结 skill，后面待办 skill 和其他 skill 继续按同一挂载方式扩展。</p>
+          </div>
+
+          <div class="diagram-lane">
+            <div class="node-grid one-col">
+              <article class="diagram-node node-layer-1">
+                <div class="node-label">唯一入口</div>
+                <h3 class="node-title">互动 agent</h3>
+                <p class="node-copy">统一接任务、理解上下文、决定本轮调哪个 skill，不把系统画成多个平级入口。</p>
+                <div class="node-meta">
+                  <span>作用：任务编排、上下文承接、技能路由。</span>
+                  <span>边界：互动 agent 是入口，不替代 skill 本身的专门逻辑。</span>
+                </div>
+              </article>
+            </div>
+
+            <div class="arrow-divider">↓</div>
+
+            <div class="node-grid three-col">
+              <article class="diagram-node node-layer-1">
+                <div class="node-label">并列能力</div>
+                <h3 class="node-title">总结 skill</h3>
+                <p class="node-copy">当前最核心的业务 skill，把会议输入变成销售可消费的总结输出。</p>
+                <div class="node-meta">
+                  <span>主链：输入理解 → 模板加载 → knowhow 加载 → memory 加载 → 生成总结。</span>
+                  <span>特点：更重业务判断与表达质量，直接决定总结成品长什么样。</span>
+                  <span>落地页：<a class="inline-link" href="./test-result-dashboard.html">进入总结对比页</a></span>
+                </div>
+              </article>
+
+              <article class="diagram-node node-layer-1">
+                <div class="node-label">并列能力</div>
+                <h3 class="node-title">待办 skill</h3>
+                <p class="node-copy">把会议里真正要推进的动作拆成 owner、前置条件、依赖和阻塞，不和总结 skill 混成一个东西。</p>
+                <div class="node-meta">
+                  <span>主链：任务抽取 → 优先级判断 → owner 归属 → 待办输出。</span>
+                  <span>特点：更重动作闭环，而不是生成一篇可读总结。</span>
+                  <span>依赖：也会消费 memory，不是独立于 memory 的旁路能力。</span>
+                </div>
+              </article>
+
+              <article class="diagram-node node-layer-1">
+                <div class="node-label">扩展能力</div>
+                <h3 class="node-title">其他 skill</h3>
+                <p class="node-copy">后续新增能力继续挂在这里，比如评审、诊断、复盘，不再每加一个能力就多画一层结构。</p>
+                <div class="node-meta">
+                  <span>原则：新增的是能力，不是新顶层。</span>
+                  <span>运行方式：按任务只加载所需子 skill、上下文和 memory。</span>
+                </div>
+              </article>
+            </div>
+
+            <div class="subsource-group">
+              <div class="group-head">
+                <div>
+                  <div class="group-label">skill 内部执行方式</div>
+                  <p class="group-copy">上面三个 skill 不是裸跑。每个 skill 进入执行时，会继续往下加载本轮真正需要的模板、knowhow、memory 或其他子 skill。</p>
+                </div>
+                <div class="diagram-badge">按任务加载</div>
+              </div>
+
+              <div class="subsource-grid">
+                <article class="diagram-node node-layer-2-sub">
+                  <div class="node-label">总结 skill 内部</div>
+                  <h3 class="node-title">模板加载</h3>
+                  <p class="node-copy">先确定这次总结要按什么输出骨架组织内容，避免每轮都从空白格式开始。</p>
+                </article>
+
+                <article class="diagram-node node-layer-2-sub">
+                  <div class="node-label">总结 skill 内部</div>
+                  <h3 class="node-title">knowhow 加载</h3>
+                  <p class="node-copy">补充行业、销售推进、场景判断这类业务 knowhow，让总结不是机械转写。</p>
+                </article>
+
+                <article class="diagram-node node-layer-2-sub">
+                  <div class="node-label">全部 skill 共用</div>
+                  <h3 class="node-title">memory 加载</h3>
+                  <p class="node-copy">把对象、用户、agent 三类记忆按需拉进来，作为本轮推理和输出的共享底座。</p>
+                </article>
+
+                <article class="diagram-node node-layer-2-sub">
+                  <div class="node-label">扩展运行时</div>
+                  <h3 class="node-title">子 skill / 子流程</h3>
+                  <p class="node-copy">如果某类任务需要更细分能力，就继续在 skill 内部挂子 skill，而不是把顶层结构再拆散。</p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="diagram-layer layer-2">
+          <div class="diagram-head">
+            <div class="diagram-title-row">
+              <div>
+                <div class="section-label">下半层</div>
+                <h3 class="diagram-title">memory 体系</h3>
+              </div>
+              <div class="diagram-badge">共享底座</div>
+            </div>
+            <p class="diagram-copy">所有 skill 最终都往下依赖同一套 memory。这里不是一个空盒子，而是继续分成对象 memory、用户 memory、agent memory 三块，分别承接不同维度的长期信息。</p>
+          </div>
+
+          <div class="diagram-lane">
+            <div class="node-grid one-col">
+              <article class="diagram-node node-layer-2">
+                <div class="node-label">统一承接</div>
+                <h3 class="node-title">memory</h3>
+                <p class="node-copy">作为共享记忆底座，承接对象事实、用户偏好、agent 可复用经验。上层 skill 不再每次从零开始推理，而是从 memory 中拿到稳定支撑。</p>
+                <div class="node-meta">
+                  <span>服务对象：总结 skill、待办 skill、其他 skill。</span>
+                  <span>设计方案：<a class="inline-link" href="../../../memory/crm-meeting-summary/index.html">查看 memory 整体设计与技术方案</a></span>
+                </div>
+              </article>
+            </div>
+
+            <div class="arrow-divider">↓</div>
+
+            <div class="subsource-group">
+              <div class="group-head">
+                <div>
+                  <div class="group-label">memory 内部组成</div>
+                  <p class="group-copy">这三块不是平级产品模块，而是 memory 体系内部的分区，各自解决不同类型的信息沉淀。</p>
+                </div>
+                <div class="diagram-badge">内部三分区</div>
+              </div>
+
+              <div class="subsource-grid">
+                <article class="diagram-node node-layer-2-sub">
+                  <div class="node-label">对象维度</div>
+                  <h3 class="node-title">对象 memory</h3>
+                  <p class="node-copy">沉淀 account、opportunity、stakeholder、commitment 这类业务对象的长期状态、模式和关键判断。</p>
+                  <div class="node-meta">
+                    <span>典型内容：阶段、风险、阻塞、承诺链、关系判断。</span>
+                    <span>价值：让总结 skill 读到“这单现在怎么回事”，而不是只看单次会议。</span>
+                  </div>
+                </article>
+
+                <article class="diagram-node node-layer-2-sub">
+                  <div class="node-label">用户维度</div>
+                  <h3 class="node-title">用户 memory</h3>
+                  <p class="node-copy">沉淀用户偏好、工作方式、长期约束和稳定指令，避免每个 session 重新校准一次。</p>
+                  <div class="node-meta">
+                    <span>典型内容：输出偏好、闭环要求、语言风格、任务轻重偏好。</span>
+                    <span>价值：让互动 agent 和各类 skill 更贴着真实协作方式执行。</span>
+                  </div>
+                </article>
+
+                <article class="diagram-node node-layer-2-sub">
+                  <div class="node-label">系统维度</div>
+                  <h3 class="node-title">agent memory</h3>
+                  <p class="node-copy">沉淀 agent 自己可复用的经验、路径、规则和上下游协作记忆，支撑后续自动化与稳定执行。</p>
+                  <div class="node-meta">
+                    <span>典型内容：可复用经验、已验证路径、技能协作经验、系统侧知识。</span>
+                    <span>价值：让 agent 不只是会做，还会越做越稳定。</span>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="legend">
+        <div class="legend-chip layer-1">上半层是互动入口与 skill 调度</div>
+        <div class="legend-chip layer-2">下半层是 memory 底座及其内部三类记忆</div>
+      </div>
+    </section>
+
+    <section class="section" id="positioning">
+      <div class="summary-grid">
+        <section class="summary-card">
+          <div class="summary-label">结构要点</div>
+          <h3>这页现在在讲什么</h3>
+          <div class="summary-list">
+            <div class="summary-item">
+              <strong>先有互动 agent</strong>
+              <span>它是统一入口，负责把任务路由到总结 skill、待办 skill 或其他 skill。</span>
+            </div>
+            <div class="summary-item">
+              <strong>再有挂载 skill</strong>
+              <span>skill 是被调度的能力，不是新的顶层系统入口。</span>
+            </div>
+            <div class="summary-item">
+              <strong>最后统一落到 memory</strong>
+              <span>所有 skill 共享同一底座，再由对象 memory、用户 memory、agent memory 分别承接不同信息。</span>
+            </div>
+          </div>
+        </section>
+
+        <aside class="summary-card">
+          <div class="summary-label">相关入口</div>
+          <h3>配套页面</h3>
+          <div class="summary-list">
+            <div class="summary-item">
+              <strong><a class="inline-link" href="./test-result-dashboard.html">总结对比页</a></strong>
+              <span>看 skill 新版总结、飞书、钉钉等多份总结的并列对比与 AI 评审。</span>
+            </div>
+            <div class="summary-item">
+              <strong><a class="inline-link" href="../../../memory/crm-meeting-summary/index.html">memory 设计页</a></strong>
+              <span>看 memory 为什么这样分、怎么写入、怎么升级、怎么给上层 skill 消费。</span>
+            </div>
+          </div>
+          <p class="support-text">这个结构页继续保持静态 HTML，可直接本地打开。</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

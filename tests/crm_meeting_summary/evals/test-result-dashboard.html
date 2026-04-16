@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM Meeting Summary Comparison Workspace</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%231a1a1a'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-size='30' font-family='Arial,sans-serif' fill='%23ffffff'%3EC%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./test-result-dashboard.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-brand">
+      <span class="nav-mark">C</span>
+      <div>
+        <div class="nav-title">CRM Meeting Summary</div>
+        <div class="nav-subtitle">Comparison Workspace</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="./index.html">项目结构</a>
+      <a href="#overview">概览</a>
+      <a href="#summary-board">总结对比</a>
+      <a href="#evaluation-board">AI 评审</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header class="hero">
+      <div class="hero-headline">
+        <div class="eyebrow">Comparison Workspace</div>
+        <h1>同语料多总结对比评测页</h1>
+        <p id="hero-description"></p>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-panel-label">Source Bundle</div>
+        <div class="hero-note" id="hero-note"></div>
+      </div>
+    </header>
+
+    <section class="section" id="overview">
+      <div class="section-head section-head-split">
+        <div>
+          <div class="section-label">Overview</div>
+          <h2>比较上下文</h2>
+        </div>
+        <p>同一份会议语料下，把 new-summay、飞书总结、钉钉总结等不同来源总结放在一个工作台里直接对比，再集中查看 AI 评审结果。</p>
+      </div>
+
+      <div class="grid grid-4" id="overview-metrics"></div>
+    </section>
+
+    <section class="section" id="summary-board">
+      <div class="section-head section-head-split">
+        <div>
+          <div class="section-label">Summary Board</div>
+          <h2>总结并列对比</h2>
+        </div>
+        <p>上半区只展示 new-summay 和各平台总结内容本身。针对每份总结的优劣势、评分、风险和建议，统一放到下方评审表，不再混在卡片里。</p>
+      </div>
+
+      <div class="summary-grid" id="summary-cards"></div>
+
+      <div class="section-grid-large">
+        <section class="card card-section">
+          <div class="card-kicker">Review Matrix</div>
+          <h3>单份总结评审表</h3>
+          <div class="review-table-wrap">
+            <table class="review-table" id="summary-review-table">
+              <caption>同一份会议语料下，各来源总结的统一评审结果。</caption>
+              <thead>
+                <tr>
+                  <th scope="col">总结来源</th>
+                  <th scope="col">评分</th>
+                  <th scope="col">总体评价</th>
+                  <th scope="col">优势</th>
+                  <th scope="col">不足</th>
+                  <th scope="col">后续动作</th>
+                  <th scope="col">风险 / 缺失</th>
+                </tr>
+              </thead>
+              <tbody id="summary-review-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="section" id="evaluation-board">
+      <div class="section-head section-head-split">
+        <div>
+          <div class="section-label">AI Evaluation</div>
+          <h2>AI 质量评审</h2>
+        </div>
+        <p>集中看质量维度、当前最佳版本、各版本共识点和冲突点。这里服务判断，不服务回放执行细节。</p>
+      </div>
+
+      <div class="grid grid-2">
+        <section class="card card-section">
+          <div class="card-kicker">Rubric Dimensions</div>
+          <h3>质量维度</h3>
+          <ul class="list list-compact" id="evaluation-dimensions-list"></ul>
+        </section>
+        <section class="card card-section">
+          <div class="card-kicker">Ranking</div>
+          <h3>当前排序</h3>
+          <ul class="list list-compact" id="evaluation-ranking-list"></ul>
+        </section>
+      </div>
+
+      <div class="grid grid-2 section-grid-large">
+        <section class="card card-section">
+          <div class="card-kicker">Consensus</div>
+          <h3>共识点</h3>
+          <ul class="list" id="consensus-list"></ul>
+        </section>
+        <section class="card card-section">
+          <div class="card-kicker">Divergence</div>
+          <h3>关键差异</h3>
+          <ul class="list" id="divergence-list"></ul>
+        </section>
+      </div>
+
+      <div class="grid grid-2 section-grid-large">
+        <section class="card card-section">
+          <div class="card-kicker">Reviewer Notes</div>
+          <h3>评审意见</h3>
+          <ul class="list" id="reviewer-notes-list"></ul>
+        </section>
+        <section class="card card-section">
+          <div class="card-kicker">What To Trust</div>
+          <h3>当前建议</h3>
+          <p class="comparison-callout" id="evaluation-callout"></p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="./test-result-dashboard.data.js"></script>
+  <script src="./test-result-dashboard.js"></script>
+</body>
+</html>

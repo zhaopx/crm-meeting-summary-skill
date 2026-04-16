@@ -1,0 +1,19 @@
+请使用 crm-meeting-summary skill，基于以下输入生成会议总结。
+
+input bundle path: /Users/zhaopx/Documents/实验田/summay-skill/.local/crm-meeting-summary-test-data/case-001
+meeting time: 2026-04-06T15:00:00+08:00
+initiator: 陈小艳（USR-101）
+客户: 华东零售集团（CUST-001）
+opportunity: 智能客服升级项目（OPP-9001）
+
+
+
+
+
+请使用 crm-meeting-summary skill，基于以下输入生成会议总结。
+
+input bundle path: /Users/zhaopx/Documents/实验田/summay-skill/.local/crm-meeting-summary-test-data/case-002
+meeting time: 2026-04-08T10:30:00+08:00
+initiator: 陈小艳（USR-201）
+客户: 某连锁酒店集团（CUST-002）
+opportunity: 酒店经营分析与预警平台（OPP-9002）
