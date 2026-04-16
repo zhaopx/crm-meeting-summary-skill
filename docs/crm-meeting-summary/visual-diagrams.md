@@ -22,33 +22,33 @@ skinparam activity {
 
 start
 :输入归一化\nrecord_text > record_text_path\n> input_bundle_path/meeting-record.txt;
-:场景识别\ntaxonomy.md;
+ #FFE9E9:场景识别\ntaxonomy.md;
 if (scenario_confidence\n是否 low?) then (是)
   #FFE9E9:进入 conservative mode\n默认只加载 common；\n行业有独立证据时补充 industry;
-  #FFE9E9:只允许最小消歧请求\n不加载 scenario / patch / best-cases;
+  :只允许最小消歧请求\n不加载 scenario / patch / best-cases;
 else (否)
   #FFE9E9:加载 common + scenario；\n按证据补充 industry / patch / best-cases;
-  #FFE9E9:按 retrieval policy + request groups\n+ data_requirements 形成最小 crm_data_requests;
+  :按 retrieval policy + request groups\n+ data_requirements 形成最小 crm_data_requests;
 endif
 :语义归一\nsemantic_normalization;
 :提取通用会议状态\nmeeting_state_features;
-:组装 memory 上下文\n只取最小子集;
+ #FFE9E9:组装 memory 上下文\n只取最小子集;
 if (memory 与当前 meeting / CRM\n证据冲突?) then (是)
   :优先保留当前证据；\n暴露冲突边界，必要时降低判断强度;
 else (否)
 endif
 :生成原始 summary\n只写已确认内容;
-:按单一 template 重排结构\n只重组已有内容，不新增事实;
-:调用 review 子 skill\n提交 summary / loaded knowhow\n最小证据摘录 / 缺失信息\n必要的 template / memory conflict 说明;
+ #FFE9E9:按单一 template 重排结构\n只重组已有内容，不新增事实;
+ #FFE9E9:调用 review 子 skill\n提交 summary / loaded knowhow\n最小证据摘录 / 缺失信息\n必要的 template / memory conflict 说明;
 :按固定顺序评审\n事实准确性 -> 风险覆盖 -> 业务价值;
 if (review 通过?) then (pass)
-  #FFE9E9:交付最终人类总结;
+  :交付最终人类总结;
   stop
 else (fail)
   :按 failure_reasons\n定向修复失败维度;
   :最多重试 2 轮;
   if (2 轮后仍不稳定?) then (是)
-    #FFE9E9:要求人工复核\n保留当前最佳总结;
+   :要求人工复核\n保留当前最佳总结;
     stop
   else (否)
     :重新生成 summary 并复审;
@@ -112,8 +112,9 @@ Claude --> User: 展示结果
 @enduml
 ```
 
-## 4. 说明
+## 4. 当前风险
 
-- 本页只做结构示意，不作为运行时契约来源
-- 正式口径以 `skills/crm-meeting-summary/references/runtime-contract.md`、`skills/crm-meeting-summary/SKILL.md`、`skills/crm-meeting-summary/review/SKILL.md` 为准
-- 图中使用的 `semantic_normalization`、`meeting_state_features`、review loop 等词，仅表示内部流程阶段，不代表最终用户可见输出结构
+- 与纷享 agent体系适配度
+- 耗时和 token 消耗会大幅增加
+- 对于模型依赖比较强，目前是用 gpt 5.4 效果较优
+- 审计功能的设计
